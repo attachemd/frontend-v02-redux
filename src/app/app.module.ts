@@ -17,12 +17,12 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import {StopTrainingComponent} from "./training/current-training/stop-training.component";
 import {AuthService} from "./auth/auth.service";
+import {AuthModule} from "./auth/auth.module";
 
 @NgModule({
     declarations: [
         AppComponent,
         SignupComponent,
-        LoginComponent,
         TrainingComponent,
         CurrentTrainingComponent,
         NewTrainingComponent,
@@ -38,6 +38,7 @@ import {AuthService} from "./auth/auth.service";
         BrowserAnimationsModule,
         MaterialModule,
         FormsModule,
+        AuthModule,
     ],
     providers: [AuthService],
     bootstrap: [AppComponent],
