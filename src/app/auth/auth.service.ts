@@ -46,10 +46,7 @@ export class AuthService {
     }
 
     public isAuth(): boolean {
-        return this.user !== {
-            email: "",
-            userId: ""
-        };
+        return this.user.email !== "" || this.user.userId !== "";
     }
 
     private authSuccessfully(){
