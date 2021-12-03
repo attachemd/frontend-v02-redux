@@ -5,17 +5,8 @@
             <mat-card-content fxLayoutAlign="center">
                 <mat-form-field>
                     <mat-select placeholder="Select workout"  >
-                        <mat-option>
-                            Crunches
-                        </mat-option>
-                        <mat-option>
-                            Touch Toes
-                        </mat-option>
-                        <mat-option>
-                            Side Lungs
-                        </mat-option>
-                        <mat-option>
-                            Burpees
+                        <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">
+                            {{exercise.name}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
