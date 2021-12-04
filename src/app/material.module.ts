@@ -4,7 +4,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import {MatNativeDateModule} from "@angular/material/core";
+import {MatNativeDateModule, MatOptionModule} from "@angular/material/core";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSidenavModule} from "@angular/material/sidenav";
@@ -32,6 +32,7 @@ import {MatDialogModule} from "@angular/material/dialog";
       MatTabsModule,
       MatCardModule,
       MatSelectModule,
+      MatOptionModule,
       MatProgressSpinnerModule,
       MatDialogModule
   ],
@@ -50,6 +51,7 @@ import {MatDialogModule} from "@angular/material/dialog";
       MatTabsModule,
       MatCardModule,
       MatSelectModule,
+      MatOptionModule,
       MatProgressSpinnerModule,
       MatDialogModule
   ]
