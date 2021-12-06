@@ -1,42 +1,39 @@
 import {Subject} from "rxjs";
 import {Exercise} from "./exercise.model";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class TrainingService {
     public exerciseChanged: Subject<Exercise> =
         new Subject<Exercise>();
-    private availableExercises: Exercise[] =
-        [
-            {
-                id: 'crunches',
-                name: 'Crunches',
-                duration: 5,
-                calories: 8
-            },
-            {
-                id: 'touch-toes',
-                name: 'Touch Toes',
-                duration: 180,
-                calories: 15
-            },
-            {
-                id: 'side-lunges',
-                name: 'Side Lunges',
-                duration: 120,
-                calories: 18
-            },
-            {
-                id: 'burpees',
-                name: 'Burpees',
-                duration: 60,
-                calories: 8
-            }
-        ];
+
+    public exercisesChanged: Subject<Exercise[]> =
+        new Subject<Exercise[]>();
+
+    private availableExercises: Exercise[] = [];
 
     private runningExercise: Exercise | undefined;
     private exercises: Exercise[] = [];
 
+    constructor(
+        private http: HttpClient,
+    ) {
+    }
+
     public getAvailableExercises() {
-        return this.availableExercises.slice();
+        return this.http
+            .get<Exercise[]>(
+                '/api/exercises/'
+            )
+            .subscribe((exercises: Exercise[]) => {
+                    this.availableExercises = exercises;
+                    this.exercisesChanged
+                        .next([
+                            ...this.availableExercises
+                        ])
+                }
+            )
     }
 
     public startExercise(selectedExerciseId: string) {
