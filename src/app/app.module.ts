@@ -19,6 +19,7 @@ import {StopTrainingComponent} from "./training/current-training/stop-training.c
 import {AuthService} from "./auth/auth.service";
 import {AuthModule} from "./auth/auth.module";
 import {TrainingService} from "./training/training.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import {TrainingService} from "./training/training.service";
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
+        HttpClientModule,
         MaterialModule,
         FormsModule,
         AuthModule,

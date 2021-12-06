@@ -2,8 +2,11 @@
     <form (ngSubmit)="onStartTraining(f)" #f="ngForm">
         <mat-card fxFlex.xs="100%" fxFlex="400px">
 
-            <mat-card-title fxLayoutAlign="center">Time to start a workout!</mat-card-title>
+            <mat-card-title fxLayoutAlign="center">
+                Time to start a workout!
+            </mat-card-title>
             <mat-card-content fxLayoutAlign="center">
+
                 <mat-form-field>
                     <mat-select
                         placeholder="Select workout"
@@ -12,7 +15,7 @@
                         required
                     >
                         <mat-option
-                            *ngFor="let exercise of exercises"
+                            *ngFor="let exercise of exercises | async"
                             [value]="exercise.id"
                         >
                             {{exercise.name}}

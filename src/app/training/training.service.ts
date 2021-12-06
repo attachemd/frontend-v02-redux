@@ -33,7 +33,7 @@ export class TrainingService {
         ];
 
     private runningExercise: Exercise | undefined;
-    private exercises: Exercise[] = []
+    private exercises: Exercise[] = [];
 
     public getAvailableExercises() {
         return this.availableExercises.slice();
