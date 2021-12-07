@@ -24,6 +24,7 @@ export class TrainingService {
     }
 
     public getAvailableExercises() {
+        console.log("getAvailableExercises");
         return this.http
             .get<Exercise[]>(
                 '/api/exercises/'
@@ -145,7 +146,11 @@ export class TrainingService {
         this.http
             .post('/api/fexercises/', payload, httpOptions)
             .subscribe(
-                response => console.log(response),
+                response => {
+                    console.log(response)
+                    // this.getAvailableExercises();
+                    this.getCompletedOrCanceledExercises()
+                },
                 err => console.log(err)
             );
     }
