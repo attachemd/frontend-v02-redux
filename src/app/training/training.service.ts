@@ -11,10 +11,12 @@ export class TrainingService {
     public exercisesChanged: Subject<Exercise[]> =
         new Subject<Exercise[]>();
 
+    public finishedExercisesChanged: Subject<Exercise[]> =
+        new Subject<Exercise[]>();
+
     private availableExercises: Exercise[] = [];
 
     private runningExercise: Exercise | undefined;
-    private exercises: Exercise[] = [];
 
     constructor(
         private http: HttpClient,
@@ -29,9 +31,11 @@ export class TrainingService {
             .subscribe((exercises: Exercise[]) => {
                     this.availableExercises = exercises;
                     this.exercisesChanged
-                        .next([
-                            ...this.availableExercises
-                        ])
+                        .next(
+                            [
+                                ...this.availableExercises
+                            ]
+                        )
                 }
             )
     }
@@ -82,12 +86,12 @@ export class TrainingService {
             this.addDataToDatabase(
                 {
                     ...this.runningExercise,
-                    calories: (
+                    calories: Math.round((
                         this.runningExercise.duration * progress
-                    ) / 100,
-                    duration: (
+                    ) / 100),
+                    duration: Math.round((
                         this.runningExercise.calories * progress
-                    ) / 100,
+                    ) / 100),
                     date: new Date(),
                     state: "cancelled"
                 }
@@ -102,7 +106,17 @@ export class TrainingService {
     }
 
     public getCompletedOrCanceledExercises() {
-        return this.exercises.slice();
+        return this.http
+            .get<Exercise[]>(
+                '/api/fexercises/'
+            )
+            .subscribe((exercises: Exercise[]) => {
+                    this.finishedExercisesChanged
+                        .next([
+                            ...exercises
+                        ])
+                }
+            )
     }
 
     private addDataToDatabase(exercise: Exercise) {
@@ -126,6 +140,8 @@ export class TrainingService {
                 }
             )
         };
+        console.log("payload: ");
+        console.log(payload);
         this.http
             .post('/api/fexercises/', payload, httpOptions)
             .subscribe(
