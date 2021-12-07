@@ -11,6 +11,11 @@ export class TrainingService {
     public exercisesChanged: Subject<Exercise[]> =
         new Subject<Exercise[]>();
 
+    /**
+     * notify if finished exercises changed
+     * @type {Subject<Exercise[]>}
+     * @public
+     */
     public finishedExercisesChanged: Subject<Exercise[]> =
         new Subject<Exercise[]>();
 
