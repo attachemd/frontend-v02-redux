@@ -1,6 +1,6 @@
 import {Subject} from "rxjs";
 import {Exercise} from "./exercise.model";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 
 @Injectable()
@@ -63,14 +63,13 @@ export class TrainingService {
         //         }
         //     );
         // }
-        this.exercises.push(
+        this.addDataToDatabase(
             {
                 calories: 0,
                 duration: 0,
                 id: "",
                 name: "",
                 ...this.runningExercise,
-                date: new Date(),
                 state: "completed"
             }
         );
@@ -80,7 +79,7 @@ export class TrainingService {
 
     public cancelExercise(progress: number) {
         if (this.runningExercise) {
-            this.exercises.push(
+            this.addDataToDatabase(
                 {
                     ...this.runningExercise,
                     calories: (
@@ -104,6 +103,35 @@ export class TrainingService {
 
     public getCompletedOrCanceledExercises() {
         return this.exercises.slice();
+    }
+
+    private addDataToDatabase(exercise: Exercise) {
+        let {id, date, ...payload} = exercise;
+        // let str_payload = JSON.stringify(payload)
+        let str_payload = {
+            calories: 11,
+            duration: 7,
+            name: "Chapman-Bell",
+            state: "completed"
+        }
+        console.log("str_payload: ")
+        console.log(str_payload)
+        const httpOptions = {
+            headers: new HttpHeaders(
+                {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(
+                        'me:1234'
+                    )
+                }
+            )
+        };
+        this.http
+            .post('/api/fexercises/', payload, httpOptions)
+            .subscribe(
+                response => console.log(response),
+                err => console.log(err)
+            );
     }
 
 }
