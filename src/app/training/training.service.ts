@@ -149,7 +149,7 @@ export class TrainingService {
         console.log("payload: ");
         console.log(payload);
         this.http
-            .post('/api/fexercises/', payload, httpOptions)
+            .post('/api/fexercises/', payload)
             .subscribe(
                 response => {
                     console.log(response)

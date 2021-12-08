@@ -13,13 +13,20 @@ import {NewTrainingComponent} from './training/new-training/new-training.compone
 import {PastTrainingComponent} from './training/past-training/past-training.component';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {FormsModule} from "@angular/forms";
-import { HeaderComponent } from './navigation/header/header.component';
-import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import {HeaderComponent} from './navigation/header/header.component';
+import {SidenavListComponent} from './navigation/sidenav-list/sidenav-list.component';
 import {StopTrainingComponent} from "./training/current-training/stop-training.component";
 import {AuthService} from "./auth/auth.service";
 import {AuthModule} from "./auth/auth.module";
 import {TrainingService} from "./training/training.service";
 import {HttpClientModule} from "@angular/common/http";
+import {JwtModule} from "@auth0/angular-jwt";
+
+export function tokenGetter(): string | null {
+    console.log("localStorage.getItem('access'): ")
+    console.log(localStorage.getItem('access'))
+    return localStorage.getItem('access');
+}
 
 @NgModule({
     declarations: [
@@ -35,6 +42,26 @@ import {HttpClientModule} from "@angular/common/http";
         StopTrainingComponent
     ],
     imports: [
+
+        JwtModule.forRoot(
+            {
+                config:
+                    {
+                        tokenGetter,
+                        allowedDomains: [
+                            'localhost:4200',
+                            'localhost:8000',
+                            // environment.host
+                        ],
+                        disallowedRoutes: [
+                            "http://localhost:8000/api/user/create/"
+                        ],
+                        skipWhenExpired: false,
+                        // throwNoTokenError: true
+                    }
+            }
+        ),
+
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
