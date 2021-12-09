@@ -6,6 +6,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {flatMap} from "rxjs/operators";
 
 @Injectable()
 export class AuthService {
@@ -96,7 +97,7 @@ export class AuthService {
 
         if (authData && authData.email && authData.password) {
             this.http
-                .post('api/token/access/', authData)
+                .post('api/user/access/', authData)
                 .pipe(
                     map((data: any) => {
                         if (!data) {
@@ -147,7 +148,17 @@ export class AuthService {
 
     public initAuthListener(): void {
 
-        this.authState().subscribe(isAuth => {
+        this.authStateChange
+            .pipe(
+                flatMap(()=>{
+                    console.log(
+                        '%c isAccessToken ',
+                        'background: green; color: #fff; padding: 0 10px;'
+                    );
+                    return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
+                })
+            )
+            .subscribe(isAuth => {
             if (isAuth) {
                 this.isAuthenticated = true;
                 this.authChange.next(true);
@@ -208,7 +219,6 @@ export class AuthService {
         }
     }
 
-
     isBothTokensAlive(): Observable<boolean> {
         if (!this.jwtHelper.isTokenExpired()) {
             return of(true);
@@ -218,6 +228,10 @@ export class AuthService {
     }
 
     public authState(): Observable<boolean> {
+        console.log(
+            '%c isAccessToken ',
+            'background: green; color: #fff; padding: 0 10px;'
+        );
         return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
     }
 

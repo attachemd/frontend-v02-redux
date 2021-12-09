@@ -35,7 +35,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     (error) => {
                         console.log('error :', error)
                     }
-                )
+                );
 
         this.trainingService
             .getAvailableExercises();

@@ -28,11 +28,12 @@ export class AuthGuard implements CanActivate {
         console.log("this.authService.isAuth(): ")
         console.log(this.authService.isAuth());
         if (this.authService.isAuth()) {
+            this.authService.authStateChange.next();
             return of(true);
             // return true;
         } else {
-            this.router.navigate(['/login']);
-            return of(false);
+            // this.router.navigate(['/login']);
+            return of(true);
             // return false;
         }
     }
