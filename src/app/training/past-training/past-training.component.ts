@@ -46,6 +46,9 @@ export class PastTrainingComponent
                 .subscribe(
                     (exercises: Exercise[]) => {
                         this.dataSource.data = exercises;
+                    },
+                    (error) => {
+                        console.log('error :', error)
                     }
                 )
 

@@ -48,14 +48,19 @@ export class CurrentTrainingComponent implements OnInit {
                 }
             }
         );
-        dialog.afterClosed().subscribe(result => {
-            if (result) {
-                // this.trainingExit.emit();
-                this.trainingService.cancelExercise(this.progress)
-            } else {
-                this.startOrResume();
+        dialog.afterClosed().subscribe(
+            result => {
+                if (result) {
+                    // this.trainingExit.emit();
+                    this.trainingService.cancelExercise(this.progress)
+                } else {
+                    this.startOrResume();
+                }
+            },
+            (error) => {
+                console.log('error :', error)
             }
-        })
+        )
     }
 
 }

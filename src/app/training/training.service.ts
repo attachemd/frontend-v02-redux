@@ -34,7 +34,8 @@ export class TrainingService {
             .get<Exercise[]>(
                 '/api/exercises/'
             )
-            .subscribe((exercises: Exercise[]) => {
+            .subscribe(
+                (exercises: Exercise[]) => {
                     this.availableExercises = exercises;
                     this.exercisesChanged
                         .next(
@@ -42,6 +43,9 @@ export class TrainingService {
                                 ...this.availableExercises
                             ]
                         )
+                },
+                (error) => {
+                    console.log('error :', error)
                 }
             )
     }
@@ -116,11 +120,15 @@ export class TrainingService {
             .get<Exercise[]>(
                 '/api/fexercises/'
             )
-            .subscribe((exercises: Exercise[]) => {
+            .subscribe(
+                (exercises: Exercise[]) => {
                     this.finishedExercisesChanged
                         .next([
                             ...exercises
                         ])
+                },
+                (error) => {
+                    console.log('error :', error)
                 }
             )
     }

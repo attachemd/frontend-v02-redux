@@ -24,6 +24,9 @@ export class TrainingComponent implements OnInit {
                     } else {
                         this.onGoingTraining = false
                     }
+                },
+                (error) => {
+                    console.log('error :', error)
                 }
             )
     }

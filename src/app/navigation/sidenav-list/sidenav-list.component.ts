@@ -22,6 +22,9 @@ export class SidenavListComponent implements OnInit, OnDestroy {
             .subscribe(
                 (authStats) => {
                     this.isAuth = authStats;
+                },
+                (error) => {
+                    console.log('error :', error)
                 }
             )
     }

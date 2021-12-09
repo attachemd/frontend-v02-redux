@@ -1,6 +1,6 @@
 import {User} from "./user.model";
 import {AuthData} from "./auth-data.model";
-import {of, Subject} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
@@ -14,6 +14,8 @@ export class AuthService {
         email: "",
         userId: ""
     };
+    private isAuthenticated = false;
+    authStateChange: Subject<void> = new Subject<void>();
 
     constructor(
         private http: HttpClient,
@@ -71,23 +73,63 @@ export class AuthService {
                     console.log(error);
                     return of(false);
                 })
-            ).subscribe(
-            (result) => {
-                if(result){
-                    this.authSuccessfully()
+            )
+            .subscribe(
+                (result) => {
+                    if (result) {
+                        this.authSuccessfully()
+                    }
+                },
+                (error) => {
+                    console.log('error :', error)
                 }
-            }
-        )
+            )
     }
 
     public login(authData: AuthData): void {
-        this.user = {
-            email: authData.email,
-            userId: Math
-                .round(Math.random() * 10000)
-                .toString()
+        // this.user = {
+        //     email: authData.email,
+        //     userId: Math
+        //         .round(Math.random() * 10000)
+        //         .toString()
+        // }
+
+        if (authData && authData.email && authData.password) {
+            this.http
+                .post('api/token/access/', authData)
+                .pipe(
+                    map((data: any) => {
+                        if (!data) {
+                            return false;
+                        }
+                        localStorage.setItem('access', data.access);
+                        localStorage.setItem('refresh', data.refresh);
+                        const decodedUser = this.jwtHelper.decodeToken(data.access);
+                        localStorage.setItem('expiration', decodedUser.exp);
+
+                        return true;
+                    }),
+                    catchError((error) => {
+                        console.log('error');
+                        console.log(error);
+                        return of(false);
+                    })
+                )
+                .subscribe(
+                    result => {
+
+                        this.authChange.next(result);
+                        this.authSuccessfully()
+
+                    },
+                    error => {
+                        console.log('error');
+                        console.log(error);
+                    }
+                )
+        } else {
+            console.log("no login!");
         }
-        this.authSuccessfully()
     }
 
     public logout(): void {
@@ -103,9 +145,85 @@ export class AuthService {
         return {...this.user}
     }
 
+    public initAuthListener(): void {
+
+        this.authState().subscribe(isAuth => {
+            if (isAuth) {
+                this.isAuthenticated = true;
+                this.authChange.next(true);
+                // this.router.navigate(['/training']);
+            } else {
+                // this.trainingService.cancelSubscriptions();
+                this.isAuthenticated = false;
+                this.authChange.next(false);
+                // this.router.navigate(['/login']);
+            }
+        })
+    }
+
+    refreshTokenOrDie(): Observable<boolean> {
+        const payload = {
+            refresh: localStorage.getItem('refresh'),
+        };
+
+        return this.http
+            .post('/api/user/refresh/', payload)
+            .pipe(
+                map((newTokens: any) => {
+                    localStorage.setItem('access', newTokens.access);
+                    const decodedUser = this.jwtHelper.decodeToken(
+                        newTokens.access
+                    );
+                    localStorage.setItem('expiration', decodedUser.exp);
+                    return true;
+                }),
+
+                catchError((error: any) => {
+                    console.error(error);
+                    return of(false);
+                })
+            );
+
+    }
+
+    isAccessToken(): boolean {
+        let access: string | any = localStorage.getItem('access');
+        if (access) {
+            try {
+                let decodedUser = this.jwtHelper.decodeToken(access);
+                console.log(
+                    "decodedUser.token_type === 'access': ",
+                    decodedUser.token_type === 'access'
+                );
+                console.log('decodedUser: ', decodedUser);
+                return true;
+            } catch (error) {
+                console.error(
+                    "The inspected token doesn't appear to be a JWT."
+                );
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+    isBothTokensAlive(): Observable<boolean> {
+        if (!this.jwtHelper.isTokenExpired()) {
+            return of(true);
+        } else {
+            return this.refreshTokenOrDie()
+        }
+    }
+
+    public authState(): Observable<boolean> {
+        return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
+    }
+
+
     public isAuth(): boolean {
-        return this.user.email !== "" ||
-            this.user.userId !== "";
+        return this.isAuthenticated;
     }
 
     private authSuccessfully() {
