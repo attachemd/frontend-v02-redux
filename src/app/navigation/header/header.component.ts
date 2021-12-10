@@ -21,6 +21,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .authChange
             .subscribe(
                 (authStats) => {
+                    console.log(
+                        '%c this.isAuthenticated ',
+                        'background: yellow; color: #000; padding: 0 10px;'
+                    );
+                    console.log("authStats: ", authStats)
                     this.isAuthenticated = authStats;
                 },
                 (error) => {

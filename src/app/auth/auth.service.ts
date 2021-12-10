@@ -4,7 +4,7 @@ import {Observable, of, Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {catchError, map} from "rxjs/operators";
+import {catchError, delay, map, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {flatMap} from "rxjs/operators";
 
@@ -138,6 +138,7 @@ export class AuthService {
             email: "",
             userId: ""
         };
+        localStorage.removeItem("access");
         this.authChange.next(false);
         this.router.navigate(['/login'])
     }
@@ -150,29 +151,65 @@ export class AuthService {
 
         this.authStateChange
             .pipe(
-                flatMap(()=>{
-                    console.log(
-                        '%c isAccessToken ',
-                        'background: green; color: #fff; padding: 0 10px;'
-                    );
-                    return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
-                })
+                flatMap(
+                    () => {
+                        console.log(
+                            '%c isAccessToken ',
+                            'background: green; color: #fff; padding: 0 10px;'
+                        );
+                        return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
+                    }
+                )
             )
             .subscribe(isAuth => {
-            if (isAuth) {
-                this.isAuthenticated = true;
-                this.authChange.next(true);
-                // this.router.navigate(['/training']);
-            } else {
-                // this.trainingService.cancelSubscriptions();
-                this.isAuthenticated = false;
-                this.authChange.next(false);
-                // this.router.navigate(['/login']);
-            }
-        })
+                if (isAuth) {
+                    this.isAuthenticated = true;
+                    this.authChange.next(true);
+                    // this.router.navigate(['/training']);
+                } else {
+                    // this.trainingService.cancelSubscriptions();
+                    this.isAuthenticated = false;
+                    this.authChange.next(false);
+                    // this.router.navigate(['/login']);
+                }
+            })
     }
 
+    // refreshTokenOrDie(): Observable<boolean> {
+    //     const payload = {
+    //         refresh: localStorage.getItem('refresh'),
+    //     };
+    //
+    //     return this.http
+    //         .post('/api/user/refresh/', payload)
+    //         .pipe(
+    //             map((newTokens: any) => {
+    //                 localStorage.setItem('access', newTokens.access);
+    //                 const decodedUser = this.jwtHelper.decodeToken(
+    //                     newTokens.access
+    //                 );
+    //                 localStorage.setItem('expiration', decodedUser.exp);
+    //                 console.log(
+    //                     '%c refreshTokenOrDie ',
+    //                     'background: red; color: #fff; padding: 10px;'
+    //                 );
+    //                 return true;
+    //             }),
+    //
+    //             catchError((error: any) => {
+    //                 console.error(error);
+    //                 return of(false);
+    //             })
+    //         );
+    //
+    // }
+
     refreshTokenOrDie(): Observable<boolean> {
+        console.log(
+            '%c refreshTokenOrDie 01 ',
+            'background: red; color: #fff; padding: 10px;'
+        );
+        console.log("attache");
         const payload = {
             refresh: localStorage.getItem('refresh'),
         };
@@ -180,21 +217,34 @@ export class AuthService {
         return this.http
             .post('/api/user/refresh/', payload)
             .pipe(
-                map((newTokens: any) => {
+                (newTokens: any) => {
                     localStorage.setItem('access', newTokens.access);
                     const decodedUser = this.jwtHelper.decodeToken(
                         newTokens.access
                     );
                     localStorage.setItem('expiration', decodedUser.exp);
-                    return true;
-                }),
-
-                catchError((error: any) => {
-                    console.error(error);
-                    return of(false);
-                })
+                    console.log(
+                        '%c refreshTokenOrDie 02 ',
+                        'background: red; color: #fff; padding: 10px;'
+                    );
+                    return of(true);
+                }
             );
 
+    }
+
+    test(): Observable<boolean> {
+        return of(true).pipe(
+            delay(1000),
+            tap(val => {
+                console.log(
+                    '%c isAccessToken ',
+                    'background: #422C78; color: #fff; padding: 10px;'
+                );
+                console.log("val: ", val);
+                return of(true);
+            })
+        );
     }
 
     isAccessToken(): boolean {
@@ -215,11 +265,20 @@ export class AuthService {
                 return false;
             }
         } else {
+            console.log(
+                '%c isAccessToken ',
+                'background: #422C78; color: #fff; padding: 10px;'
+            );
+            console.log(access);
             return false;
         }
     }
 
     isBothTokensAlive(): Observable<boolean> {
+        console.log(
+            '%c isBothTokensAlive ',
+            'background: green; color: #fff; padding: 10px;'
+        );
         if (!this.jwtHelper.isTokenExpired()) {
             return of(true);
         } else {
@@ -234,7 +293,6 @@ export class AuthService {
         );
         return this.isAccessToken() ? this.isBothTokensAlive() : of(false);
     }
-
 
     public isAuth(): boolean {
         return this.isAuthenticated;

@@ -8,8 +8,15 @@ import {AuthGuard} from './auth/auth.guard';
 import {NegateAuthGuard} from "./auth/negate-auth.guard";
 
 const routes: Routes = [
-    {path: '', component: WelcomeComponent},
-    {path: 'signup', component: SignupComponent},
+    {
+        path: '',
+        component: WelcomeComponent
+    },
+    {
+        path: 'signup',
+        component: SignupComponent,
+        // canActivate: [NegateAuthGuard]
+    },
     {
         path: 'login',
         component: LoginComponent,
