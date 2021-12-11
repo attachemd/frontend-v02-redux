@@ -5,22 +5,24 @@ import {WelcomeComponent} from "./welcome/welcome.component";
 import {TrainingComponent} from "./training/training.component";
 import {LoginComponent} from "./auth/login/login.component";
 import {AuthGuard} from './auth/auth.guard';
-import {NegateAuthGuard} from "./auth/negate-auth.guard";
 
 const routes: Routes = [
     {
         path: '',
-        component: WelcomeComponent
+        component: WelcomeComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'signup',
         component: SignupComponent,
         // canActivate: [NegateAuthGuard]
+        canActivate: [AuthGuard]
     },
     {
         path: 'login',
         component: LoginComponent,
         // canActivate: [NegateAuthGuard]
+        canActivate: [AuthGuard]
     },
     {
         path: 'training',

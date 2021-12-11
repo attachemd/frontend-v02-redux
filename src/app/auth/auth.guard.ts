@@ -34,6 +34,7 @@ export class AuthGuard implements CanActivate {
             'border: 1px solid #47C0BE'
         );
         console.log(this.authService.isAuth());
+
         // if (this.authService.isAuth()) {
         //     this.authService.authStateChange.next();
         //     return of(true);
@@ -54,12 +55,12 @@ export class AuthGuard implements CanActivate {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
                             this.authService.authChange.next(true);
-                            return true;
+                            return this.redirectToOther(state)
                             // return true;
                         } else {
                             console.log("!isAuth: ", isAuth);
-                            this.router.navigate(['/login']);
-                            return false;
+                            // this.router.navigate(['/login']);
+                            return this.redirectToEntry(state)
                             // return false;
                         }
                     }
@@ -155,5 +156,52 @@ export class AuthGuard implements CanActivate {
         //     // return false;
         // }
 
+    }
+
+    redirectToEntry(state: RouterStateSnapshot): boolean {
+        if (state.url.indexOf('/login') == -1 && state.url.indexOf('/signup') == -1) {
+            // DOC: not logged in users only navigate to login page
+            console.log(
+                '%c redirectToEntry: false ',
+                'background: #B8FF13; ' +
+                'color: #000; ' +
+                'padding: 10px; ' +
+                'border: 1px solid #47C0BE'
+            );
+            this.router.navigate(['/login']);
+            return false;
+        } else {
+            console.log(
+                '%c redirectToEntry: true ',
+                'background: #B8FF13; ' +
+                'color: #000; ' +
+                'padding: 10px; ' +
+                'border: 1px solid #47C0BE'
+            );
+            return true;
+        }
+    }
+
+    redirectToOther(state: RouterStateSnapshot): boolean {
+        if (state.url.indexOf('/login') != -1 || state.url.indexOf('/signup') != -1) {
+            console.log(
+                '%c redirectToOther: false ',
+                'background: #C1FEEA; ' +
+                'color: #000; ' +
+                'padding: 10px; ' +
+                'border: 1px solid #47C0BE'
+            );
+            this.router.navigate(['/training']);
+            return false;
+        } else {
+            console.log(
+                '%c redirectToOther: true ',
+                'background: #C1FEEA; ' +
+                'color: #000; ' +
+                'padding: 10px; ' +
+                'border: 1px solid #47C0BE'
+            );
+            return true;
+        }
     }
 }

@@ -21,7 +21,7 @@ import {AuthModule} from "./auth/auth.module";
 import {TrainingService} from "./training/training.service";
 import {HttpClientModule} from "@angular/common/http";
 import {JwtModule} from "@auth0/angular-jwt";
-import {NegateAuthGuard} from "./auth/negate-auth.guard";
+import {AuthGuard} from "./auth/auth.guard";
 
 export function tokenGetter(): string | null {
     console.log("localStorage.getItem('access'): ")
@@ -73,7 +73,7 @@ export function tokenGetter(): string | null {
     ],
     providers: [
         AuthService,
-        NegateAuthGuard,
+        AuthGuard,
         TrainingService
     ],
     bootstrap: [AppComponent],

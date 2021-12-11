@@ -7,6 +7,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, delay, map, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {flatMap} from "rxjs/operators";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @Injectable()
 export class AuthService {
@@ -44,6 +45,12 @@ export class AuthService {
                         if (!data) {
                             return false;
                         }
+
+                        console.log(
+                            '%c localStorage.setItem ',
+                            'background: red; color: #fff; padding: 10px;'
+                        );
+                        console.log(data.token.access)
 
                         localStorage.setItem(
                             'access',
@@ -103,10 +110,15 @@ export class AuthService {
                         if (!data) {
                             return false;
                         }
+                        console.log(
+                            '%c localStorage.setItem ',
+                            'background: red; color: #fff; padding: 10px;'
+                        );
+                        console.log(data.access)
                         localStorage.setItem('access', data.access);
                         localStorage.setItem('refresh', data.refresh);
-                        const decodedUser = this.jwtHelper.decodeToken(data.access);
-                        localStorage.setItem('expiration', decodedUser.exp);
+                        // const decodedUser = this.jwtHelper.decodeToken(data.access);
+                        // localStorage.setItem('expiration', decodedUser.exp);
 
                         return true;
                     }),
@@ -175,34 +187,7 @@ export class AuthService {
             })
     }
 
-    // refreshTokenOrDie(): Observable<boolean> {
-    //     const payload = {
-    //         refresh: localStorage.getItem('refresh'),
-    //     };
-    //
-    //     return this.http
-    //         .post('/api/user/refresh/', payload)
-    //         .pipe(
-    //             map((newTokens: any) => {
-    //                 localStorage.setItem('access', newTokens.access);
-    //                 const decodedUser = this.jwtHelper.decodeToken(
-    //                     newTokens.access
-    //                 );
-    //                 localStorage.setItem('expiration', decodedUser.exp);
-    //                 console.log(
-    //                     '%c refreshTokenOrDie ',
-    //                     'background: red; color: #fff; padding: 10px;'
-    //                 );
-    //                 return true;
-    //             }),
-    //
-    //             catchError((error: any) => {
-    //                 console.error(error);
-    //                 return of(false);
-    //             })
-    //         );
-    //
-    // }
+
 
     refreshTokenOrDie(): Observable<boolean> {
         console.log(
@@ -217,18 +202,36 @@ export class AuthService {
         return this.http
             .post('/api/user/refresh/', payload)
             .pipe(
-                (newTokens: any) => {
-                    localStorage.setItem('access', newTokens.access);
-                    const decodedUser = this.jwtHelper.decodeToken(
-                        newTokens.access
-                    );
-                    localStorage.setItem('expiration', decodedUser.exp);
-                    console.log(
-                        '%c refreshTokenOrDie 02 ',
-                        'background: red; color: #fff; padding: 10px;'
-                    );
-                    return of(true);
-                }
+                map(
+                    (newTokens: any) => {
+
+                        console.log(
+                            '%c localStorage.setItem ',
+                            'background: red; color: #fff; padding: 10px;'
+                        );
+                        console.log("newTokens :")
+                        console.log(newTokens);
+                        console.log("newTokens.access :")
+                        console.log(newTokens.access)
+
+                        localStorage.setItem('access', newTokens.access);
+                        // const decodedUser = this.jwtHelper.decodeToken(
+                        //     newTokens.access
+                        // );
+                        // localStorage.setItem('expiration', decodedUser.exp);
+
+                        // return of(true);
+                        return true;
+                    }
+                    ),
+                    catchError(
+                        (error) => {
+                        console.log('error');
+                        console.log(error);
+                        return of(false);
+                        // return false;
+                    }
+                    )
             );
 
     }
