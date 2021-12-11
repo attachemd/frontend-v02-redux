@@ -1,27 +1,15 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SignupComponent} from './auth/signup/signup.component';
+
 import {WelcomeComponent} from "./welcome/welcome.component";
 import {TrainingComponent} from "./training/training.component";
-import {LoginComponent} from "./auth/login/login.component";
+
 import {AuthGuard} from './auth/auth.guard';
 
 const routes: Routes = [
     {
         path: '',
         component: WelcomeComponent,
-        canActivate: [AuthGuard]
-    },
-    {
-        path: 'signup',
-        component: SignupComponent,
-        // canActivate: [NegateAuthGuard]
-        canActivate: [AuthGuard]
-    },
-    {
-        path: 'login',
-        component: LoginComponent,
-        // canActivate: [NegateAuthGuard]
         canActivate: [AuthGuard]
     },
     {
