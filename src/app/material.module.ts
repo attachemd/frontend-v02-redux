@@ -3,7 +3,6 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatNativeDateModule, MatOptionModule} from "@angular/material/core";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -18,6 +17,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   imports: [
@@ -25,7 +25,6 @@ import {MatPaginatorModule} from "@angular/material/paginator";
       MatIconModule,
       MatInputModule,
       MatFormFieldModule,
-      FlexLayoutModule,
       MatNativeDateModule,
       MatDatepickerModule,
       MatCheckboxModule,
@@ -40,14 +39,14 @@ import {MatPaginatorModule} from "@angular/material/paginator";
       MatDialogModule,
       MatTableModule,
       MatSortModule,
-      MatPaginatorModule
+      MatPaginatorModule,
+      MatSnackBarModule
   ],
   exports: [
       MatButtonModule,
       MatIconModule,
       MatInputModule,
       MatFormFieldModule,
-      FlexLayoutModule,
       MatNativeDateModule,
       MatDatepickerModule,
       MatCheckboxModule,
@@ -62,7 +61,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
       MatDialogModule,
       MatTableModule,
       MatSortModule,
-      MatPaginatorModule
+      MatPaginatorModule,
+      MatSnackBarModule
   ]
 })
 export class MaterialModule {

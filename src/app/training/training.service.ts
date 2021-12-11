@@ -2,14 +2,15 @@ import {Subject} from "rxjs";
 import {Exercise} from "./exercise.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
     public exerciseChanged: Subject<Exercise> =
         new Subject<Exercise>();
 
-    public exercisesChanged: Subject<Exercise[]> =
-        new Subject<Exercise[]>();
+    public exercisesChanged: Subject<Exercise[] | null> =
+        new Subject<Exercise[] | null>();
 
     /**
      * notify if finished exercises changed
@@ -25,6 +26,7 @@ export class TrainingService {
 
     constructor(
         private http: HttpClient,
+        private uiService: UIService
     ) {
     }
 
@@ -36,6 +38,7 @@ export class TrainingService {
             )
             .subscribe(
                 (exercises: Exercise[]) => {
+                    this.uiService.loadingStateChange.next(false);
                     this.availableExercises = exercises;
                     this.exercisesChanged
                         .next(
@@ -46,6 +49,16 @@ export class TrainingService {
                 },
                 (error) => {
                     console.log('error :', error)
+                    this.uiService.loadingStateChange.next(false);
+                    this.uiService.showSnackBar(
+                        "error when getting available exercises, try later.",
+                        undefined,
+                        3000
+                    );
+                    this.exercisesChanged
+                        .next(
+                            null
+                        )
                 }
             )
     }

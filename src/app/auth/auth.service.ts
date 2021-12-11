@@ -7,7 +7,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, delay, map, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {flatMap} from "rxjs/operators";
-import {MatDialogModule} from "@angular/material/dialog";
+import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,8 @@ export class AuthService {
     constructor(
         private http: HttpClient,
         private router: Router,
-        private jwtHelper: JwtHelperService
+        private jwtHelper: JwtHelperService,
+        private uiService: UIService
     ) {
     }
 
@@ -35,50 +36,63 @@ export class AuthService {
         //         .toString()
         // }
         // this.authSuccessfully()
-
+        this.uiService.loadingStateChange.next(true);
         this.http
             .post('api/user/create/', authData)
             .pipe(
                 map(
                     (data: any) => {
-
+                        this.uiService.loadingStateChange.next(false);
                         if (!data) {
                             return false;
+                        } else if (data.token) {
+                            console.log(
+                                '%c localStorage.setItem ',
+                                'background: red; color: #fff; padding: 10px;'
+                            );
+                            console.log("data")
+                            console.log(data)
+
+                            localStorage.setItem(
+                                'access',
+                                data.token.access
+                            );
+
+                            localStorage.setItem(
+                                'refresh',
+                                data.token.refresh
+                            );
+                            return true
                         }
+                        throw {
+                            error: {
+                                detail: data.email[0]
+                            }
+                        };
 
-                        console.log(
-                            '%c localStorage.setItem ',
-                            'background: red; color: #fff; padding: 10px;'
-                        );
-                        console.log(data.token.access)
 
-                        localStorage.setItem(
-                            'access',
-                            data.token.access
-                        );
-
-                        localStorage.setItem(
-                            'refresh',
-                            data.token.refresh
-                        );
-
-                        const decodedUser = this.jwtHelper
-                            .decodeToken(data.token.access);
-
-                        localStorage.setItem(
-                            'expiration',
-                            decodedUser.exp
-                        );
+                        // const decodedUser = this.jwtHelper
+                        //     .decodeToken(data.token.access);
+                        //
+                        // localStorage.setItem(
+                        //     'expiration',
+                        //     decodedUser.exp
+                        // );
 
                         // this.userInfo.next({
                         //     id: decodedUser.user_id,
                         //     username: login.username,
                         // });
-                        return true;
                     }),
                 catchError((error) => {
+                    this.uiService.loadingStateChange.next(false);
                     console.log('error');
                     console.log(error);
+                    this.uiService.showSnackBar(
+                        error.error.detail,
+                        undefined,
+                        3000
+                    );
                     return of(false);
                 })
             )
@@ -90,6 +104,11 @@ export class AuthService {
                 },
                 (error) => {
                     console.log('error :', error)
+                    this.uiService.showSnackBar(
+                        "error when register",
+                        undefined,
+                        3000
+                    );
                 }
             )
     }
@@ -103,10 +122,12 @@ export class AuthService {
         // }
 
         if (authData && authData.email && authData.password) {
+            this.uiService.loadingStateChange.next(true);
             this.http
                 .post('api/user/access/', authData)
                 .pipe(
                     map((data: any) => {
+                        this.uiService.loadingStateChange.next(false);
                         if (!data) {
                             return false;
                         }
@@ -123,21 +144,40 @@ export class AuthService {
                         return true;
                     }),
                     catchError((error) => {
+                        this.uiService.loadingStateChange.next(false);
                         console.log('error');
                         console.log(error);
+                        this.uiService.showSnackBar(
+                            error.error.detail,
+                            undefined,
+                            3000
+                        );
                         return of(false);
                     })
                 )
                 .subscribe(
-                    result => {
-
-                        this.authChange.next(result);
-                        this.authSuccessfully()
-
+                    isLogin => {
+                        console.log(
+                            '%c login subscribe: ',
+                            'background: white; ' +
+                            'color: #000; ' +
+                            'padding: 10px; ' +
+                            'border: 1px solid red'
+                        );
+                        console.log(isLogin)
+                        this.authChange.next(isLogin);
+                        if (isLogin) {
+                            this.authSuccessfully()
+                        }
                     },
                     error => {
                         console.log('error');
                         console.log(error);
+                        this.uiService.showSnackBar(
+                            "error when login",
+                            undefined,
+                            3000
+                        );
                     }
                 )
         } else {
@@ -173,20 +213,30 @@ export class AuthService {
                     }
                 )
             )
-            .subscribe(isAuth => {
-                if (isAuth) {
-                    this.isAuthenticated = true;
-                    this.authChange.next(true);
-                    // this.router.navigate(['/training']);
-                } else {
-                    // this.trainingService.cancelSubscriptions();
-                    this.isAuthenticated = false;
-                    this.authChange.next(false);
-                    // this.router.navigate(['/login']);
+            .subscribe(
+                isAuth => {
+                    if (isAuth) {
+                        this.isAuthenticated = true;
+                        this.authChange.next(true);
+                        // this.router.navigate(['/training']);
+                    } else {
+                        // this.trainingService.cancelSubscriptions();
+                        this.isAuthenticated = false;
+                        this.authChange.next(false);
+                        // this.router.navigate(['/login']);
+                    }
+                },
+                error => {
+                    console.log("error: ")
+                    console.log(error);
+                    this.uiService.showSnackBar(
+                        "error when authentication",
+                        undefined,
+                        3000
+                    );
                 }
-            })
+            )
     }
-
 
 
     refreshTokenOrDie(): Observable<boolean> {
@@ -223,15 +273,15 @@ export class AuthService {
                         // return of(true);
                         return true;
                     }
-                    ),
-                    catchError(
-                        (error) => {
+                ),
+                catchError(
+                    (error) => {
                         console.log('error');
                         console.log(error);
                         return of(false);
                         // return false;
                     }
-                    )
+                )
             );
 
     }

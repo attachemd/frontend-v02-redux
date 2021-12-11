@@ -3,6 +3,7 @@ import {TrainingService} from "../training.service";
 import {Exercise} from "../exercise.model"
 import {NgForm} from "@angular/forms";
 import {Subscription} from 'rxjs';
+import {UIService} from "../../shared/ui.service";
 
 @Component({
     selector: 'app-new-training',
@@ -12,7 +13,9 @@ import {Subscription} from 'rxjs';
 export class NewTrainingComponent implements OnInit, OnDestroy {
     // exercises: Observable<Exercise[]> =
     //     new Observable();
-    exercises: Exercise[] = [];
+    public isLoading: boolean = true;
+    private loadingSubscription: Subscription = new Subscription();
+    exercises: Exercise[] | null = [];
 
     exerciseSubscription: Subscription =
         new Subscription();
@@ -21,10 +24,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     constructor(
         private trainingService: TrainingService,
+        private uiService: UIService
     ) {
     }
 
     ngOnInit(): void {
+        this.loadingSubscription =
+            this.uiService
+                .loadingStateChange
+                .subscribe(
+                    (isLoadingState) => {
+                             this.isLoading = isLoadingState;
+                    },
+                    (error) => {
+                        console.log('error :', error);
+                    }
+                )
         this.exerciseSubscription =
             this.trainingService
                 .exercisesChanged
@@ -37,8 +52,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     }
                 );
 
-        this.trainingService
-            .getAvailableExercises();
+        this.fetchExercises();
 
         // this.http
         //     .get(
@@ -54,6 +68,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //     )
     }
 
+    public fetchExercises()  {
+        this.trainingService
+            .getAvailableExercises();
+    }
+
     onStartTraining(form: NgForm) {
         this.trainingService
             .startExercise(form.value.exercise)
@@ -61,6 +80,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.exerciseSubscription.unsubscribe();
+        this.loadingSubscription.unsubscribe();
     }
 
 }

@@ -4,9 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MaterialModule} from './material.module';
-import {SignupComponent} from './auth/signup/signup.component';
-import {LoginComponent} from './auth/login/login.component';
+
 import {TrainingComponent} from './training/training.component';
 import {CurrentTrainingComponent} from './training/current-training/current-training.component';
 import {NewTrainingComponent} from './training/new-training/new-training.component';
@@ -22,6 +20,8 @@ import {TrainingService} from "./training/training.service";
 import {HttpClientModule} from "@angular/common/http";
 import {JwtModule} from "@auth0/angular-jwt";
 import {AuthGuard} from "./auth/auth.guard";
+import {UIService} from "./shared/ui.service";
+import {SharedModule} from "./shared/shared.module";
 
 export function tokenGetter(): string | null {
     console.log("localStorage.getItem('access'): ")
@@ -32,7 +32,7 @@ export function tokenGetter(): string | null {
 @NgModule({
     declarations: [
         AppComponent,
-        SignupComponent,
+
         TrainingComponent,
         CurrentTrainingComponent,
         NewTrainingComponent,
@@ -67,14 +67,15 @@ export function tokenGetter(): string | null {
         AppRoutingModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        MaterialModule,
+        SharedModule,
         FormsModule,
         AuthModule,
     ],
     providers: [
         AuthService,
         AuthGuard,
-        TrainingService
+        TrainingService,
+        UIService
     ],
     bootstrap: [AppComponent],
     entryComponents: [StopTrainingComponent]
