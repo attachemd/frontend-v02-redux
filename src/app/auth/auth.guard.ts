@@ -1,16 +1,16 @@
 import {Injectable} from "@angular/core";
 import {
     ActivatedRouteSnapshot,
-    CanActivate,
+    CanActivate, CanLoad, Route,
     Router,
-    RouterStateSnapshot, UrlTree
+    RouterStateSnapshot, UrlSegment, UrlTree
 } from "@angular/router";
 import {AuthService} from "./auth.service";
 import {Observable, of} from "rxjs";
 import {catchError, concatMap, flatMap, map} from "rxjs/operators";
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate, CanLoad {
     constructor(
         private authService: AuthService,
         private router: Router
@@ -55,12 +55,12 @@ export class AuthGuard implements CanActivate {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
                             this.authService.authChange.next(true);
-                            return this.redirectToOther(state)
+                            return this.redirectToOther(state.url)
                             // return true;
                         } else {
                             console.log("!isAuth: ", isAuth);
                             // this.router.navigate(['/login']);
-                            return this.redirectToEntry(state)
+                            return this.redirectToEntry(state.url)
                             // return false;
                         }
                     }
@@ -77,8 +77,48 @@ export class AuthGuard implements CanActivate {
 
     }
 
-    redirectToEntry(state: RouterStateSnapshot): boolean {
-        if (state.url.indexOf('/login') == -1 && state.url.indexOf('/signup') == -1) {
+    canLoad(
+        route: Route,
+        segments: UrlSegment[]
+    ):
+        | Observable<boolean | UrlTree>
+        | Promise<boolean | UrlTree>
+        | boolean
+        | UrlTree {
+        return this.authService
+            .authState()
+            .pipe(
+                map(
+                    (isAuth) => {
+                        console.log("isAuth: ", isAuth);
+                        if (isAuth) {
+                            // this.authService.authStateChange.next();
+                            console.log("this.authService.authChange");
+                            this.authService.authChange.next(true);
+                            return this.redirectToOther(segments.join('/'))
+                            // return true;
+                        } else {
+                            console.log("!isAuth: ", isAuth);
+                            // this.router.navigate(['/login']);
+                            return this.redirectToEntry(segments.join('/'))
+                            // return false;
+                        }
+                    }
+                ),
+                catchError(
+                    (error) => {
+                        console.log('from auth.guard.ts error: ', error);
+                        this.router.navigate(['/login']);
+                        return of(false);
+                    }
+                )
+            )
+    }
+
+
+
+    redirectToEntry(url: string): boolean {
+        if (url.indexOf('/login') == -1 && url.indexOf('/signup') == -1) {
             // DOC: not logged in users only navigate to login page
             console.log(
                 '%c redirectToEntry: false ',
@@ -101,8 +141,8 @@ export class AuthGuard implements CanActivate {
         }
     }
 
-    redirectToOther(state: RouterStateSnapshot): boolean {
-        if (state.url.indexOf('/login') != -1 || state.url.indexOf('/signup') != -1) {
+    redirectToOther(url: string): boolean {
+        if (url.indexOf('/login') != -1 || url.indexOf('/signup') != -1) {
             console.log(
                 '%c redirectToOther: false ',
                 'background: #C1FEEA; ' +

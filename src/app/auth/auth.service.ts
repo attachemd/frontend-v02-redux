@@ -11,6 +11,7 @@ import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class AuthService {
+
     authChange: Subject<boolean> = new Subject<boolean>();
     private user: User = {
         email: "",
@@ -199,7 +200,11 @@ export class AuthService {
         return {...this.user}
     }
 
+
+
     public initAuthListener(): void {
+
+
 
         this.authStateChange
             .pipe(
@@ -236,8 +241,8 @@ export class AuthService {
                     );
                 }
             )
-    }
 
+    }
 
     refreshTokenOrDie(): Observable<boolean> {
         console.log(

@@ -10,6 +10,7 @@ import {TrainingService} from "../training.service";
 })
 export class CurrentTrainingComponent implements OnInit {
     progress = 0;
+    // timer: ReturnType<typeof setTimeout>;
     timer: number = 0;
 
     constructor(
@@ -28,7 +29,7 @@ export class CurrentTrainingComponent implements OnInit {
             .duration;
         const step = duration ? (duration * 1000 / 100) : 1;
         // const step = (duration*1000 / 100) ;
-        this.timer = setInterval(() => {
+        this.timer = window.setInterval(() => {
             console.log("setInterval");
             if (this.progress >= 100) {
                 clearInterval(this.timer);
