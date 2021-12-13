@@ -5,7 +5,7 @@ import {
     ViewChild
 } from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Exercise} from "../exercise.model";
+import {FinishedExercise} from "../finished-exercise.model";
 import {TrainingService} from "../training.service";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
@@ -27,7 +27,7 @@ export class PastTrainingComponent
         'duration',
         'state'
     ]
-    public dataSource = new MatTableDataSource<Exercise>()
+    public dataSource = new MatTableDataSource<FinishedExercise>()
     @ViewChild(MatSort)
     private sort!: MatSort;
     @ViewChild(MatPaginator)
@@ -44,7 +44,7 @@ export class PastTrainingComponent
             this.trainingService
                 .finishedExercisesChanged
                 .subscribe(
-                    (exercises: Exercise[]) => {
+                    (exercises: FinishedExercise[]) => {
                         this.dataSource.data = exercises;
                     },
                     (error) => {

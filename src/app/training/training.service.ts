@@ -1,28 +1,28 @@
 import {Subject} from "rxjs";
-import {Exercise} from "./exercise.model";
+import {FinishedExercise} from "./finished-exercise.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
-    public exerciseChanged: Subject<Exercise> =
-        new Subject<Exercise>();
+    public exerciseChanged: Subject<FinishedExercise> =
+        new Subject<FinishedExercise>();
 
-    public exercisesChanged: Subject<Exercise[] | null> =
-        new Subject<Exercise[] | null>();
+    public exercisesChanged: Subject<FinishedExercise[] | null> =
+        new Subject<FinishedExercise[] | null>();
 
     /**
      * notify if finished exercises changed
-     * @type {Subject<Exercise[]>}
+     * @type {Subject<FinishedExercise[]>}
      * @public
      */
-    public finishedExercisesChanged: Subject<Exercise[]> =
-        new Subject<Exercise[]>();
+    public finishedExercisesChanged: Subject<FinishedExercise[]> =
+        new Subject<FinishedExercise[]>();
 
-    private availableExercises: Exercise[] = [];
+    private availableExercises: FinishedExercise[] = [];
 
-    private runningExercise: Exercise | undefined;
+    private runningExercise: FinishedExercise | undefined;
 
     constructor(
         private http: HttpClient,
@@ -33,11 +33,11 @@ export class TrainingService {
     public getAvailableExercises() {
         console.log("getAvailableExercises");
         return this.http
-            .get<Exercise[]>(
+            .get<FinishedExercise[]>(
                 '/api/exercises/'
             )
             .subscribe(
-                (exercises: Exercise[]) => {
+                (exercises: FinishedExercise[]) => {
                     this.uiService.loadingStateChange.next(false);
                     this.availableExercises = exercises;
                     this.exercisesChanged
@@ -130,11 +130,11 @@ export class TrainingService {
 
     public getCompletedOrCanceledExercises() {
         return this.http
-            .get<Exercise[]>(
+            .get<FinishedExercise[]>(
                 '/api/fexercises/'
             )
             .subscribe(
-                (exercises: Exercise[]) => {
+                (exercises: FinishedExercise[]) => {
                     this.finishedExercisesChanged
                         .next([
                             ...exercises
@@ -146,31 +146,14 @@ export class TrainingService {
             )
     }
 
-    private addDataToDatabase(exercise: Exercise) {
+    private addDataToDatabase(exercise: FinishedExercise) {
+        // let id = exercise.id;
         let {id, date, ...payload} = exercise;
-        // let str_payload = JSON.stringify(payload)
-        let str_payload = {
-            calories: 11,
-            duration: 7,
-            name: "Chapman-Bell",
-            state: "completed"
-        }
-        console.log("str_payload: ")
-        console.log(str_payload)
-        const httpOptions = {
-            headers: new HttpHeaders(
-                {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + btoa(
-                        'me:1234'
-                    )
-                }
-            )
-        };
+
         console.log("payload: ");
         console.log(payload);
         this.http
-            .post('/api/fexercises/', payload)
+            .post('/api/fexercises/'+exercise.id+'/', payload)
             .subscribe(
                 response => {
                     console.log(response)

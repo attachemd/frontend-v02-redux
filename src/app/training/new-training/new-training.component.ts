@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TrainingService} from "../training.service";
-import {Exercise} from "../exercise.model"
+import {FinishedExercise} from "../finished-exercise.model"
 import {NgForm} from "@angular/forms";
 import {Subscription} from 'rxjs';
 import {UIService} from "../../shared/ui.service";
@@ -15,7 +15,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     //     new Observable();
     public isLoading: boolean = true;
     private loadingSubscription: Subscription = new Subscription();
-    exercises: Exercise[] | null = [];
+    exercises: FinishedExercise[] | null = [];
 
     exerciseSubscription: Subscription =
         new Subscription();
