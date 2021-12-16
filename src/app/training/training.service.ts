@@ -38,7 +38,7 @@ export class TrainingService {
             )
             .subscribe(
                 (exercises: FinishedExercise[]) => {
-                    this.uiService.loadingStateChange.next(false);
+                    this.uiService.loadingStateNotifier(false);
                     this.availableExercises = exercises;
                     this.exercisesChanged
                         .next(
@@ -49,7 +49,7 @@ export class TrainingService {
                 },
                 (error) => {
                     console.log('error :', error)
-                    this.uiService.loadingStateChange.next(false);
+                    this.uiService.loadingStateNotifier(false);
                     this.uiService.showSnackBar(
                         "error when getting available exercises, try later.",
                         undefined,

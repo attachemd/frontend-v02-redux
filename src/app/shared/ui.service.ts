@@ -18,4 +18,8 @@ export class UIService {
             duration: duration
         })
     }
+
+    public loadingStateNotifier(isLoadingState: boolean){
+        this.loadingStateChange.next(isLoadingState);
+    }
 }

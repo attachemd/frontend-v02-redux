@@ -28,8 +28,11 @@ export class AuthService {
     ) {
     }
 
+    private loadingStateNotifier(isLoadingState: boolean) {
+        this.uiService.loadingStateChange.next(isLoadingState);
+    }
 
-    public registerUser(authData: AuthData): void {
+    public registerUser(authData: AuthData) {
         // this.user = {
         //     email: authData.email,
         //     userId: Math
@@ -37,13 +40,14 @@ export class AuthService {
         //         .toString()
         // }
         // this.authSuccessfully()
-        this.uiService.loadingStateChange.next(true);
-        this.http
+
+        this.uiService.loadingStateNotifier(true);
+        return this.http
             .post('api/user/create/', authData)
             .pipe(
                 map(
                     (data: any) => {
-                        this.uiService.loadingStateChange.next(false);
+                        this.uiService.loadingStateNotifier(false);
                         if (!data) {
                             return false;
                         } else if (data.token) {
@@ -86,7 +90,7 @@ export class AuthService {
                         // });
                     }),
                 catchError((error) => {
-                    this.uiService.loadingStateChange.next(false);
+                    this.uiService.loadingStateNotifier(false);
                     console.log('error');
                     console.log(error);
                     this.uiService.showSnackBar(
@@ -97,21 +101,7 @@ export class AuthService {
                     return of(false);
                 })
             )
-            .subscribe(
-                (result) => {
-                    if (result) {
-                        this.authSuccessfully()
-                    }
-                },
-                (error) => {
-                    console.log('error :', error)
-                    this.uiService.showSnackBar(
-                        "error when register",
-                        undefined,
-                        3000
-                    );
-                }
-            )
+
     }
 
     public login(authData: AuthData): void {
@@ -123,12 +113,12 @@ export class AuthService {
         // }
 
         if (authData && authData.email && authData.password) {
-            this.uiService.loadingStateChange.next(true);
+            this.uiService.loadingStateNotifier(true);
             this.http
                 .post('api/user/access/', authData)
                 .pipe(
                     map((data: any) => {
-                        this.uiService.loadingStateChange.next(false);
+                        this.uiService.loadingStateNotifier(false);
                         if (!data) {
                             return false;
                         }
@@ -145,7 +135,7 @@ export class AuthService {
                         return true;
                     }),
                     catchError((error) => {
-                        this.uiService.loadingStateChange.next(false);
+                        this.uiService.loadingStateNotifier(false);
                         console.log('error');
                         console.log(error);
                         this.uiService.showSnackBar(
@@ -356,7 +346,7 @@ export class AuthService {
         return this.isAuthenticated;
     }
 
-    private authSuccessfully() {
+    public authSuccessfully() {
         this.authChange.next(true);
         this.router.navigate(['/training'])
     }

@@ -41,6 +41,21 @@ export class SignupComponent implements OnInit, OnDestroy {
             email: form.value.email,
             password: form.value.password
         })
+            .subscribe(
+                (result) => {
+                    if (result) {
+                        this.authService.authSuccessfully()
+                    }
+                },
+                (error) => {
+                    console.log('error :', error)
+                    this.uiService.showSnackBar(
+                        "error when register",
+                        undefined,
+                        3000
+                    );
+                }
+            )
     }
 
     ngOnDestroy() {
