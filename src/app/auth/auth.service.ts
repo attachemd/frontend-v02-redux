@@ -9,16 +9,32 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 import {flatMap} from "rxjs/operators";
 import {UIService} from "../shared/ui.service";
 
+// interface Data {
+//     response: string,
+//     id: number,
+//     email: string,
+//     token: {
+//         refresh: string,
+//         access: string
+//     }
+// }
+interface Data {
+    response: string,
+    id: number,
+    email: string,
+    token?: object
+}
+
 @Injectable()
 export class AuthService {
 
-    authChange: Subject<boolean> = new Subject<boolean>();
+    authChange$: Subject<boolean> = new Subject<boolean>();
     private user: User = {
         email: "",
         userId: ""
     };
     private isAuthenticated = false;
-    authStateChange: Subject<void> = new Subject<void>();
+    authStateChange$: Subject<void> = new Subject<void>();
 
     constructor(
         private http: HttpClient,
@@ -28,8 +44,8 @@ export class AuthService {
     ) {
     }
 
-    private loadingStateNotifier(isLoadingState: boolean) {
-        this.uiService.loadingStateChange.next(isLoadingState);
+    public authChangeNotifier(isAuthenticated: boolean){
+        this.authChange$.next(isAuthenticated);
     }
 
     public registerUser(authData: AuthData) {
@@ -104,7 +120,7 @@ export class AuthService {
 
     }
 
-    public login(authData: AuthData): void {
+    public login(authData: AuthData) {
         // this.user = {
         //     email: authData.email,
         //     userId: Math
@@ -114,7 +130,7 @@ export class AuthService {
 
         if (authData && authData.email && authData.password) {
             this.uiService.loadingStateNotifier(true);
-            this.http
+            return this.http
                 .post('api/user/access/', authData)
                 .pipe(
                     map((data: any) => {
@@ -146,33 +162,10 @@ export class AuthService {
                         return of(false);
                     })
                 )
-                .subscribe(
-                    isLogin => {
-                        console.log(
-                            '%c login subscribe: ',
-                            'background: white; ' +
-                            'color: #000; ' +
-                            'padding: 10px; ' +
-                            'border: 1px solid red'
-                        );
-                        console.log(isLogin)
-                        this.authChange.next(isLogin);
-                        if (isLogin) {
-                            this.authSuccessfully()
-                        }
-                    },
-                    error => {
-                        console.log('error');
-                        console.log(error);
-                        this.uiService.showSnackBar(
-                            "error when login",
-                            undefined,
-                            3000
-                        );
-                    }
-                )
+
         } else {
             console.log("no login!");
+            return of(false);
         }
     }
 
@@ -182,7 +175,7 @@ export class AuthService {
             userId: ""
         };
         localStorage.removeItem("access");
-        this.authChange.next(false);
+        this.authChangeNotifier(false);
         this.router.navigate(['/login'])
     }
 
@@ -196,7 +189,7 @@ export class AuthService {
 
 
 
-        this.authStateChange
+        this.authStateChange$
             .pipe(
                 flatMap(
                     () => {
@@ -212,12 +205,12 @@ export class AuthService {
                 isAuth => {
                     if (isAuth) {
                         this.isAuthenticated = true;
-                        this.authChange.next(true);
+                        this.authChangeNotifier(true);
                         // this.router.navigate(['/training']);
                     } else {
                         // this.trainingService.cancelSubscriptions();
                         this.isAuthenticated = false;
-                        this.authChange.next(false);
+                        this.authChangeNotifier(false);
                         // this.router.navigate(['/login']);
                     }
                 },
@@ -347,7 +340,7 @@ export class AuthService {
     }
 
     public authSuccessfully() {
-        this.authChange.next(true);
+        this.authChangeNotifier(true);
         this.router.navigate(['/training'])
     }
 

@@ -24,7 +24,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loadingSubscription =
             this.uiService
-                .loadingStateChange
+                .loadingStateChange$
                 .subscribe(
                     (isLoadingState) => {
                         this.isLoading = isLoadingState;

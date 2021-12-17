@@ -54,7 +54,7 @@ export class AuthGuard implements CanActivate, CanLoad {
                         if (isAuth) {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
-                            this.authService.authChange.next(true);
+                            this.authService.authChangeNotifier(true);
                             return this.redirectToOther(state.url)
                             // return true;
                         } else {
@@ -94,7 +94,7 @@ export class AuthGuard implements CanActivate, CanLoad {
                         if (isAuth) {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
-                            this.authService.authChange.next(true);
+                            this.authService.authChangeNotifier(true);
                             return this.redirectToOther(segments.join('/'))
                             // return true;
                         } else {

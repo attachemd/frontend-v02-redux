@@ -4,7 +4,7 @@ import {Injectable} from "@angular/core";
 
 @Injectable()
 export class UIService {
-    loadingStateChange: Subject<boolean> = new Subject<boolean>();
+    loadingStateChange$: Subject<boolean> = new Subject<boolean>();
 
     constructor(private snackBar: MatSnackBar) {
     }
@@ -20,6 +20,6 @@ export class UIService {
     }
 
     public loadingStateNotifier(isLoadingState: boolean){
-        this.loadingStateChange.next(isLoadingState);
+        this.loadingStateChange$.next(isLoadingState);
     }
 }

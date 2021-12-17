@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loadingSubscription =
             this.uiService
-                .loadingStateChange
+                .loadingStateChange$
                 .subscribe(
                     (isLoadingState) => {
                             this.isLoading = isLoadingState;
@@ -60,7 +60,32 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.authService.login({
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
-        });
+        })
+            .subscribe(
+                isLogin => {
+                    console.log(
+                        '%c login subscribe: ',
+                        'background: white; ' +
+                        'color: #000; ' +
+                        'padding: 10px; ' +
+                        'border: 1px solid red'
+                    );
+                    console.log(isLogin)
+                    this.authService.authChangeNotifier(isLogin);
+                    if (isLogin) {
+                        this.authService.authSuccessfully()
+                    }
+                },
+                error => {
+                    console.log('error');
+                    console.log(error);
+                    this.uiService.showSnackBar(
+                        "error when login",
+                        undefined,
+                        3000
+                    );
+                }
+            )
     }
 
     ngOnDestroy() {
