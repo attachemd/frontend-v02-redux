@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate, CanLoad {
             'padding: 10px; ' +
             'border: 1px solid #47C0BE'
         );
-        console.log(this.authService.isAuth());
+        // console.log(this.authService.isAuth());
 
         // if (this.authService.isAuth()) {
         //     this.authService.authStateChange.next();

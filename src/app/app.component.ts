@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
           'background: red; color: #fff; padding: 0 10px;'
       );
       this.managePeriodicTokenRefresh.initPeriodicRefresh();
-      this.authService.initAuthListener();
+      // this.authService.initAuthListener();
       // this.authService.authStateChange.subscribe(this.authService.authState);
   }
 

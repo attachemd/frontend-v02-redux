@@ -4,14 +4,28 @@
         (ngSubmit)="onSubmit()"
         fxLayout="column"
         fxLayoutGap="10px"
-        fxLayoutAlign="center center">
+        fxLayoutAlign="center center"
+        data-testid="form"
+    >
         <mat-form-field>
-            <input type="email" matInput placeholder="Your email" formControlName="email">
+            <input
+                type="email"
+                matInput
+                placeholder="Your email"
+                formControlName="email"
+                data-testid="email"
+            >
             <mat-hint>Please enter a valid email.</mat-hint>
             <mat-error>Invalid or missing email.</mat-error>
         </mat-form-field>
         <mat-form-field>
-            <input type="password" matInput placeholder="Your password" formControlName="password">
+            <input
+                type="password"
+                matInput
+                placeholder="Your password"
+                formControlName="password"
+                data-testid="password"
+            >
             <mat-hint>Please enter your password.</mat-hint>
             <mat-error>Missing password.</mat-error>
         </mat-form-field>
