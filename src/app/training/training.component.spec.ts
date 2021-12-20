@@ -1,4 +1,4 @@
-import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {TrainingComponent} from './training.component';
 import {MockComponent} from "ng-mocks";
@@ -11,7 +11,7 @@ import {PastTrainingComponent} from './past-training/past-training.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {By} from "@angular/platform-browser";
 import {NgZone, NO_ERRORS_SCHEMA} from "@angular/core";
-import {findComponent} from "../spec-helpers/element.spec-helper";
+import {findComponent, findEl} from "../spec-helpers/element.spec-helper";
 
 fdescribe('TrainingComponent', () => {
     let component: TrainingComponent;
@@ -90,4 +90,46 @@ fdescribe('TrainingComponent', () => {
     //     const pastTraining = findComponent(fixture, 'app-past-training');
     //     expect(pastTraining).toBeTruthy();
     // });
+
+    it('should display registration form after clicking second tab ',
+        async () => {
+            let compiled = fixture.nativeElement;
+            fixture.debugElement
+                .queryAll(By.css('.mat-tab-label'))[1]
+                .nativeElement
+                .click();
+            // compiled.querySelectorAll('mat-tab')[1].click();
+            // const matTab = findEl(fixture, 'tab2');
+            // console.log("matTab: ");
+            // console.log(matTab);
+            // console.log("compiled: ");
+            // console.log(compiled);
+            fixture.detectChanges();
+            await fixture.whenStable().then(() => {
+                expect(compiled.querySelector('app-past-training')).toBeTruthy();
+            });
+        }
+    );
+
+    // it('should display registration form after clicking second tab',
+    //     fakeAsync(() => {
+    //         let compiled = fixture.nativeElement;
+    //         fixture.debugElement
+    //             .queryAll(By.css('.mat-tab-label'))[1]
+    //             .nativeElement
+    //             .click();
+    //         // compiled.querySelectorAll('mat-tab')[1].click();
+    //         // const matTab = findEl(fixture, 'tab2');
+    //         // console.log("matTab: ");
+    //         // console.log(matTab);
+    //         // console.log("compiled: ");
+    //         // console.log(compiled);
+    //         tick();
+    //         fixture.detectChanges();
+    //
+    //         expect(compiled.querySelector('app-past-training')).toBeTruthy();
+    //
+    //     })
+    // );
+
 });
