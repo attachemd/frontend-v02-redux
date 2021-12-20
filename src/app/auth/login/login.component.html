@@ -34,7 +34,10 @@
             type="submit"
             mat-raised-button
             color="primary"
-            [disabled]="loginForm.invalid">Submit
+            [disabled]="loginForm.invalid"
+            data-testid="submit"
+        >
+            Submit
         </button>
         <mat-spinner *ngIf="isLoading"></mat-spinner>
     </form>

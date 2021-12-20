@@ -6,7 +6,7 @@ import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
-    public exerciseChanged: Subject<FinishedExercise> =
+    public exerciseChanged$: Subject<FinishedExercise> =
         new Subject<FinishedExercise>();
 
     public exercisesChanged: Subject<FinishedExercise[] | null> =
@@ -67,7 +67,7 @@ export class TrainingService {
         this.runningExercise = this.availableExercises.find(
             ex => ex.id === selectedExerciseId
         )
-        this.exerciseChanged.next(
+        this.exerciseChanged$.next(
             {
                 calories: 0,
                 date: undefined,
@@ -101,7 +101,7 @@ export class TrainingService {
             }
         );
         this.runningExercise = undefined;
-        this.exerciseChanged.next(undefined)
+        this.exerciseChanged$.next(undefined)
     }
 
     public cancelExercise(progress: number) {
@@ -121,7 +121,7 @@ export class TrainingService {
             );
         }
         this.runningExercise = undefined;
-        this.exerciseChanged.next(undefined)
+        this.exerciseChanged$.next(undefined)
     }
 
     public getRunningExercise() {

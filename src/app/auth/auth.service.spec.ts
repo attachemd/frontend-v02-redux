@@ -399,9 +399,6 @@ describe('AuthService', () => {
                 .and.returnValue(false);
 
 
-            // const response = {
-            //     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM5NzM0NjE4LCJqdGkiOiI1MzljNzgyYjk3YTc0ZmY0OGIxNGQ0MjZjMmU3Mjg4MSIsInVzZXJfaWQiOjd9.E3WLyrGwvJQhXevTH3o7vCyEQnmBKw1xEbe5oNZ0d8M"
-            // }
             let actualIsAuth: boolean | undefined;
 
             authService.refreshTokenOrDie().subscribe(

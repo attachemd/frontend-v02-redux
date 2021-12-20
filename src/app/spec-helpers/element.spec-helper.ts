@@ -143,3 +143,29 @@ export function setFieldValue<T>(
 ): void {
     setFieldElementValue(findEl(fixture, testId).nativeElement, value);
 }
+
+/**
+ * Finds a nested Component by its selector, e.g. `app-example`.
+ * Throws an error if no element was found.
+ * Use this only for shallow component testing.
+ * When finding other elements, use `findEl` / `findEls` and `data-testid` attributes.
+ *
+ * @param fixture Fixture of the parent Component
+ * @param selector Element selector, e.g. `app-example`
+ */
+export function findComponent<T>(
+    fixture: ComponentFixture<T>,
+    selector: string,
+): DebugElement {
+    return queryByCss(fixture, selector);
+}
+
+/**
+ * Finds all nested Components by its selector, e.g. `app-example`.
+ */
+export function findComponents<T>(
+    fixture: ComponentFixture<T>,
+    selector: string,
+): DebugElement[] {
+    return fixture.debugElement.queryAll(By.css(selector));
+}
