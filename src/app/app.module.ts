@@ -22,6 +22,15 @@ import {SharedModule} from "./shared/shared.module";
 import {JwtModule} from "@auth0/angular-jwt";
 import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.service";
 
+import { FullCalendarModule } from '@fullcalendar/angular';
+import interactionPlugin from '@fullcalendar/interaction';
+import dayGridPlugin from '@fullcalendar/daygrid';
+
+FullCalendarModule.registerPlugins([
+    interactionPlugin,
+    dayGridPlugin
+]);
+
 
 export function tokenGetter(): string | null {
     console.log(
@@ -65,6 +74,8 @@ export function tokenGetter(): string | null {
                     }
             }
         ),
+
+        FullCalendarModule,
 
         BrowserModule,
         AppRoutingModule,

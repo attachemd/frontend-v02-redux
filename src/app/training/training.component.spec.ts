@@ -1,7 +1,7 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {TrainingComponent} from './training.component';
-import {MockComponent} from "ng-mocks";
+// import {MockComponent} from "ng-mocks";
 import {NewTrainingComponent} from "./new-training/new-training.component";
 import {TrainingService} from "./training.service";
 import {Subject} from 'rxjs';
@@ -91,22 +91,19 @@ fdescribe('TrainingComponent', () => {
     //     expect(pastTraining).toBeTruthy();
     // });
 
-    it('should display registration form after clicking second tab ',
+    it('find past training component',
         async () => {
-            let compiled = fixture.nativeElement;
+            // let compiled = fixture.nativeElement;
             fixture.debugElement
                 .queryAll(By.css('.mat-tab-label'))[1]
                 .nativeElement
                 .click();
-            // compiled.querySelectorAll('mat-tab')[1].click();
-            // const matTab = findEl(fixture, 'tab2');
-            // console.log("matTab: ");
-            // console.log(matTab);
-            // console.log("compiled: ");
-            // console.log(compiled);
+
             fixture.detectChanges();
             await fixture.whenStable().then(() => {
-                expect(compiled.querySelector('app-past-training')).toBeTruthy();
+                // expect(compiled.querySelector('app-past-training')).toBeTruthy();
+                const pastTraining = findComponent(fixture, 'app-past-training');
+                expect(pastTraining).toBeTruthy();
             });
         }
     );
