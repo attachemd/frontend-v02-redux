@@ -14,7 +14,7 @@ import {DateClickArg} from "@fullcalendar/interaction";
 import {ViewApi} from "@fullcalendar/common";
 
 
-describe('WelcomeComponent', () => {
+xdescribe('WelcomeComponent', () => {
     let component: WelcomeComponent;
     let fixture: ComponentFixture<WelcomeComponent>;
     let fullCalendarServiceSpy: jasmine.SpyObj<FullCalendarService>;

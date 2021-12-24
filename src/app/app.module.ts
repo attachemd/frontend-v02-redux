@@ -21,15 +21,16 @@ import {UIService} from "./shared/ui.service";
 import {SharedModule} from "./shared/shared.module";
 import {JwtModule} from "@auth0/angular-jwt";
 import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.service";
+import { FullCalendarComponent } from './full-calendar/full-calendar.component';
 
-import { FullCalendarModule } from '@fullcalendar/angular';
-import interactionPlugin from '@fullcalendar/interaction';
-import dayGridPlugin from '@fullcalendar/daygrid';
-
-FullCalendarModule.registerPlugins([
-    interactionPlugin,
-    dayGridPlugin
-]);
+// import { FullCalendarModule } from '@fullcalendar/angular';
+// import interactionPlugin from '@fullcalendar/interaction';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+//
+// FullCalendarModule.registerPlugins([
+//     interactionPlugin,
+//     dayGridPlugin
+// ]);
 
 
 export function tokenGetter(): string | null {
@@ -52,6 +53,7 @@ export function tokenGetter(): string | null {
         WelcomeComponent,
         HeaderComponent,
         SidenavListComponent,
+        FullCalendarComponent,
 
     ],
     imports: [
@@ -75,7 +77,7 @@ export function tokenGetter(): string | null {
             }
         ),
 
-        FullCalendarModule,
+        // FullCalendarModule,
 
         BrowserModule,
         AppRoutingModule,

@@ -5,7 +5,7 @@ import {JwtModule} from "@auth0/angular-jwt";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
 
-describe('FullCalendarService ', () => {
+xdescribe('FullCalendarService', () => {
 
     let fullCalendarService: FullCalendarService;
     let controller: HttpTestingController;
