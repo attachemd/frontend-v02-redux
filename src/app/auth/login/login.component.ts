@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     constructor(
         private authService: AuthService,
-        public uiService: UIService
+        private uiService: UIService
     ) {
         console.log(
             '%c next component',

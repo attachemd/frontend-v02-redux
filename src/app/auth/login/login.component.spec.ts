@@ -256,16 +256,17 @@ describe('LoginComponent', () => {
                     // tick()
 
                     // expect(component.isLoading).toEqual(true);
-
-                    component.uiService.loadingStateChange$.next(isLoadingState);
+                    uiServiceSpy.loadingStateChange$.next(isLoadingState);
+                    // component.uiService.loadingStateChange$.next(isLoadingState);
                     console.log(
                         '%c next test',
                         'background: red; color: #fff; padding: 100px;'
                     );
-                    fixture.whenStable().then(() => {
+                    await fixture.whenStable().then(() => {
                         // fixture.detectChanges();
                         expect(component.isLoading).toEqual(true);
                     });
+                    expect(component.isLoading).toEqual(true);
 
                     // setTimeout(() =>uiServiceSpy.loadingStateChange$.next(isLoadingState))
                     // uiServiceSpy.loadingStateChange$.next(isLoadingState);
