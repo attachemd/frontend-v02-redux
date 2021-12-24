@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 
 import {TrainingComponent} from './training.component';
 // import {MockComponent} from "ng-mocks";
@@ -13,7 +13,7 @@ import {By} from "@angular/platform-browser";
 import {NgZone, NO_ERRORS_SCHEMA} from "@angular/core";
 import {findComponent, findEl} from "../spec-helpers/element.spec-helper";
 
-fdescribe('TrainingComponent', () => {
+describe('TrainingComponent', () => {
     let component: TrainingComponent;
     let fixture: ComponentFixture<TrainingComponent>;
 
@@ -91,8 +91,9 @@ fdescribe('TrainingComponent', () => {
     //     expect(pastTraining).toBeTruthy();
     // });
 
+    // TODO problem with async
     it('find past training component',
-        async () => {
+        fakeAsync( async () => {
             // let compiled = fixture.nativeElement;
             fixture.debugElement
                 .queryAll(By.css('.mat-tab-label'))[1]
@@ -100,12 +101,14 @@ fdescribe('TrainingComponent', () => {
                 .click();
 
             fixture.detectChanges();
+            flush()
             await fixture.whenStable().then(() => {
+
                 // expect(compiled.querySelector('app-past-training')).toBeTruthy();
                 const pastTraining = findComponent(fixture, 'app-past-training');
                 expect(pastTraining).toBeTruthy();
             });
-        }
+        })
     );
 
     // it('should display registration form after clicking second tab',

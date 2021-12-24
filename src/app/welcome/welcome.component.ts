@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {CalendarOptions} from '@fullcalendar/angular';
-import * as events from "events";
-import {FinishedExercise} from "../training/finished-exercise.model";
+import {DateClickArg} from "@fullcalendar/interaction";
+import {FullCalendarService} from "./full-calendar.service";
+import {UIService} from "../shared/ui.service";
+// import * as events from "events";
+// import {FinishedExercise} from "../training/finished-exercise.model";
 
 interface Event {
     title: string,
@@ -16,45 +18,56 @@ interface Event {
 })
 export class WelcomeComponent implements OnInit {
 
-    Events = [];
+    Events: Event[] = [];
     calendarOptions: CalendarOptions | undefined;
 
-    constructor(private httpClient: HttpClient) {
+    constructor(
+        private fullCalendarService: FullCalendarService,
+        private uiService: UIService
+    ) {
     }
 
-    onDateClick(res:any) {
-        alert('Clicked on date : ' + res.dateStr)
+    onDateClick(dateClickEvent: any) {
+        alert('Clicked on date : ' + dateClickEvent.dateStr)
     }
 
     ngOnInit(): void {
-        setTimeout(() => {
-            return this.httpClient.get('http://localhost:8888/event.php')
-                .subscribe((res:Event) => {
-                    this.Events.push(res);
-                    console.log(this.Events);
-                });
 
-            return this.http
-                .get<Event[]>(
-                    '/api/full_calendar/'
-                )
-                .subscribe(
-                    (events: FinishedExercise[]) => {
+        this.fullCalendarService
+            .getEvents()
+            .subscribe(
+                (events: Event[]) => {
+                    if(events.length === 0) {
 
-                    },
-                    (error:any) => {
-
+                        this.uiService.showSnackBar(
+                            "no events found!",
+                            undefined,
+                            3000
+                        );
+                        return;
+                        // throw {
+                        //     error: {
+                        //         detail: "no events found!"
+                        //     }
+                        // };
                     }
-                )
-        }, 2200);
-
-        setTimeout(() => {
-            this.calendarOptions = {
-                initialView: 'dayGridMonth',
-                dateClick: this.onDateClick.bind(this),
-                events: this.Events
-            };
-        }, 2500);
+                    this.Events.push(events[0]);
+                    console.log(this.Events);
+                    this.calendarOptions = {
+                        initialView: 'dayGridMonth',
+                        // dateClick: this.onDateClick.bind(this),
+                        dateClick: (dateClickEvent: DateClickArg) => {         // <-- add the callback here as one of the properties of `options`
+                            console.log("DATE CLICKED !!!");
+                            this.onDateClick(dateClickEvent);
+                        },
+                        events: this.Events
+                    };
+                },
+                (error: any) => {
+                    console.log("error")
+                    console.log(error)
+                }
+            )
 
     }
 

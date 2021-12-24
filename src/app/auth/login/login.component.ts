@@ -16,22 +16,38 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     constructor(
         private authService: AuthService,
-        private uiService: UIService
+        public uiService: UIService
     ) {
-    }
-
-    ngOnInit(): void {
+        console.log(
+            '%c next component',
+            'background: green; color: #fff; padding: 100px;'
+        );
         this.loadingSubscription =
             this.uiService
                 .loadingStateChange$
                 .subscribe(
                     (isLoadingState) => {
-                            this.isLoading = isLoadingState;
+                        this.isLoading = isLoadingState;
                     },
                     (error) => {
                         console.log('error :', error)
                     }
                 )
+    }
+
+
+    ngOnInit(): void {
+        // this.loadingSubscription =
+        //     this.uiService
+        //         .loadingStateChange$
+        //         .subscribe(
+        //             (isLoadingState) => {
+        //                     this.isLoading = isLoadingState;
+        //             },
+        //             (error) => {
+        //                 console.log('error :', error)
+        //             }
+        //         )
         this.loginForm = new FormGroup(
             {
                 email: new FormControl(

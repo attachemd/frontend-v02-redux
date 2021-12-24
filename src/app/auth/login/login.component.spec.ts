@@ -1,4 +1,4 @@
-import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, flush, flushMicrotasks, TestBed, tick, waitForAsync} from '@angular/core/testing';
 
 import {LoginComponent} from './login.component';
 import {ReactiveFormsModule} from "@angular/forms";
@@ -8,24 +8,25 @@ import {UIService} from "../../shared/ui.service";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {findEl, setFieldValue} from "../../spec-helpers/element.spec-helper";
+import {findComponent, findEl, setFieldValue} from "../../spec-helpers/element.spec-helper";
 import {AuthData} from "../auth-data.model";
 import {blankUser, validUser} from "../../mocks";
+import {NO_ERRORS_SCHEMA} from "@angular/core";
 
 describe('LoginComponent', () => {
         let component: LoginComponent;
         let fixture: ComponentFixture<LoginComponent>;
 
         let authServiceSpy: jasmine.SpyObj<AuthService>;
-        let uiServiceSpy = {
+        let uiServiceSpy= {
             ...jasmine.createSpyObj(
                 "UIService",
                 {
-                    loadingStateNotifier: undefined,
+                    // loadingStateNotifier: undefined,
                     showSnackBar: undefined
                 }
             ),
-            loadingStateChange$: new Subject<boolean>()
+            loadingStateChange$: new Subject<boolean>(),
         };
 
         // const uiServiceSpy = jasmine.createSpyObj(
@@ -73,6 +74,7 @@ describe('LoginComponent', () => {
                     {provide: AuthService, useValue: authServiceSpy},
                     {provide: UIService, useValue: uiServiceSpy},
                 ],
+                schemas: [NO_ERRORS_SCHEMA],
             })
                 .compileComponents();
 
@@ -82,7 +84,7 @@ describe('LoginComponent', () => {
 
         }
 
-        const fillForm = (userData:AuthData=validUser) => {
+        const fillForm = (userData: AuthData = validUser) => {
 
             setFieldValue(fixture, 'email', userData.email);
             setFieldValue(fixture, 'password', userData.password);
@@ -187,18 +189,126 @@ describe('LoginComponent', () => {
             }
         );
 
-        it('Subscribe on uiServiceSpy.loadingStateChange$.next',
-            fakeAsync(async () => {
-                await setup();
-                let isLoadingState = true;
-                // authServiceSpy.authChangeNotifier(isAuthenticated);
-                // tick(1000);
-                // fixture.detectChanges();
-                uiServiceSpy.loadingStateChange$.next(isLoadingState)
-                tick()
-                expect(component.isLoading).toEqual(true);
-            })
+
+        // it('Subscribe on uiServiceSpy.loadingStateChange$.next',
+        //     fakeAsync(async () => {
+        //         await setup();
+        //         let isLoadingState = true;
+        //         // authServiceSpy.authChangeNotifier(isAuthenticated);
+        //         // tick(1000);
+        //         // fixture.detectChanges();
+        //         uiServiceSpy.loadingStateChange$.next(isLoadingState)
+        //         tick()
+        //         expect(component.isLoading).toEqual(true);
+        //     })
+        // );
+
+        // it('Subscribe on uiServiceSpy.loadingStateChange$.next  ',
+        //     async () => {
+        //         await setup();
+        //         let isLoadingState = true;
+        //         // authServiceSpy.authChangeNotifier(isAuthenticated);
+        //         // tick(1000);
+        //         // fixture.detectChanges();
+        //
+        //         // tick()
+        //         fixture.whenStable().then(() => {
+        //             expect(component.isLoading).toEqual(true);
+        //         });
+        //         uiServiceSpy.loadingStateChange$.next(isLoadingState)
+        //         // expect(component.isLoading).toEqual(true);
+        //
+        //     }
+        // );
+
+        //TODO problem with async
+
+        it('Subscribe on uiServiceSpy.loadingStateChange$.next ',
+            waitForAsync(
+                async () => {
+                    await setup();
+                    // flushMicrotasks();
+                    // flush()
+                    // tick()
+
+                    // await component.ngOnInit();
+                    // tick();
+                    let isLoadingState = true;
+                    // authServiceSpy.authChangeNotifier(isAuthenticated);
+                    // tick(1000);
+                    // fixture.detectChanges();
+                    // await component.ngOnInit();
+
+                    // flush()
+
+                    // uiServiceSpy.loadingStateNotifier()
+
+                    // uiServiceSpy.loadingStateChange$.subscribe(() => {
+                    //     expect(component.isLoading).toEqual(true);
+                    // })
+
+                    // flushMicrotasks();
+
+
+
+                    // flushMicrotasks();
+                    // flush()
+                    // tick()
+
+                    // expect(component.isLoading).toEqual(true);
+
+                    component.uiService.loadingStateChange$.next(isLoadingState);
+                    console.log(
+                        '%c next test',
+                        'background: red; color: #fff; padding: 100px;'
+                    );
+                    fixture.whenStable().then(() => {
+                        // fixture.detectChanges();
+                        expect(component.isLoading).toEqual(true);
+                    });
+
+                    // setTimeout(() =>uiServiceSpy.loadingStateChange$.next(isLoadingState))
+                    // uiServiceSpy.loadingStateChange$.next(isLoadingState);
+                    // uiServiceSpy.loadingStateNotifier(isLoadingState)
+
+
+                    // flush();
+                    // flushMicrotasks();
+                    // expect(component.isLoading).toEqual(true);
+                    // await uiServiceSpy.loadingStateChange$.subscribe(() => {
+                    //     fixture.detectChanges();
+                    //     expect(component.isLoading).toEqual(true);
+                    // });
+
+                }
+            )
         );
+
+
+        // it(
+        //     'should wait for this promise to finish ',
+        //     fakeAsync(async () => {
+        //         await setup();
+        //         let isLoadingState = true;
+        //         uiServiceSpy.loadingStateChange$.next(isLoadingState);
+        //         const p = new Promise((resolve, reject) =>
+        //             setTimeout(() => resolve(`I'm the promise result`), 1000)
+        //         );
+        //
+        //         // simulates time moving forward and executing async tasks
+        //         flush();
+        //         p.then(result =>
+        //             // following will display "I'm the promise result" after 1s
+        //             // console.log(result)
+        //         expect(component.isLoading).toEqual(true)
+        //         );
+        //
+        //         // notice that we didn't call `done` here thanks to async
+        //         // which created a special zone from zone.js
+        //         // this test is now aware of pending async operation and will wait
+        //         // for it before passing to the next one
+        //     })
+        // );
 
         it('Pass subscription on uiServiceSpy.loadingStateChange$.next ',
             async () => {
