@@ -20,6 +20,7 @@ export class UIService {
     }
 
     public loadingStateNotifier(isLoadingState: boolean){
+        console.log("🍕, 🍅, 🧀, 🌶️, 🍄")
         this.loadingStateChange$.next(isLoadingState);
     }
 }

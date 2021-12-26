@@ -262,7 +262,7 @@ describe('LoginComponent', () => {
                         '%c next test',
                         'background: red; color: #fff; padding: 100px;'
                     );
-                    await fixture.whenStable().then(() => {
+                    fixture.whenStable().then(() => {
                         // fixture.detectChanges();
                         expect(component.isLoading).toEqual(true);
                     });
