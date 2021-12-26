@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import { Calendar } from '@fullcalendar/core'
-import momentPlugin from '@fullcalendar/moment'
+import momentPlugin, {toMoment} from '@fullcalendar/moment'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction';
 
 // import * as $ from 'jquery';
 // (window as any).$ = (window as any).jQuery = jQuery;
@@ -79,9 +80,16 @@ export class FullCalendarComponent implements OnInit {
 
       let calendarEl:HTMLElement = document.getElementById('full-calendar')!;
       let calendar = new Calendar(calendarEl, {
-          plugins: [ momentPlugin, dayGridPlugin ],
+          plugins: [ momentPlugin, dayGridPlugin, interactionPlugin ],
           titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
           selectable: true,
+          dateClick: function(arg) {
+              let m = toMoment(arg.date, calendar); // calendar is required
+              console.log('clicked on ' + m.format());
+          },
+          // dateClick: (dateClickEvent) =>  {         // <-- add the callback here as one of the properties of `options`
+          //     console.log("DATE CLICKED !!!");
+          // },
           events: [
               {
                   title: 'All Day Event',
