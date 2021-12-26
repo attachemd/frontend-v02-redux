@@ -80,7 +80,19 @@ export class FullCalendarComponent implements OnInit {
       let calendarEl:HTMLElement = document.getElementById('full-calendar')!;
       let calendar = new Calendar(calendarEl, {
           plugins: [ momentPlugin, dayGridPlugin ],
-          titleFormat: 'MMMM D, YYYY' // you can now use moment format strings!
+          titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
+          selectable: true,
+          events: [
+              {
+                  title: 'All Day Event',
+                  start: '2021-12-04',
+              },
+              {
+                  title: 'Long Event',
+                  start: '2021-12-05',
+                  end: '2021-12-07',
+              },
+          ]
       });
 
       calendar.render()

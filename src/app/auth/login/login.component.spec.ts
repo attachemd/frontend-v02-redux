@@ -12,22 +12,42 @@ import {findComponent, findEl, setFieldValue} from "../../spec-helpers/element.s
 import {AuthData} from "../auth-data.model";
 import {blankUser, validUser} from "../../mocks";
 import {NO_ERRORS_SCHEMA} from "@angular/core";
+import {JwtHelperService} from "@auth0/angular-jwt";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 describe('LoginComponent', () => {
         let component: LoginComponent;
         let fixture: ComponentFixture<LoginComponent>;
-
+        let uiService: UIService;
         let authServiceSpy: jasmine.SpyObj<AuthService>;
-        let uiServiceSpy= {
-            ...jasmine.createSpyObj(
-                "UIService",
-                {
-                    // loadingStateNotifier: undefined,
-                    showSnackBar: undefined
-                }
-            ),
-            loadingStateChange$: new Subject<boolean>(),
-        };
+
+        // let uiService= {
+        //     ...jasmine.createSpyObj(
+        //         "UIService",
+        //         {
+        //
+        //             loadingStateNotifier: undefined,
+        //             showSnackBar: undefined,
+        //
+        //         }
+        //     ),
+        //
+        //     loadingStateChange$: new Subject<boolean>(),
+        // };
+        // uiService.loadingStateGetter = function(){
+        //     return this.loadingStateChange$;
+        // }
+
+        // let uiServiceSpy= {
+        //     ...jasmine.createSpyObj(
+        //         "UIService",
+        //         {
+        //             // loadingStateNotifier: undefined,
+        //             showSnackBar: undefined
+        //         }
+        //     ),
+        //     loadingStateChange$: new Subject<boolean>(),
+        // };
 
         // const uiServiceSpy = jasmine.createSpyObj(
         //     "UIService",
@@ -40,6 +60,32 @@ describe('LoginComponent', () => {
 
         // let uiService = TestBed.get(UIService)
         // const loadingStateChange$NextSpy = spyOn(uiService.loadingStateChange$, 'next');
+
+    // class FakeUIService {
+    //     private loadingStateChange$: Subject<boolean> = new Subject<boolean>();
+    //
+    //     public showSnackBar(){}
+    //
+    //     public loadingStateNotifier(isLoadingState: boolean):void{
+    //         this.loadingStateChange$.next(isLoadingState);
+    //     }
+    //
+    //     public loadingStateGetter():Subject<boolean>{
+    //         return this.loadingStateChange$;
+    //     }
+    // }
+    //
+    // let uiService = new FakeUIService();
+
+    // const uiService:
+    //     Pick<UIService, keyof UIService> = {
+    //     showSnackBar() {
+    //     },
+    //     loadingStateNotifier() {},
+    //     loadingStateGetter():Subject<boolean> {
+    //         return new Subject<boolean>();
+    //     },
+    // };
 
         const setup = async (
             signupServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
@@ -67,18 +113,21 @@ describe('LoginComponent', () => {
                     BrowserAnimationsModule,
                     ReactiveFormsModule,
                     MatFormFieldModule,
-                    MatInputModule
+                    MatInputModule,
+                    MatSnackBarModule
                 ],
                 declarations: [LoginComponent],
                 providers: [
                     {provide: AuthService, useValue: authServiceSpy},
-                    {provide: UIService, useValue: uiServiceSpy},
+                    // {provide: UIService, useValue: uiService},
+                    UIService
                 ],
                 schemas: [NO_ERRORS_SCHEMA],
             })
                 .compileComponents();
 
             fixture = TestBed.createComponent(LoginComponent);
+            uiService = TestBed.inject(UIService);
             component = fixture.componentInstance;
             fixture.detectChanges();
 
@@ -158,6 +207,7 @@ describe('LoginComponent', () => {
                 // Let the API report a failure
                 login: throwError(new Error('Validation failed')),
             });
+            spyOn(uiService, 'showSnackBar').and.callThrough();
 
             fillForm();
 
@@ -167,7 +217,7 @@ describe('LoginComponent', () => {
             findEl(fixture, 'form').triggerEventHandler('submit', {});
             fixture.detectChanges();
             expect(authServiceSpy.login).toHaveBeenCalled();
-            expect(uiServiceSpy.showSnackBar).toHaveBeenCalled();
+            expect(uiService.showSnackBar).toHaveBeenCalled();
 
         });
 
@@ -221,70 +271,85 @@ describe('LoginComponent', () => {
         //     }
         // );
 
-        //TODO problem with async
-
-        it('Subscribe on uiServiceSpy.loadingStateChange$.next ',
-            waitForAsync(
-                async () => {
-                    await setup();
-                    // flushMicrotasks();
-                    // flush()
-                    // tick()
-
-                    // await component.ngOnInit();
-                    // tick();
-                    let isLoadingState = true;
-                    // authServiceSpy.authChangeNotifier(isAuthenticated);
-                    // tick(1000);
-                    // fixture.detectChanges();
-                    // await component.ngOnInit();
-
-                    // flush()
-
-                    // uiServiceSpy.loadingStateNotifier()
-
-                    // uiServiceSpy.loadingStateChange$.subscribe(() => {
-                    //     expect(component.isLoading).toEqual(true);
-                    // })
-
-                    // flushMicrotasks();
 
 
+        // it('Subscribe on uiServiceSpy.loadingStateChange$.next ',
+        //     waitForAsync(
+        //         async () => {
+        //             await setup();
+        //             // flushMicrotasks();
+        //             // flush()
+        //             // tick()
+        //
+        //             // await component.ngOnInit();
+        //             // tick();
+        //             let isLoadingState = true;
+        //             // authServiceSpy.authChangeNotifier(isAuthenticated);
+        //             // tick(1000);
+        //             // fixture.detectChanges();
+        //             // await component.ngOnInit();
+        //
+        //             // flush()
+        //
+        //             // uiServiceSpy.loadingStateNotifier()
+        //
+        //             // uiServiceSpy.loadingStateChange$.subscribe(() => {
+        //             //     expect(component.isLoading).toEqual(true);
+        //             // })
+        //
+        //             // flushMicrotasks();
+        //
+        //
+        //
+        //             // flushMicrotasks();
+        //             // flush()
+        //             // tick()
+        //
+        //             // expect(component.isLoading).toEqual(true);
+        //             // uiServiceSpy.loadingStateChange$.next(isLoadingState);
+        //             uiService.loadingStateNotifier(isLoadingState)
+        //             // component.uiService.loadingStateChange$.next(isLoadingState);
+        //             console.log(
+        //                 '%c next test',
+        //                 'background: red; color: #fff; padding: 100px;'
+        //             );
+        //             fixture.whenStable().then(() => {
+        //                 // fixture.detectChanges();
+        //                 expect(component.isLoading).toEqual(true);
+        //             });
+        //             // expect(component.isLoading).toEqual(true);
+        //
+        //             // setTimeout(() =>uiServiceSpy.loadingStateChange$.next(isLoadingState))
+        //             // uiServiceSpy.loadingStateChange$.next(isLoadingState);
+        //             // uiServiceSpy.loadingStateNotifier(isLoadingState)
+        //
+        //
+        //             // flush();
+        //             // flushMicrotasks();
+        //             // expect(component.isLoading).toEqual(true);
+        //             // await uiServiceSpy.loadingStateChange$.subscribe(() => {
+        //             //     fixture.detectChanges();
+        //             //     expect(component.isLoading).toEqual(true);
+        //             // });
+        //
+        //         }
+        //     )
+        // );
 
-                    // flushMicrotasks();
-                    // flush()
-                    // tick()
+    //TODO problem with async
 
-                    // expect(component.isLoading).toEqual(true);
-                    uiServiceSpy.loadingStateChange$.next(isLoadingState);
-                    // component.uiService.loadingStateChange$.next(isLoadingState);
-                    console.log(
-                        '%c next test',
-                        'background: red; color: #fff; padding: 100px;'
-                    );
-                    fixture.whenStable().then(() => {
-                        // fixture.detectChanges();
-                        expect(component.isLoading).toEqual(true);
-                    });
-                    expect(component.isLoading).toEqual(true);
+        it('Subscribe on subject next ',
+            async () => {
+                await setup();
+                let isLoadingState = true;
+                // const nextSpy = spyOn(uiService.loadingStateChangeData$, 'subscribe');
 
-                    // setTimeout(() =>uiServiceSpy.loadingStateChange$.next(isLoadingState))
-                    // uiServiceSpy.loadingStateChange$.next(isLoadingState);
-                    // uiServiceSpy.loadingStateNotifier(isLoadingState)
-
-
-                    // flush();
-                    // flushMicrotasks();
-                    // expect(component.isLoading).toEqual(true);
-                    // await uiServiceSpy.loadingStateChange$.subscribe(() => {
-                    //     fixture.detectChanges();
-                    //     expect(component.isLoading).toEqual(true);
-                    // });
-
-                }
-            )
+                // component.ngOnInit();
+                uiService.loadingStateNotifier(isLoadingState);
+                expect(component.isLoading).toEqual(true);
+                // expect(nextSpy).toHaveBeenCalled();
+            }
         );
-
 
         // it(
         //     'should wait for this promise to finish ',
@@ -311,13 +376,15 @@ describe('LoginComponent', () => {
         //     })
         // );
 
-        it('Pass subscription on uiServiceSpy.loadingStateChange$.next ',
+        it('Pass subscription on subject error',
             async () => {
                 await setup();
-                spyOn(uiServiceSpy.loadingStateChange$, 'next')
-                    .and.returnValue(throwError('someError'));
+                // spyOn(uiServiceSpy.loadingStateChange$, 'next')
+                //     .and.returnValue(throwError('someError'));
+                // const nextSpy = spyOn(uiService.loadingStateChangeData$, 'subscribe');
                 spyOn(window.console, 'log')
-                uiServiceSpy.loadingStateChange$.error("any error")
+                uiService.loadingStateGetter().error("any error");
+                // uiServiceSpy.loadingStateChange$.error("any error")
                 expect(console.log).toHaveBeenCalled();
             }
         );

@@ -102,12 +102,15 @@ describe('TrainingComponent', () => {
 
             fixture.detectChanges();
             flush()
-            await fixture.whenStable().then(() => {
-
-                // expect(compiled.querySelector('app-past-training')).toBeTruthy();
-                const pastTraining = findComponent(fixture, 'app-past-training');
-                expect(pastTraining).toBeTruthy();
-            });
+            // await fixture.whenStable().then(() => {
+            //
+            //     // expect(compiled.querySelector('app-past-training')).toBeTruthy();
+            //     // const pastTraining = findComponent(fixture, 'app-past-training');
+            //     // expect(pastTraining).toBeTruthy();
+            // });
+            await fixture.whenStable();
+            const pastTraining = findComponent(fixture, 'app-past-training');
+            expect(pastTraining).toBeTruthy();
         })
     );
 
