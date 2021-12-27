@@ -42,7 +42,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 )
         this.exerciseSubscription =
             this.trainingService
-                .exercisesChanged
+                .exercisesChangedGetter()
                 .subscribe(
                     exercises => {
                         this.exercises = exercises

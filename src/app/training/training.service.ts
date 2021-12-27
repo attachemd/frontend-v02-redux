@@ -6,18 +6,18 @@ import {UIService} from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
-    public exerciseChanged$: Subject<FinishedExercise> =
+    private exerciseChanged$: Subject<FinishedExercise> =
         new Subject<FinishedExercise>();
 
-    public exercisesChanged: Subject<FinishedExercise[] | null> =
+    private exercisesChanged$: Subject<FinishedExercise[] | null> =
         new Subject<FinishedExercise[] | null>();
 
     /**
      * notify if finished exercises changed
      * @type {Subject<FinishedExercise[]>}
-     * @public
+     * @private
      */
-    public finishedExercisesChanged: Subject<FinishedExercise[]> =
+    private finishedExercisesChanged$: Subject<FinishedExercise[]> =
         new Subject<FinishedExercise[]>();
 
     private availableExercises: FinishedExercise[] = [];
@@ -30,6 +30,30 @@ export class TrainingService {
     ) {
     }
 
+    public exerciseChangedNotifier(finishedExercise:FinishedExercise | undefined): void {
+        this.exerciseChanged$.next(finishedExercise);
+    }
+
+    public exerciseChangedGetter(): Subject<FinishedExercise> {
+        return this.exerciseChanged$;
+    }
+
+    public exercisesChangedNotifier(finishedExercises:FinishedExercise[] | null): void {
+        this.exercisesChanged$.next(finishedExercises);
+    }
+
+    public exercisesChangedGetter(): Subject<FinishedExercise[] | null> {
+        return this.exercisesChanged$;
+    }
+
+    public finishedExercisesChangedNotifier(finishedExercises:FinishedExercise[]): void {
+        this.finishedExercisesChanged$.next(finishedExercises);
+    }
+
+    public finishedExercisesChangedGetter(): Subject<FinishedExercise[]> {
+        return this.finishedExercisesChanged$;
+    }
+
     public getAvailableExercises() {
         console.log("getAvailableExercises");
         return this.http
@@ -40,8 +64,7 @@ export class TrainingService {
                 (exercises: FinishedExercise[]) => {
                     this.uiService.loadingStateNotifier(false);
                     this.availableExercises = exercises;
-                    this.exercisesChanged
-                        .next(
+                    this.exercisesChangedNotifier(
                             [
                                 ...this.availableExercises
                             ]
@@ -55,8 +78,7 @@ export class TrainingService {
                         undefined,
                         3000
                     );
-                    this.exercisesChanged
-                        .next(
+                    this.exercisesChangedNotifier(
                             null
                         )
                 }
@@ -67,7 +89,7 @@ export class TrainingService {
         this.runningExercise = this.availableExercises.find(
             ex => ex.id === selectedExerciseId
         )
-        this.exerciseChanged$.next(
+        this.exerciseChangedNotifier(
             {
                 calories: 0,
                 date: undefined,
@@ -101,7 +123,7 @@ export class TrainingService {
             }
         );
         this.runningExercise = undefined;
-        this.exerciseChanged$.next(undefined)
+        this.exerciseChangedNotifier(undefined)
     }
 
     public cancelExercise(progress: number) {
@@ -121,7 +143,7 @@ export class TrainingService {
             );
         }
         this.runningExercise = undefined;
-        this.exerciseChanged$.next(undefined)
+        this.exerciseChangedNotifier(undefined)
     }
 
     public getRunningExercise() {
@@ -135,8 +157,7 @@ export class TrainingService {
             )
             .subscribe(
                 (exercises: FinishedExercise[]) => {
-                    this.finishedExercisesChanged
-                        .next([
+                    this.finishedExercisesChangedNotifier([
                             ...exercises
                         ])
                 },

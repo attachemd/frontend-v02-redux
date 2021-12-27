@@ -42,7 +42,7 @@ export class PastTrainingComponent
 
         this.finishedExercisesSubscribtion =
             this.trainingService
-                .finishedExercisesChanged
+                .finishedExercisesChangedGetter()
                 .subscribe(
                     (exercises: FinishedExercise[]) => {
                         this.dataSource.data = exercises;
