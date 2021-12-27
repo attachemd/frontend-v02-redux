@@ -38,6 +38,10 @@ fdescribe('AuthService', () => {
     let controller: HttpTestingController;
     let scheduler: TestScheduler;
 
+    const status = 500;
+    const statusText = 'Internal Server Error';
+    const errorEvent = new ErrorEvent('API error');
+
 
     beforeEach(() => {
         uiServiceSpy = jasmine.createSpyObj(
@@ -118,6 +122,7 @@ fdescribe('AuthService', () => {
             )
         });
 
+
     it(
         'Get available exercises && start && complete exercise successfully',
         async () => {
@@ -130,6 +135,7 @@ fdescribe('AuthService', () => {
             }]
             console.log("👾 🤖 🎃 test");
             sut.getAvailableExercises();
+
 
             const request = controller.expectOne(
                 {
@@ -185,6 +191,7 @@ fdescribe('AuthService', () => {
         }
     );
 
+
     it(
         'Get available exercises passes through empty response',
         async () => {
@@ -219,9 +226,9 @@ fdescribe('AuthService', () => {
     it(
         'Get available exercises passes through error response',
         async () => {
-            const status = 500;
-            const statusText = 'Internal Server Error';
-            const errorEvent = new ErrorEvent('API error');
+            // const status = 500;
+            // const statusText = 'Internal Server Error';
+            // const errorEvent = new ErrorEvent('API error');
             spyOn(sut, 'exercisesChangedNotifier')
             await sut.getAvailableExercises();
 
@@ -254,6 +261,7 @@ fdescribe('AuthService', () => {
                 calories: 20
             }]
             console.log("👾 🤖 🎃 test");
+            spyOn(sut, 'finishedExercisesChangedNotifier')
             sut.getCompletedOrCanceledExercises();
 
             const request = controller.expectOne(
@@ -266,8 +274,38 @@ fdescribe('AuthService', () => {
             request.flush(response);
             controller.verify();
 
-            spyOn(sut, 'finishedExercisesChangedNotifier')
+
             expect(sut.finishedExercisesChangedNotifier).toHaveBeenCalled();
+
+        }
+    );
+
+    it(
+        'get completed or canceled exercises passes through error response',
+        () => {
+            // const status = 500;
+            // const statusText = 'Internal Server Error';
+            // const errorEvent = new ErrorEvent('API error');
+
+
+            spyOn(window.console, 'log')
+            spyOn(sut, 'finishedExercisesChangedNotifier')
+            sut.getCompletedOrCanceledExercises();
+
+            const request = controller.expectOne(
+                {
+                    method: "GET",
+                    url: "/api/fexercises/"
+                }
+            );
+
+            request.flush(errorEvent, {status, statusText});
+            // request.flush(...apiError);
+            controller.verify();
+
+
+            expect(console.log).toHaveBeenCalled();
+            expect(sut.finishedExercisesChangedNotifier).not.toHaveBeenCalled();
 
         }
     );
