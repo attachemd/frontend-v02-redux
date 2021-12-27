@@ -160,7 +160,7 @@ describe('AuthService', () => {
     });
 
     it(
-        'Registration passes through with error response',
+        'Registration passes through error response',
         () => {
             const status = 500;
             const statusText = 'Internal Server Error';
@@ -263,7 +263,7 @@ describe('AuthService', () => {
 
     });
 
-    it('Login passes through with error response', () => {
+    it('Login passes through error response', () => {
         const status = 500;
         const statusText = 'Internal Server Error';
         const errorEvent = new ErrorEvent('API error');
@@ -391,7 +391,7 @@ describe('AuthService', () => {
     });
 
     it(
-        'Refresh ACCESS token passes through when empty or invalid REFRESH Token',
+        'Refresh ACCESS token passes through empty or invalid REFRESH Token',
         () => {
             spyOn<any>(authService, 'getToken')
                 .and.returnValue("test");
@@ -424,7 +424,7 @@ describe('AuthService', () => {
         });
 
     it(
-        'Refresh ACCESS token passes through with error response',
+        'Refresh ACCESS token passes through error response',
         () => {
             const status = 500;
             const statusText = 'Internal Server Error';
@@ -495,7 +495,7 @@ describe('AuthService', () => {
     );
 
     it(
-        'Token check pass with valid token',
+        'Token check passes through valid token',
         () => {
             let access= "test"
             spyOn(window.localStorage, 'getItem')
@@ -513,7 +513,7 @@ describe('AuthService', () => {
         }
     );
     it(
-        'Token check pass with invalid token',
+        'Token check passes through invalid token',
         () => {
             let access= "test"
             spyOn(window.localStorage, 'getItem')
@@ -534,7 +534,7 @@ describe('AuthService', () => {
     );
 
     it(
-        'Token check pass with empty token',
+        'Token check passes through empty token',
         () => {
             let access= ""
             spyOn(window.localStorage, 'getItem')
@@ -553,7 +553,7 @@ describe('AuthService', () => {
     );
 
     it(
-        'Authentication state pass with alive token',
+        'Authentication state passes through alive token',
         () => {
             spyOn(authService, 'isBothTokensAlive')
                 .and.returnValue(of(true));
@@ -573,7 +573,7 @@ describe('AuthService', () => {
     );
 
     it(
-        'Authentication state pass with empty ACCESS token',
+        'Authentication state passes through empty ACCESS token',
         () => {
             spyOn(authService, 'isToken')
                 .and.returnValue(false);

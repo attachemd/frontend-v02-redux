@@ -1,8 +1,9 @@
-import {Subject} from "rxjs";
+import {of, Subject} from "rxjs";
 import {FinishedExercise} from "./finished-exercise.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {UIService} from "../shared/ui.service";
+import {catchError, map} from "rxjs/operators";
 
 @Injectable()
 export class TrainingService {
@@ -60,9 +61,38 @@ export class TrainingService {
             .get<FinishedExercise[]>(
                 '/api/exercises/'
             )
+            // .pipe(
+            //     map(
+            //         (exercises: FinishedExercise[]) => {
+            //             return exercises;
+            //         }),
+            //     catchError((error) => {
+            //         // this.uiService.loadingStateNotifier(false);
+            //         console.log('error');
+            //         console.log(error);
+            //         // this.uiService.showSnackBar(
+            //         //     error.error.detail,
+            //         //     undefined,
+            //         //     3000
+            //         // );
+            //         return of(error);
+            //     })
+            // )
             .subscribe(
                 (exercises: FinishedExercise[]) => {
                     this.uiService.loadingStateNotifier(false);
+                    if(exercises.length === 0){
+                        // throw {
+                        //     error: {
+                        //         detail: "no exercise is available"
+                        //     }
+                        // };
+                        this.uiService.showSnackBar(
+                            "no exercise is available",
+                            undefined,
+                            3000
+                        );
+                    }
                     this.availableExercises = exercises;
                     this.exercisesChangedNotifier(
                             [

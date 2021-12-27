@@ -70,7 +70,30 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     public fetchExercises()  {
         this.trainingService
-            .getAvailableExercises();
+            .getAvailableExercises()
+            // .subscribe(
+            //     (exercises: FinishedExercise[]) => {
+            //         this.uiService.loadingStateNotifier(false);
+            //         this.trainingService.availableExercises = exercises;
+            //         this.trainingService.exercisesChangedNotifier(
+            //             [
+            //                 ...this.trainingService.availableExercises
+            //             ]
+            //         )
+            //     },
+            //     (error) => {
+            //         console.log('error :', error)
+            //         this.uiService.loadingStateNotifier(false);
+            //         this.uiService.showSnackBar(
+            //             "error when getting available exercises, try later.",
+            //             undefined,
+            //             3000
+            //         );
+            //         this.trainingService.exercisesChangedNotifier(
+            //             null
+            //         )
+            //     }
+            // )
     }
 
     onStartTraining(form: NgForm) {

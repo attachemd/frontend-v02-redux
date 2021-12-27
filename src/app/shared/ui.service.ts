@@ -15,6 +15,7 @@ export class UIService {
         action: string|undefined,
         duration: number
     ){
+        console.log("🤕 🤑 🤠");
         this.snackBar.open(message, action, {
             duration: duration
         })
