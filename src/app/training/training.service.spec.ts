@@ -5,6 +5,8 @@ import {TrainingService} from "./training.service";
 import {TestScheduler} from "rxjs/testing";
 import {Observable, of, Subject} from "rxjs";
 import {AuthService} from "../auth/auth.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {error} from "jquery";
 
 let uiServiceSpy: UIService
 
@@ -31,7 +33,7 @@ let uiServiceSpy: UIService
 // };
 
 
-fdescribe('AuthService', () => {
+describe('TrainingService', () => {
 
 
     let sut: TrainingService;
@@ -42,6 +44,12 @@ fdescribe('AuthService', () => {
     const statusText = 'Internal Server Error';
     const errorEvent = new ErrorEvent('API error');
 
+    const response = [{
+        id: '15',
+        name: "test",
+        duration: 10,
+        calories: 20
+    }]
 
     beforeEach(() => {
         uiServiceSpy = jasmine.createSpyObj(
@@ -79,29 +87,17 @@ fdescribe('AuthService', () => {
 
     it('Stream exercise when call exerciseChangedNotifier with exercise', () => {
         scheduler.run(({expectObservable, cold}) => {
-            const exercise = {
-                id: '15',
-                name: "test",
-                duration: 10,
-                calories: 20
-            };
             // sut.exerciseChangedNotifier(exercise);
-            cold('-a').subscribe(() => sut.exerciseChangedNotifier(exercise))
-            expectObservable(sut.exerciseChangedGetter()).toBe('-a', {a: exercise})
+            cold('-a').subscribe(() => sut.exerciseChangedNotifier(response[0]))
+            expectObservable(sut.exerciseChangedGetter()).toBe('-a', {a: response[0]})
         })
     });
 
     it('Stream exercises array when call exercisesChangedNotifier with exercises', () => {
         scheduler.run(({expectObservable, cold}) => {
-            const exercises = [{
-                id: '15',
-                name: "test",
-                duration: 10,
-                calories: 20
-            }];
             // sut.exerciseChangedNotifier(exercise);
-            cold('-a').subscribe(() => sut.exercisesChangedNotifier(exercises))
-            expectObservable(sut.exercisesChangedGetter()).toBe('-a', {a: exercises})
+            cold('-a').subscribe(() => sut.exercisesChangedNotifier(response))
+            expectObservable(sut.exercisesChangedGetter()).toBe('-a', {a: response})
         })
     });
 
@@ -109,30 +105,22 @@ fdescribe('AuthService', () => {
         'Stream finished exercises array when call exercisesChangedNotifier with finished exercises',
         () => {
             scheduler.run(({expectObservable, cold}) => {
-                    const exercises = [{
-                        id: '15',
-                        name: "test",
-                        duration: 10,
-                        calories: 20
-                    }];
                     // sut.exerciseChangedNotifier(exercise);
-                    cold('-a').subscribe(() => sut.finishedExercisesChangedNotifier(exercises))
-                    expectObservable(sut.finishedExercisesChangedGetter()).toBe('-a', {a: exercises})
+                    cold('-a').subscribe(() => sut.finishedExercisesChangedNotifier(response))
+                    expectObservable(sut.finishedExercisesChangedGetter()).toBe('-a', {a: response})
                 }
             )
         });
 
+    describe('Get available exercises && start && complete exercise', () => {
 
-    it(
-        'Get available exercises && start && complete exercise successfully',
-        async () => {
+        beforeEach(() => {
+            // setup();
+            console.log("👾 🤖 🎃 test");
+            console.log("uiServiceSpy")
+            console.log(uiServiceSpy)
 
-            const response = [{
-                id: '15',
-                name: "test",
-                duration: 10,
-                calories: 20
-            }]
+
             console.log("👾 🤖 🎃 test");
             sut.getAvailableExercises();
 
@@ -148,48 +136,140 @@ fdescribe('AuthService', () => {
             request.flush(response);
             controller.verify();
 
-            // Now verify emitted valued.
-            expect((sut as any).availableExercises).toBe(response);
-            expect(uiServiceSpy.loadingStateNotifier).toHaveBeenCalledWith(false);
-            expect(uiServiceSpy.showSnackBar).not.toHaveBeenCalled();
-
             const selectedExerciseId = '15';
             spyOn(sut, 'exerciseChangedNotifier')
             // spyOn(sut, 'addDataToDatabase')
             sut.startExercise(selectedExerciseId);
-            expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith({
-                date: undefined,
-                state: undefined,
-                ...response[0]
-            });
-
 
             spyOn(sut, 'getCompletedOrCanceledExercises')
             sut.completeExercise();
-            const completeExerciseRequest = controller.expectOne(
-                {
-                    method: "POST",
-                    url: "/api/fexercises/15/"
-                }
-            );
+        });
+        // console.log("👾 🤖 🎃 test");
+        // console.log("uiServiceSpy")
+        // console.log(uiServiceSpy)
+
+        it(
+            'Get available exercises',
+            async () => {
 
 
-            // Answer the request so the Observable emits a value.
-            completeExerciseRequest.flush(response);
-            // getCompletedOrCanceledExercises.flush(response);
-            controller.verify();
 
-            expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
-            expect(sut.getCompletedOrCanceledExercises).toHaveBeenCalled();
+                // Now verify emitted valued.
+                expect((sut as any)._availableExercises).toBe(response);
+                expect(uiServiceSpy.loadingStateNotifier).toHaveBeenCalledWith(false);
+                expect(uiServiceSpy.showSnackBar).not.toHaveBeenCalled();
 
-            // let getCompletedOrCanceledExercisesRequest = controller.expectOne(
-            //     {
-            //         method: "GET",
-            //         url: "/api/fexercises/"
-            //     }
-            // );
-        }
-    );
+
+
+            }
+        );
+
+        it(
+            'Start exercises successfully',
+            async () => {
+
+                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith({
+                    date: undefined,
+                    state: undefined,
+                    ...response[0]
+                });
+
+
+            }
+        );
+
+        it(
+            'Complete exercise successfully',
+            async () => {
+
+
+
+
+                const completeExerciseRequest = controller.expectOne(
+                    {
+                        method: "POST",
+                        url: "/api/fexercises/15/"
+                    }
+                );
+
+
+                // Answer the request so the Observable emits a value.
+                completeExerciseRequest.flush(response);
+                // getCompletedOrCanceledExercises.flush(response);
+                controller.verify();
+
+                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
+                expect(sut.getCompletedOrCanceledExercises).toHaveBeenCalled();
+
+                // let getCompletedOrCanceledExercisesRequest = controller.expectOne(
+                //     {
+                //         method: "GET",
+                //         url: "/api/fexercises/"
+                //     }
+                // );
+            }
+        );
+
+        it(
+            'Complete exercise passes through error',
+            async () => {
+                let actualError: HttpErrorResponse | undefined = new HttpErrorResponse(
+                    {
+                        error: errorEvent,
+                        status: status,
+                        statusText: statusText,
+                        url: "/api/fexercises/15/"
+                    }
+                );
+
+
+
+                spyOn(window.console, 'log')
+
+                controller.expectOne(
+                    {
+                        method: "POST",
+                        url: "/api/fexercises/15/"
+                    }
+                ).flush(errorEvent, {status, statusText});
+
+
+                expect(console.log).toHaveBeenCalledWith(actualError);
+            }
+        );
+
+        it(
+            'Cancel exercise successfully',
+            async () => {
+                sut.cancelExercise(3);
+                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
+            }
+        );
+
+        it(
+            'Cancel exercise successfully with defined _runningExercise',
+            async () => {
+
+                (sut as any)._runningExercise = response[0]
+
+                sut.cancelExercise(3);
+
+                const request = controller.match(
+                    {
+                        method: "POST",
+                        url: "/api/fexercises/15/"
+                    }
+                );
+
+                request[0].flush(response);
+
+                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
+                expect(sut.getCompletedOrCanceledExercises).toHaveBeenCalled();
+
+                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
+            }
+        );
+    })
 
 
     it(
@@ -307,6 +387,15 @@ fdescribe('AuthService', () => {
             expect(console.log).toHaveBeenCalled();
             expect(sut.finishedExercisesChangedNotifier).not.toHaveBeenCalled();
 
+        }
+    );
+
+    it(
+        'Get running exercise',
+         () => {
+            (sut as any)._runningExercise = response[0]
+            let exercise = sut.getRunningExercise();
+            expect(exercise).toEqual(response[0]);
         }
     );
 

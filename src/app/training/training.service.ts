@@ -7,10 +7,10 @@ import {catchError, map} from "rxjs/operators";
 
 @Injectable()
 export class TrainingService {
-    private exerciseChanged$: Subject<FinishedExercise> =
+    private _exerciseChanged$: Subject<FinishedExercise> =
         new Subject<FinishedExercise>();
 
-    private exercisesChanged$: Subject<FinishedExercise[] | null> =
+    private _exercisesChanged$: Subject<FinishedExercise[] | null> =
         new Subject<FinishedExercise[] | null>();
 
     /**
@@ -18,12 +18,12 @@ export class TrainingService {
      * @type {Subject<FinishedExercise[]>}
      * @private
      */
-    private finishedExercisesChanged$: Subject<FinishedExercise[]> =
+    private _finishedExercisesChanged$: Subject<FinishedExercise[]> =
         new Subject<FinishedExercise[]>();
 
-    private availableExercises: FinishedExercise[] = [];
+    private _availableExercises: FinishedExercise[] = [];
 
-    private runningExercise: FinishedExercise | undefined;
+    private _runningExercise: FinishedExercise | undefined;
 
     constructor(
         private http: HttpClient,
@@ -32,27 +32,27 @@ export class TrainingService {
     }
 
     public exerciseChangedNotifier(finishedExercise:FinishedExercise | undefined): void {
-        this.exerciseChanged$.next(finishedExercise);
+        this._exerciseChanged$.next(finishedExercise);
     }
 
     public exerciseChangedGetter(): Subject<FinishedExercise> {
-        return this.exerciseChanged$;
+        return this._exerciseChanged$;
     }
 
     public exercisesChangedNotifier(finishedExercises:FinishedExercise[] | null): void {
-        this.exercisesChanged$.next(finishedExercises);
+        this._exercisesChanged$.next(finishedExercises);
     }
 
     public exercisesChangedGetter(): Subject<FinishedExercise[] | null> {
-        return this.exercisesChanged$;
+        return this._exercisesChanged$;
     }
 
     public finishedExercisesChangedNotifier(finishedExercises:FinishedExercise[]): void {
-        this.finishedExercisesChanged$.next(finishedExercises);
+        this._finishedExercisesChanged$.next(finishedExercises);
     }
 
     public finishedExercisesChangedGetter(): Subject<FinishedExercise[]> {
-        return this.finishedExercisesChanged$;
+        return this._finishedExercisesChanged$;
     }
 
     public getAvailableExercises() {
@@ -93,10 +93,10 @@ export class TrainingService {
                             3000
                         );
                     }
-                    this.availableExercises = exercises;
+                    this._availableExercises = exercises;
                     this.exercisesChangedNotifier(
                             [
-                                ...this.availableExercises
+                                ...this._availableExercises
                             ]
                         )
                 },
@@ -116,7 +116,7 @@ export class TrainingService {
     }
 
     public startExercise(selectedExerciseId: string) {
-        this.runningExercise = this.availableExercises.find(
+        this._runningExercise = this._availableExercises.find(
             ex => ex.id === selectedExerciseId
         )
         this.exerciseChangedNotifier(
@@ -127,57 +127,57 @@ export class TrainingService {
                 id: "",
                 name: "",
                 state: undefined,
-                ...this.runningExercise
+                ...this._runningExercise
             }
         )
     }
 
     public completeExercise() {
-        // if (this.runningExercise) {
+        // if (this._runningExercise) {
         //     this.exercises.push(
         //         {
-        //             ...this.runningExercise,
+        //             ...this._runningExercise,
         //             date: new Date(),
         //             state: "completed"
         //         }
         //     );
         // }
-        this.addDataToDatabase(
+        this._addDataToDatabase(
             {
                 calories: 0,
                 duration: 0,
                 id: "",
                 name: "",
-                ...this.runningExercise,
+                ...this._runningExercise,
                 state: "completed"
             }
         );
-        this.runningExercise = undefined;
+        this._runningExercise = undefined;
         this.exerciseChangedNotifier(undefined)
     }
 
     public cancelExercise(progress: number) {
-        if (this.runningExercise) {
-            this.addDataToDatabase(
+        if (this._runningExercise) {
+            this._addDataToDatabase(
                 {
-                    ...this.runningExercise,
+                    ...this._runningExercise,
                     calories: Math.round((
-                        this.runningExercise.duration * progress
+                        this._runningExercise.duration * progress
                     ) / 100),
                     duration: Math.round((
-                        this.runningExercise.calories * progress
+                        this._runningExercise.calories * progress
                     ) / 100),
                     date: new Date(),
                     state: "cancelled"
                 }
             );
         }
-        this.runningExercise = undefined;
+        this._runningExercise = undefined;
         this.exerciseChangedNotifier(undefined)
     }
 
     public getRunningExercise() {
-        return {...this.runningExercise};
+        return {...this._runningExercise};
     }
 
     public getCompletedOrCanceledExercises() {
@@ -197,7 +197,7 @@ export class TrainingService {
             )
     }
 
-    private addDataToDatabase(exercise: FinishedExercise) {
+    private _addDataToDatabase(exercise: FinishedExercise) {
         // let id = exercise.id;
         let {id, date, ...payload} = exercise;
 

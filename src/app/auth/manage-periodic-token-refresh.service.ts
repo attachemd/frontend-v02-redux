@@ -3,42 +3,46 @@ import {AuthService} from "./auth.service";
 import {of, Subject} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
-
-interface ExpirationTimeObj {
-    default_expired_time: number;
-    expiration: number;
-}
+import {ExpirationTimeObj} from "./expiration-time.model";
 
 @Injectable()
 export class ManagePeriodicTokenRefresh {
-    timer: number = 0;
-    refreshChange: Subject<ExpirationTimeObj> = new Subject<ExpirationTimeObj>();
+    private _timer: number = 0;
+    private _refreshChange$: Subject<ExpirationTimeObj> = new Subject<ExpirationTimeObj>();
 
     constructor(
-        private authService: AuthService,
-        private jwtHelper: JwtHelperService
+        private _authService: AuthService,
+        private _jwtHelper: JwtHelperService
     ) {
+    }
+
+    public setRefreshChange(expirationTimeObj: any): void {
+        this._refreshChange$.next(expirationTimeObj);
+    }
+
+    public getRefreshChange(): Subject<ExpirationTimeObj> {
+        return this._refreshChange$;
     }
 
     public initPeriodicRefresh() {
 
-        this.refreshChange
+        this.getRefreshChange()
             .subscribe(
                 expirationTimeObj => {
-                    this.doPeriodicRefresh(expirationTimeObj)
+                    this._doPeriodicRefresh(expirationTimeObj)
                 },
                 error => {
                     console.log("error: ", error);
                 }
             )
 
-        this.startDoPeriodicRefresh()
+        this._startDoPeriodicRefresh()
 
 
     }
 
-    private startDoPeriodicRefresh() {
-        this.getTokenExpiredTime()
+    private _startDoPeriodicRefresh() {
+        this._getTokenExpiredTime()
             .subscribe(
                 expirationTimeObj => {
                     console.log(
@@ -49,7 +53,7 @@ export class ManagePeriodicTokenRefresh {
                         'border: 1px solid #000'
                     );
                     console.log(expirationTimeObj)
-                    this.refreshChange.next(expirationTimeObj);
+                    this.setRefreshChange(expirationTimeObj);
 
                 },
                 error => {
@@ -58,14 +62,14 @@ export class ManagePeriodicTokenRefresh {
             )
     }
 
-    setIntervalRefreshWithDefaultExpiredTime(expirationTimeObj: ExpirationTimeObj) {
-        this.timer = window.setInterval(() => {
+    private _setIntervalRefreshWithDefaultExpiredTime(expirationTimeObj: ExpirationTimeObj) {
+        this._timer = window.setInterval(() => {
             console.log("delayed do refresh " + expirationTimeObj.default_expired_time);
-            this.doRefresh();
+            this._doRefresh();
         }, expirationTimeObj.default_expired_time * 1000);
     }
 
-    ifRefreshTokenAlive(expirationTimeObj: ExpirationTimeObj) {
+    private _ifRefreshTokenAlive(expirationTimeObj: ExpirationTimeObj) {
         let leftExpiredTime = (Number(expirationTimeObj.expiration) * 1000) - Date.now()
         console.log(
             '%c leftExpiredTime: ',
@@ -87,24 +91,24 @@ export class ManagePeriodicTokenRefresh {
                 expirationTimeObj.default_expired_time
             );
         }
-        this.timer = window.setTimeout(() => {
+        this._timer = window.setTimeout(() => {
             /**
              * Program refresh with default time expired
              */
             console.log("setTimeout " + leftExpiredTime);
-            this.doRefresh();
-            this.setIntervalRefreshWithDefaultExpiredTime(expirationTimeObj)
+            this._doRefresh();
+            this._setIntervalRefreshWithDefaultExpiredTime(expirationTimeObj)
         }, leftExpiredTime);
     }
 
-    doRefresh() {
-        this.authService
+    private _doRefresh() {
+        this._authService
             .refreshTokenOrDie()
             .subscribe(
                 (isAuth) => {
                     console.log("isAuth: ", isAuth);
                     if (!isAuth) {
-                        this.startDoPeriodicRefresh()
+                        this._startDoPeriodicRefresh()
                     }
                 },
                 (error) => {
@@ -113,25 +117,25 @@ export class ManagePeriodicTokenRefresh {
             )
     }
 
-    doPeriodicRefresh(expirationTimeObj: ExpirationTimeObj) {
+    private _doPeriodicRefresh(expirationTimeObj: ExpirationTimeObj) {
         /**
          * if expirationTimeObj.expiration equal to -1
          * then refresh token is expired
          */
-        clearInterval(this.timer);
+        clearInterval(this._timer);
         if (expirationTimeObj.expiration != -1) {
-            this.ifRefreshTokenAlive(expirationTimeObj)
+            this._ifRefreshTokenAlive(expirationTimeObj)
         }
 
     }
 
-    getTokenExpiredTime() {
+    private _getTokenExpiredTime() {
         let expirationTimeObj = {
             default_expired_time: 0,
             // if refresh token expired
             expiration: -1
         }
-        return this.authService
+        return this._authService
             .authState()
             .pipe(
                 map(
@@ -140,7 +144,7 @@ export class ManagePeriodicTokenRefresh {
                         if (isAuth) {
                             let access: string | null = localStorage.getItem('access')
                             if (access) {
-                                const decodedToken = this.jwtHelper.decodeToken(access);
+                                const decodedToken = this._jwtHelper.decodeToken(access);
                                 console.log(
                                     '%c decodeToken: ',
                                     'background: red; ' +
