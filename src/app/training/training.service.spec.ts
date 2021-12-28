@@ -263,10 +263,14 @@ describe('TrainingService', () => {
 
                 request[0].flush(response);
 
-                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
-                expect(sut.getCompletedOrCanceledExercises).toHaveBeenCalled();
+                expect(sut.exerciseChangedNotifier)
+                    .toHaveBeenCalledWith(undefined);
 
-                expect(sut.exerciseChangedNotifier).toHaveBeenCalledWith(undefined);
+                expect(sut.getCompletedOrCanceledExercises)
+                    .toHaveBeenCalled();
+
+                expect(sut.exerciseChangedNotifier)
+                    .toHaveBeenCalledWith(undefined);
             }
         );
     })

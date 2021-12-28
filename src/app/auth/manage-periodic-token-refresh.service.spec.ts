@@ -14,6 +14,10 @@ fdescribe('ManagePeriodicTokenRefreshService', () => {
     let controller: HttpTestingController;
     let scheduler: TestScheduler;
 
+    const status = 500;
+    const statusText = 'Internal Server Error';
+    const errorEvent = new ErrorEvent('API error');
+
     const expirationTimeObj: ExpirationTimeObj = {
         default_expired_time: 10,
         expiration: 10
@@ -147,7 +151,7 @@ fdescribe('ManagePeriodicTokenRefreshService', () => {
     });
 
     it("Get Token Expired Time passes through error", () => {
-        let error = new Error('authState failed');
+        let error = new Error('error');
         setup({
             // Let the API report a failure
             authState: throwError(error),
@@ -164,15 +168,56 @@ fdescribe('ManagePeriodicTokenRefreshService', () => {
         (sut as any)._getTokenExpiredTime().subscribe((expirationTimeObj: ExpirationTimeObj) => {
             actualExpirationTimeObj = expirationTimeObj
         })
-        expect(console.log).toHaveBeenCalledWith('from auth.guard.ts error: ', error);
+        expect(console.log).toHaveBeenCalledWith(
+            'from auth.guard.ts error: ',
+            error
+        );
         expect(actualExpirationTimeObj).toEqual(expirationTimeObjForNoAccess);
     });
 
     it("Get Token Expired Time passes through error", () => {
         setup();
-        let error = new Error('authState failed');
-        spyOn(<any>sut, '_getTokenExpiredTime').and.returnValue(throwError(error));
-        (sut as any)._getTokenExpiredTime().subscribe()
+        let error = new Error('error');
+        spyOn(window.console, 'log');
+        spyOn(
+            (sut as any),
+            '_getTokenExpiredTime'
+        )
+            .and.returnValue(throwError(error));
+
+        (sut as any)._startDoPeriodicRefresh()
+        expect(console.log).toHaveBeenCalledWith(
+            'error: ',
+            error
+        );
+    });
+
+    it("Successful subscription when call setRefreshChange", () => {
+        setup();
+
+        spyOn(
+            (sut as any),
+            '_doPeriodicRefresh'
+        );
+        sut.initPeriodicRefresh()
+        sut.setRefreshChange(expirationTimeObj)
+        expect((sut as any)._doPeriodicRefresh).toHaveBeenCalledWith(
+            expirationTimeObj
+        );
+    });
+
+    it("Get subscription error when subject throw error", () => {
+        setup();
+        let error = new Error('error');
+        spyOn(window.console, 'log');
+        spyOn(<any>sut, '_startDoPeriodicRefresh');
+        sut.initPeriodicRefresh()
+        sut.getRefreshChange().error(error)
+        // expect(console.log).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith(
+            'error: ',
+            error
+        );
     });
 
 })
