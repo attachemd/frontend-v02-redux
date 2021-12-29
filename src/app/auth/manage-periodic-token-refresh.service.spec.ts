@@ -7,75 +7,79 @@ import {ManagePeriodicTokenRefresh} from "./manage-periodic-token-refresh.servic
 import {TestScheduler} from "rxjs/testing";
 import {ExpirationTimeObj} from "./expiration-time.model";
 
-fdescribe('ManagePeriodicTokenRefreshService', () => {
-    let sut: ManagePeriodicTokenRefresh;
-    let authServiceSpy: AuthService;
-    let jwtHelper: JwtHelperService;
-    let controller: HttpTestingController;
-    let scheduler: TestScheduler;
+let sut: ManagePeriodicTokenRefresh;
+let authServiceSpy: AuthService;
+let jwtHelper: JwtHelperService;
+let controller: HttpTestingController;
+let scheduler: TestScheduler;
 
-    const status = 500;
-    const statusText = 'Internal Server Error';
-    const errorEvent = new ErrorEvent('API error');
+const status = 500;
+const statusText = 'Internal Server Error';
+const errorEvent = new ErrorEvent('API error');
 
-    const expirationTimeObj: ExpirationTimeObj = {
-        default_expired_time: 10,
-        expiration: 10
-    }
+const expirationTimeObj: ExpirationTimeObj = {
+    default_expired_time: 10,
+    expiration: 10
+}
 
-    const expirationTimeObjNotSet: ExpirationTimeObj = {
-        default_expired_time: 0,
-        expiration: -1
-    }
+const expirationTimeObjNotSet: ExpirationTimeObj = {
+    default_expired_time: 0,
+    expiration: -1
+}
 
-    const setup = (
-        authServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
-    ) => {
-        authServiceSpy = jasmine.createSpyObj<AuthService>(
-            'AuthService',
-            {
-                // Successful responses per default
-                authChangeNotifier: undefined,
-                registerUser: of(true),
-                login: of(true),
-                logout: undefined,
-                refreshTokenOrDie: of(true),
-                isBothTokensAlive: of(true),
-                isToken: true,
-                authState: of(true),
-                authSuccessfully: undefined,
-                // Overwrite with given return values
-                ...authServiceReturnValues,
-            }
-        );
+const setup = (
+    authServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
+) => {
+    authServiceSpy = jasmine.createSpyObj<AuthService>(
+        'AuthService',
+        {
+            // Successful responses per default
+            authChangeNotifier: undefined,
+            registerUser: of(true),
+            login: of(true),
+            logout: undefined,
+            refreshTokenOrDie: of(true),
+            isBothTokensAlive: of(true),
+            isToken: true,
+            authState: of(true),
+            authSuccessfully: undefined,
+            // Overwrite with given return values
+            ...authServiceReturnValues,
+        }
+    );
 
-        TestBed.configureTestingModule({
-            imports: [
-                HttpClientTestingModule,
-                JwtModule.forRoot({
-                    config: {
-                        tokenGetter: () => {
-                            return '';
-                        }
+    // spyOn(authServiceSpy, 'authState').and.returnValues(of(true), of(false))
+
+    TestBed.configureTestingModule({
+        imports: [
+            HttpClientTestingModule,
+            JwtModule.forRoot({
+                config: {
+                    tokenGetter: () => {
+                        return '';
                     }
-                })
-            ],
-            providers: [
-                ManagePeriodicTokenRefresh,
-                {provide: AuthService, useValue: authServiceSpy},
-                JwtHelperService
-            ],
-        })
+                }
+            })
+        ],
+        providers: [
+            ManagePeriodicTokenRefresh,
+            {provide: AuthService, useValue: authServiceSpy},
+            JwtHelperService
+        ],
+    })
 
-        sut = TestBed.inject(ManagePeriodicTokenRefresh);
-        authServiceSpy = TestBed.inject(AuthService);
-        jwtHelper = TestBed.inject(JwtHelperService);
-        controller = TestBed.inject(HttpTestingController);
-        scheduler = new TestScheduler((actual, expected) => {
-            expect(actual).toEqual(expected)
-        })
+    sut = TestBed.inject(ManagePeriodicTokenRefresh);
+    authServiceSpy = TestBed.inject(AuthService);
+    jwtHelper = TestBed.inject(JwtHelperService);
+    controller = TestBed.inject(HttpTestingController);
+    scheduler = new TestScheduler((actual, expected) => {
+        expect(actual).toEqual(expected)
+    })
 
-    }
+}
+
+fdescribe('ManagePeriodicTokenRefreshService', () => {
+
 
     beforeEach(() => {
 
@@ -337,6 +341,40 @@ fdescribe('ManagePeriodicTokenRefreshService', () => {
             }
         )
     );
+
+
+})
+
+describe('ManagePeriodicTokenRefreshService', () => {
+
+
+    beforeEach(() => {
+
+    });
+
+    it('should be created', () => {
+        setup();
+        expect(sut).toBeTruthy();
+    });
+
+    it('Stream expiration time object when call setRefreshChange with it', () => {
+        setup();
+        scheduler.run(({expectObservable, cold}) => {
+            // sut.exerciseChangedNotifier(exercise);
+            cold('-a').subscribe(() => sut.setRefreshChange(expirationTimeObj))
+            expectObservable(sut.getRefreshChange()).toBe('-a', {a: expirationTimeObj})
+        })
+    });
+
+    it('Initialize periodic refresh', () => {
+        setup();
+        spyOn(sut, 'getRefreshChange').and.callThrough();
+        spyOn(<any>sut, '_startDoPeriodicRefresh').and.callThrough();
+        sut.initPeriodicRefresh();
+        sut.setRefreshChange(expirationTimeObj);
+        expect(sut.getRefreshChange).toHaveBeenCalled();
+    });
+
 
 
 })
