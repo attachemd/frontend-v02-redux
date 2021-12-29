@@ -69,7 +69,7 @@ export class ManagePeriodicTokenRefresh {
         }, expirationTimeObj.default_expired_time * 1000);
     }
 
-    private _ifRefreshTokenAlive(expirationTimeObj: ExpirationTimeObj) {
+    private _ifRefreshTokenAliveDoRefresh(expirationTimeObj: ExpirationTimeObj) {
         let leftExpiredTime = (Number(expirationTimeObj.expiration) * 1000) - Date.now()
         console.log(
             '%c leftExpiredTime: ',
@@ -90,7 +90,10 @@ export class ManagePeriodicTokenRefresh {
                 "do refresh now with default expired time " +
                 expirationTimeObj.default_expired_time
             );
+        } else {
+
         }
+        // if (leftExpiredTime < 0) leftExpiredTime = 0;
         this._timer = window.setTimeout(() => {
             /**
              * Program refresh with default time expired
@@ -124,7 +127,7 @@ export class ManagePeriodicTokenRefresh {
          */
         clearInterval(this._timer);
         if (expirationTimeObj.expiration != -1) {
-            this._ifRefreshTokenAlive(expirationTimeObj)
+            this._ifRefreshTokenAliveDoRefresh(expirationTimeObj)
         }
 
     }
