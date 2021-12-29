@@ -2,13 +2,15 @@ import {discardPeriodicTasks, fakeAsync, flush, flushMicrotasks, TestBed, tick} 
 import {AuthService} from "./auth.service";
 import {JwtHelperService, JwtModule} from "@auth0/angular-jwt";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {of, throwError} from "rxjs";
+import {Observable, of, Subject, throwError} from "rxjs";
 import {ManagePeriodicTokenRefresh} from "./manage-periodic-token-refresh.service";
 import {TestScheduler} from "rxjs/testing";
 import {ExpirationTimeObj} from "./expiration-time.model";
 
 let sut: ManagePeriodicTokenRefresh;
-let authServiceSpy: AuthService;
+// let authServiceSpy: AuthService;
+// let authServiceSpy: Pick<AuthService, keyof AuthService>;
+let authServiceSpy: Partial<AuthService>;
 let jwtHelper: JwtHelperService;
 let controller: HttpTestingController;
 let scheduler: TestScheduler;
@@ -27,29 +29,7 @@ const expirationTimeObjNotSet: ExpirationTimeObj = {
     expiration: -1
 }
 
-const setup = (
-    authServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
-) => {
-    authServiceSpy = jasmine.createSpyObj<AuthService>(
-        'AuthService',
-        {
-            // Successful responses per default
-            authChangeNotifier: undefined,
-            registerUser: of(true),
-            login: of(true),
-            logout: undefined,
-            refreshTokenOrDie: of(true),
-            isBothTokensAlive: of(true),
-            isToken: true,
-            authState: of(true),
-            authSuccessfully: undefined,
-            // Overwrite with given return values
-            ...authServiceReturnValues,
-        }
-    );
-
-    // spyOn(authServiceSpy, 'authState').and.returnValues(of(true), of(false))
-
+let testBedConfig = () => {
     TestBed.configureTestingModule({
         imports: [
             HttpClientTestingModule,
@@ -75,10 +55,37 @@ const setup = (
     scheduler = new TestScheduler((actual, expected) => {
         expect(actual).toEqual(expected)
     })
+}
+
+const setup = (
+    authServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
+) => {
+    authServiceSpy = jasmine.createSpyObj<AuthService>(
+        'AuthService',
+        {
+            // Successful responses per default
+            authChangeNotifier: undefined,
+            registerUser: of(true),
+            login: of(true),
+            logout: undefined,
+            refreshTokenOrDie: of(true),
+            isBothTokensAlive: of(true),
+            isToken: true,
+            authState: of(true),
+            authSuccessfully: undefined,
+            // Overwrite with given return values
+            ...authServiceReturnValues,
+        }
+    );
+
+    // spyOn(authServiceSpy, 'authState').and.returnValues(of(true), of(false))
+
+    testBedConfig()
 
 }
 
-fdescribe('ManagePeriodicTokenRefreshService', () => {
+
+describe('ManagePeriodicTokenRefreshService White Box testing', () => {
 
 
     beforeEach(() => {
@@ -345,20 +352,75 @@ fdescribe('ManagePeriodicTokenRefreshService', () => {
 
 })
 
-describe('ManagePeriodicTokenRefreshService', () => {
+fdescribe('ManagePeriodicTokenRefreshService Black Box testing', () => {
 
+
+    // let authServiceSpy: Partial<AuthService>;
+
+    // const setup = () => {
+    // //     authServiceSpy = {
+    // //         // authChange$: new Subject<boolean>(),
+    // //         authChangeNotifier(): void {
+    // //         },
+    // //         registerUser(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //         login(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //         logout(): void {
+    // //         },
+    // //         refreshTokenOrDie(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //         isBothTokensAlive(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //         isToken(): boolean {
+    // //             return true;
+    // //         },
+    // //         authState(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //         authSuccessfully(): Observable<boolean> {
+    // //             return of(true);
+    // //         },
+    // //     };
+    //
+    //     // authServiceSpy = jasmine.createSpyObj<AuthService>(
+    //     //     'AuthService',
+    //     //     {
+    //     //         // Successful responses per default
+    //     //         authChangeNotifier: undefined,
+    //     //         registerUser: of(true),
+    //     //         login: of(true),
+    //     //         logout: undefined,
+    //     //         refreshTokenOrDie: of(true),
+    //     //         isBothTokensAlive: of(true),
+    //     //         isToken: true,
+    //     //         authState: of(true),
+    //     //         authSuccessfully: undefined,
+    //     //         // Overwrite with given return values
+    //     //     }
+    //     // );
+    //     testBedConfig()
+    // }
+
+     beforeAll(() => {
+         setup();
+     })
 
     beforeEach(() => {
 
     });
 
     it('should be created', () => {
-        setup();
+        // setup();
         expect(sut).toBeTruthy();
     });
 
     it('Stream expiration time object when call setRefreshChange with it', () => {
-        setup();
+        // setup();
         scheduler.run(({expectObservable, cold}) => {
             // sut.exerciseChangedNotifier(exercise);
             cold('-a').subscribe(() => sut.setRefreshChange(expirationTimeObj))
@@ -366,14 +428,45 @@ describe('ManagePeriodicTokenRefreshService', () => {
         })
     });
 
-    it('Initialize periodic refresh', () => {
-        setup();
+    describe('Initialize periodic refresh', () => {
+        beforeAll(() => {
+            setup();
+        })
         spyOn(sut, 'getRefreshChange').and.callThrough();
         spyOn(<any>sut, '_startDoPeriodicRefresh').and.callThrough();
         sut.initPeriodicRefresh();
         sut.setRefreshChange(expirationTimeObj);
-        expect(sut.getRefreshChange).toHaveBeenCalled();
-    });
+
+        it('Normal', () => {
+            // const authServiceSpy: Pick<AuthService, 'authState'> = {
+            //     authState() {
+            //         return of(true);
+            //     },
+            // };
+            // authServiceSpy = {
+            //     authState() {
+            //         return of(true);
+            //     },
+            // };
+            // authServiceSpy = jasmine.createSpyObj<AuthService>(
+            //     'AuthService',
+            //     {
+            //         authState: of(true),
+            //     }
+            // );
+
+            // setup();
+            // spyOn(authServiceSpy, 'authState').and.callThrough();
+
+            // spyOn(sut, 'getRefreshChange').and.callThrough();
+            // spyOn(<any>sut, '_startDoPeriodicRefresh').and.callThrough();
+            // sut.initPeriodicRefresh();
+            // sut.setRefreshChange(expirationTimeObj);
+
+            expect(sut.getRefreshChange).toHaveBeenCalled();
+        });
+    })
+
 
 
 
