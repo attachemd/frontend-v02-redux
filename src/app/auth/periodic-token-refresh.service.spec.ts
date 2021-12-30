@@ -1,11 +1,11 @@
-import {discardPeriodicTasks, fakeAsync, flush, flushMicrotasks, TestBed, tick} from "@angular/core/testing";
+import {discardPeriodicTasks, fakeAsync, flush, TestBed, tick} from "@angular/core/testing";
 import {AuthService} from "./auth.service";
 import {JwtHelperService, JwtModule} from "@auth0/angular-jwt";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import {Observable, of, Subject, throwError} from "rxjs";
-import {ManagePeriodicTokenRefresh} from "./manage-periodic-token-refresh.service";
+import {of, throwError} from "rxjs";
 import {TestScheduler} from "rxjs/testing";
 import {ExpirationTimeObj} from "./expiration-time.model";
+import {ManagePeriodicTokenRefresh} from "./periodic-token-refresh.service";
 
 let sut: ManagePeriodicTokenRefresh;
 // let authServiceSpy: AuthService;
@@ -258,25 +258,29 @@ describe('ManagePeriodicTokenRefreshService White Box testing', () => {
     })
 
     describe('Do periodic refresh', () => {
-        it("Do periodic refresh if expiration time set", () => {
-            setup();
+        beforeEach(() => {
             (sut as any)._timer = 11;
             spyOn(window, 'clearInterval');
             spyOn((sut as any), '_ifRefreshTokenAliveDoRefresh');
-            (sut as any)._doPeriodicRefresh(expirationTimeObj)
-            expect((sut as any)._ifRefreshTokenAliveDoRefresh).toHaveBeenCalledWith(expirationTimeObj);
-            expect(clearInterval).toHaveBeenCalledWith((sut as any)._timer);
-        });
+            setup();
+        })
+        it(
+            "Stop & do periodic refresh if user is authenticated",
+            () => {
+                (sut as any)._doPeriodicRefresh(expirationTimeObj)
+                expect((sut as any)._ifRefreshTokenAliveDoRefresh).toHaveBeenCalledWith(expirationTimeObj);
+                expect(clearInterval).toHaveBeenCalledWith((sut as any)._timer);
+            }
+        );
 
-        it("Skip periodic refresh if expiration time not set", () => {
-            setup();
-            (sut as any)._timer = 11;
-            spyOn(window, 'clearInterval');
-            spyOn((sut as any), '_ifRefreshTokenAliveDoRefresh');
-            (sut as any)._doPeriodicRefresh(expirationTimeObjNotSet)
-            expect((sut as any)._ifRefreshTokenAliveDoRefresh).not.toHaveBeenCalled();
-            expect(clearInterval).toHaveBeenCalledWith((sut as any)._timer);
-        });
+        it(
+            "Stop & skip periodic refresh if user is not authenticated",
+            () => {
+                (sut as any)._doPeriodicRefresh(expirationTimeObjNotSet)
+                expect((sut as any)._ifRefreshTokenAliveDoRefresh).not.toHaveBeenCalled();
+                expect(clearInterval).toHaveBeenCalledWith((sut as any)._timer);
+            }
+        );
     })
 
     describe('If Refresh Token Alive Do Refresh', () => {
@@ -386,202 +390,153 @@ describe('ManagePeriodicTokenRefreshService White Box testing', () => {
 
 })
 
-describe('ManagePeriodicTokenRefreshService Black Box testing', () => {
-
-
-    // let authServiceSpy: Partial<AuthService>;
-
-    // const setup = () => {
-    // //     authServiceSpy = {
-    // //         // authChange$: new Subject<boolean>(),
-    // //         authChangeNotifier(): void {
-    // //         },
-    // //         registerUser(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //         login(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //         logout(): void {
-    // //         },
-    // //         refreshTokenOrDie(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //         isBothTokensAlive(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //         isToken(): boolean {
-    // //             return true;
-    // //         },
-    // //         authState(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //         authSuccessfully(): Observable<boolean> {
-    // //             return of(true);
-    // //         },
-    // //     };
-    //
-    //     // authServiceSpy = jasmine.createSpyObj<AuthService>(
-    //     //     'AuthService',
-    //     //     {
-    //     //         // Successful responses per default
-    //     //         authChangeNotifier: undefined,
-    //     //         registerUser: of(true),
-    //     //         login: of(true),
-    //     //         logout: undefined,
-    //     //         refreshTokenOrDie: of(true),
-    //     //         isBothTokensAlive: of(true),
-    //     //         isToken: true,
-    //     //         authState: of(true),
-    //     //         authSuccessfully: undefined,
-    //     //         // Overwrite with given return values
-    //     //     }
-    //     // );
-    //     testBedConfig()
-    // }
-
-    beforeAll(() => {
-        setup();
-    })
-
-    beforeEach(() => {
-        // setup();
-    });
-
-    it('should be created', () => {
-        // setup();
-        expect(sut).toBeTruthy();
-    });
-
-    it('Stream expiration time object when call setRefreshChange with it', () => {
-        // setup();
-        scheduler.run(({expectObservable, cold}) => {
-            // sut.exerciseChangedNotifier(exercise);
-            cold('-a').subscribe(() => sut.setRefreshChange(expirationTimeObj))
-            expectObservable(sut.getRefreshChange()).toBe('-a', {a: expirationTimeObj})
-        })
-    });
-
-    describe('Initialize periodic refresh with token expired', () => {
-        beforeAll(fakeAsync(() => {
-            // setup();
-
-            spyOn(sut, 'getRefreshChange').and.callThrough();
-            spyOn(<any>sut, '_getAndNotifyExpiredTime').and.callThrough();
-            spyOn(<any>sut, '_getTokenExpiredTime').and.callThrough();
-            spyOn(sut, 'setRefreshChange').and.callThrough();
-            spyOn(<any>sut, '_doPeriodicRefresh').and.callThrough();
-            spyOn(window, 'clearInterval').and.callThrough();
-            spyOn(<any>sut, '_ifRefreshTokenAliveDoRefresh').and.callThrough();
-            spyOn(window, 'setTimeout').and.callThrough();
-            spyOn(<any>sut, '_doRefresh').and.callThrough();
-            spyOn(<any>sut, '_setIntervalRefreshWithDefaultExpiredTime')
-                .and
-                .callThrough();
-            spyOn(window, 'setInterval').and.callThrough();
-            sut.initPeriodicRefresh();
-            sut.setRefreshChange(expirationTimeObj);
-            tick(20000)
-            discardPeriodicTasks();
-        }))
-
-        // afterAll(fakeAsync(() => {
-        //     discardPeriodicTasks();
-        // }))
-
-
-        describe('Instructions start',
-            () => {
-                it('Subscribe to the subject refresh changes', () => {
-                    expect(sut.getRefreshChange).toHaveBeenCalled();
-                });
-                it('Get and notify expired time', () => {
-                    expect((sut as any)._getAndNotifyExpiredTime)
-                        .toHaveBeenCalled();
-                });
-            }
-        )
-
-        describe('Get and notify expired time',
-            () => {
-                it('subscribe to the subject refresh changes',
-                    () => {
-                        expect((sut as any)._getTokenExpiredTime).toHaveBeenCalled();
-                    }
-                );
-                it('notify refresh change', () => {
-                    expect(sut.setRefreshChange)
-                        .toHaveBeenCalledWith(expirationTimeObj);
-                });
-            }
-        )
-
-
-        it('Refresh change subject get notified',
-            () => {
-                expect((sut as any)._doPeriodicRefresh)
-                    .toHaveBeenCalledWith(expirationTimeObj);
-            }
-        );
-
-        describe('Do periodic refresh',
-            () => {
-                it('Clear timer', () => {
-                    expect(clearInterval).toHaveBeenCalled();
-                });
-
-                it('If refresh token alive do refresh', () => {
-                    expect((sut as any)._ifRefreshTokenAliveDoRefresh)
-                        .toHaveBeenCalledWith(expirationTimeObj);
-                });
-            }
-        )
-
-        describe('If refresh token expired do refresh now',
-            () => {
-                it('Clear timer called immediately', () => {
-                    expect(clearInterval).toHaveBeenCalled();
-                });
-
-                it('Do refresh', () => {
-                    expect((sut as any)._doRefresh).toHaveBeenCalled();
-                });
-
-                it('Set interval refresh with default expired time', () => {
-                    expect((sut as any)._setIntervalRefreshWithDefaultExpiredTime)
-                        .toHaveBeenCalledWith(expirationTimeObj);
-                });
-            }
-        )
-
-        describe('Do refresh',
-            () => {
-                it(`Subscribe to the observable refreshTokenOrDie
-                    but user not authenticated then no Get and notify expired time`,
-                    () => {
-                        expect(authServiceSpy.refreshTokenOrDie).toHaveBeenCalled();
-                    }
-                );
-
-            }
-        )
-
-        describe('Set interval refresh with default expired time',
-            () => {
-                it(`Subscribe to the observable refreshTokenOrDie
-                    but user not authenticated then no Get and notify expired time`,
-                    () => {
-
-                        expect(setInterval).toHaveBeenCalled();
-
-                    }
-                );
-
-            }
-        )
-
-
-    })
-
-
-})
+// describe(
+//     'ManagePeriodicTokenRefreshService Black Box testing',
+//     () => {
+//
+//         beforeAll(() => {
+//             setup();
+//         })
+//
+//         beforeEach(() => {
+//             // setup();
+//         });
+//
+//         it('should be created', () => {
+//             // setup();
+//             expect(sut).toBeTruthy();
+//         });
+//
+//         it('Stream expiration time object when call setRefreshChange with it', () => {
+//             // setup();
+//             scheduler.run(({expectObservable, cold}) => {
+//                 // sut.exerciseChangedNotifier(exercise);
+//                 cold('-a').subscribe(() => sut.setRefreshChange(expirationTimeObj))
+//                 expectObservable(sut.getRefreshChange()).toBe('-a', {a: expirationTimeObj})
+//             })
+//         });
+//
+//         describe('Initialize periodic refresh with token expired', () => {
+//             beforeAll(fakeAsync(() => {
+//                 // setup();
+//
+//                 spyOn(sut, 'getRefreshChange').and.callThrough();
+//                 spyOn(<any>sut, '_getAndNotifyExpiredTime').and.callThrough();
+//                 spyOn(<any>sut, '_getTokenExpiredTime').and.callThrough();
+//                 spyOn(sut, 'setRefreshChange').and.callThrough();
+//                 spyOn(<any>sut, '_doPeriodicRefresh').and.callThrough();
+//                 spyOn(window, 'clearInterval').and.callThrough();
+//                 spyOn(<any>sut, '_ifRefreshTokenAliveDoRefresh').and.callThrough();
+//                 spyOn(window, 'setTimeout').and.callThrough();
+//                 spyOn(<any>sut, '_doRefresh').and.callThrough();
+//                 spyOn(<any>sut, '_setIntervalRefreshWithDefaultExpiredTime')
+//                     .and
+//                     .callThrough();
+//                 spyOn(window, 'setInterval').and.callThrough();
+//                 sut.initPeriodicRefresh();
+//                 sut.setRefreshChange(expirationTimeObj);
+//                 tick(20000)
+//                 discardPeriodicTasks();
+//             }))
+//
+//             // afterAll(fakeAsync(() => {
+//             //     discardPeriodicTasks();
+//             // }))
+//
+//
+//             describe('Instructions start',
+//                 () => {
+//                     it('Subscribe to the subject refresh changes', () => {
+//                         expect(sut.getRefreshChange).toHaveBeenCalled();
+//                     });
+//                     it('Get and notify expired time', () => {
+//                         expect((sut as any)._getAndNotifyExpiredTime)
+//                             .toHaveBeenCalled();
+//                     });
+//                 }
+//             )
+//
+//             describe('Get and notify expired time',
+//                 () => {
+//                     it('subscribe to the subject refresh changes',
+//                         () => {
+//                             expect((sut as any)._getTokenExpiredTime).toHaveBeenCalled();
+//                         }
+//                     );
+//                     it('notify refresh change', () => {
+//                         expect(sut.setRefreshChange)
+//                             .toHaveBeenCalledWith(expirationTimeObj);
+//                     });
+//                 }
+//             )
+//
+//
+//             it('Refresh change subject get notified',
+//                 () => {
+//                     expect((sut as any)._doPeriodicRefresh)
+//                         .toHaveBeenCalledWith(expirationTimeObj);
+//                 }
+//             );
+//
+//             describe('Do periodic refresh',
+//                 () => {
+//                     it('Clear timer', () => {
+//                         expect(clearInterval).toHaveBeenCalled();
+//                     });
+//
+//                     it('If refresh token alive do refresh', () => {
+//                         expect((sut as any)._ifRefreshTokenAliveDoRefresh)
+//                             .toHaveBeenCalledWith(expirationTimeObj);
+//                     });
+//                 }
+//             )
+//
+//             describe('If refresh token expired do refresh now',
+//                 () => {
+//                     it('Clear timer called immediately', () => {
+//                         expect(clearInterval).toHaveBeenCalled();
+//                     });
+//
+//                     it('Do refresh', () => {
+//                         expect((sut as any)._doRefresh).toHaveBeenCalled();
+//                     });
+//
+//                     it('Set interval refresh with default expired time', () => {
+//                         expect((sut as any)._setIntervalRefreshWithDefaultExpiredTime)
+//                             .toHaveBeenCalledWith(expirationTimeObj);
+//                     });
+//                 }
+//             )
+//
+//             describe('Do refresh',
+//                 () => {
+//                     it(`Subscribe to the observable refreshTokenOrDie
+//                     but user not authenticated then no Get and notify expired time`,
+//                         () => {
+//                             expect(authServiceSpy.refreshTokenOrDie).toHaveBeenCalled();
+//                         }
+//                     );
+//
+//                 }
+//             )
+//
+//             describe('Set interval refresh with default expired time',
+//                 () => {
+//                     it(`Subscribe to the observable refreshTokenOrDie
+//                     but user not authenticated then no Get and notify expired time`,
+//                         () => {
+//
+//                             expect(setInterval).toHaveBeenCalled();
+//
+//                         }
+//                     );
+//
+//                 }
+//             )
+//
+//
+//         })
+//
+//
+//     }
+// )

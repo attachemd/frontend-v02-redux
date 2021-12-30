@@ -20,7 +20,7 @@ import {AuthGuard} from "./auth/auth.guard";
 import {UIService} from "./shared/ui.service";
 import {SharedModule} from "./shared/shared.module";
 import {JwtModule} from "@auth0/angular-jwt";
-import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.service";
+import {ManagePeriodicTokenRefresh} from "./auth/periodic-token-refresh.service";
 import { FullCalendarComponent } from './full-calendar/full-calendar.component';
 
 // import { FullCalendarModule } from '@fullcalendar/angular';

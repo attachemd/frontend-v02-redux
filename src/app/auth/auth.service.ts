@@ -8,7 +8,6 @@ import {catchError, delay, map, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {flatMap} from "rxjs/operators";
 import {UIService} from "../shared/ui.service";
-import { ManagePeriodicTokenRefresh } from "./manage-periodic-token-refresh.service";
 
 // var LOG_PREFIX = new Date().getDate() + '.' + new Date().getMonth() + '.' + new Date().getFullYear() + ' / ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
 // var log = console.log;
@@ -70,8 +69,7 @@ export class AuthService {
         private http: HttpClient,
         private router: Router,
         private jwtHelper: JwtHelperService,
-        private uiService: UIService,
-        private managePeriodicTokenRefresh: ManagePeriodicTokenRefresh
+        private uiService: UIService
     ) {
     }
 
@@ -390,7 +388,6 @@ export class AuthService {
     // }
 
     public authSuccessfully() {
-        this.managePeriodicTokenRefresh.initPeriodicRefresh();
         this.authChangeNotifier(true);
         this.router.navigate(['/training'])
     }

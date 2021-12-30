@@ -7,7 +7,6 @@ import {UIService} from "../shared/ui.service";
 import {of, throwError} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {ManagePeriodicTokenRefresh} from "./manage-periodic-token-refresh.service";
 
 const validAuthData = {
     email: "test@test.com",
@@ -24,13 +23,6 @@ const uiServiceSpy = jasmine.createSpyObj(
     {
         loadingStateNotifier: undefined,
         showSnackBar: undefined
-    }
-);
-
-const managePeriodicTokenRefreshSpy = jasmine.createSpyObj(
-    "ManagePeriodicTokenRefresh",
-    {
-        initPeriodicRefresh: undefined
     }
 );
 
@@ -60,10 +52,6 @@ describe('AuthService', () => {
                 {
                     provide: UIService,
                     useValue: uiServiceSpy
-                },
-                {
-                    provide: ManagePeriodicTokenRefresh,
-                    useValue: managePeriodicTokenRefreshSpy
                 },
                 AuthService,
                 JwtHelperService
@@ -602,7 +590,7 @@ describe('AuthService', () => {
         }
     );
 
-    fit(
+    it(
         'authChangeNotifier() & router.navigate should be called when authSuccessfully',
         () => {
             let router = TestBed.inject(Router);
@@ -613,8 +601,6 @@ describe('AuthService', () => {
             authService.authSuccessfully()
             expect(authService.authChangeNotifier).toHaveBeenCalled();
             expect(router.navigate).toHaveBeenCalled();
-            expect(managePeriodicTokenRefreshSpy.initPeriodicRefresh).toHaveBeenCalled();
-
         }
     );
 

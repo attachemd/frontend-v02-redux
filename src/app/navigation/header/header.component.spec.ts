@@ -5,14 +5,24 @@ import {AuthService} from "../../auth/auth.service";
 import {Observable, of, Subject, throwError} from "rxjs";
 import {AuthData} from "../../auth/auth-data.model";
 import {click} from "../../spec-helpers/element.spec-helper";
+import {ManagePeriodicTokenRefresh} from "../../auth/periodic-token-refresh.service";
 
-describe('HeaderComponent', () => {
+
+fdescribe('HeaderComponent', () => {
     let component: HeaderComponent;
     let fixture: ComponentFixture<HeaderComponent>;
     let authServiceSpy: Pick<AuthService, keyof AuthService>;
+    let managePeriodicTokenRefresh: ManagePeriodicTokenRefresh
+
 
     beforeEach(async () => {
         // let authChange$: Subject<boolean> = new Subject<boolean>();
+        managePeriodicTokenRefresh = jasmine.createSpyObj(
+            "ManagePeriodicTokenRefresh",
+            {
+                initPeriodicRefresh: undefined
+            }
+        );
         authServiceSpy = {
             authChange$: new Subject<boolean>(),
             authChangeNotifier(): void {
@@ -53,10 +63,12 @@ describe('HeaderComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [HeaderComponent],
             providers: [
-                {provide: AuthService, useValue: authServiceSpy}
+                {provide: AuthService, useValue: authServiceSpy},
+                {provide: ManagePeriodicTokenRefresh, useValue: managePeriodicTokenRefresh}
             ],
         })
             .compileComponents();
+        managePeriodicTokenRefresh = TestBed.inject(ManagePeriodicTokenRefresh)
     });
 
     beforeEach(() => {
@@ -80,18 +92,20 @@ describe('HeaderComponent', () => {
     // );
 
     it('Subscribe on authChange$.next',
-         () => {
+        fakeAsync(() => {
             let isAuthenticated = true;
             // authServiceSpy.authChangeNotifier(isAuthenticated);
             // tick(1000);
             // fixture.detectChanges();
             authServiceSpy.authChange$.next(isAuthenticated)
+            tick()
             expect(component.isAuthenticated).toEqual(true);
-        }
+            expect(managePeriodicTokenRefresh.initPeriodicRefresh).toHaveBeenCalled();
+        })
     );
 
     it('Pass subscription on authChange$.error ',
-         () => {
+        () => {
             spyOn<any>(authServiceSpy.authChange$, 'next')
                 // .and.throwError('someError');
                 .and.returnValue(throwError('someError'));
@@ -102,21 +116,21 @@ describe('HeaderComponent', () => {
     );
 
     it('Emit sidenavToggle events on onToggleSidenav',
-         () => {
-             let testVariable: boolean | undefined;
-             component.sidenavToggle.subscribe(() => {
-                 testVariable = true
-             });
+        () => {
+            let testVariable: boolean | undefined;
+            component.sidenavToggle.subscribe(() => {
+                testVariable = true
+            });
 
-             click(fixture, 'menu-button');
-             expect(testVariable).toBe(true);
+            click(fixture, 'menu-button');
+            expect(testVariable).toBe(true);
         }
     );
 
     it('authService.logout should be called when onLogout',
-         () => {
-             component.onLogout();
-             expect(authServiceSpy.logout).toHaveBeenCalled();
+        () => {
+            component.onLogout();
+            expect(authServiceSpy.logout).toHaveBeenCalled();
         }
     );
 });

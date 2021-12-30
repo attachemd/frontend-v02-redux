@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { AuthService } from './auth/auth.service';
-import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.service";
+// import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.service";
 
 @Component({
   selector: 'app-root',
@@ -10,8 +10,8 @@ import {ManagePeriodicTokenRefresh} from "./auth/manage-periodic-token-refresh.s
 export class AppComponent implements OnInit{
   title = 'frontend-v02';
   constructor(
-      private authService: AuthService,
-      private managePeriodicTokenRefresh: ManagePeriodicTokenRefresh
+      // private authService: AuthService,
+      // private managePeriodicTokenRefresh: ManagePeriodicTokenRefresh
   ) {
   }
   ngOnInit(){
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit{
           '%c AppComponent ',
           'background: red; color: #fff; padding: 0 10px;'
       );
-      this.managePeriodicTokenRefresh.initPeriodicRefresh();
+      // this.managePeriodicTokenRefresh.initPeriodicRefresh();
       // this.authService.initAuthListener();
       // this.authService.authStateChange.subscribe(this.authService.authState);
   }

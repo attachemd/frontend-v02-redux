@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {Subscription} from "rxjs";
+import {ManagePeriodicTokenRefresh} from "../../auth/periodic-token-refresh.service";
 
 @Component({
     selector: 'app-header',
@@ -13,7 +14,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public isAuthenticated: boolean = false;
     public authSubscription: Subscription = new Subscription();
 
-    constructor(private authService: AuthService) {
+    constructor(
+        private authService: AuthService,
+        private managePeriodicTokenRefresh: ManagePeriodicTokenRefresh,
+    ) {
     }
 
     ngOnInit(): void {
@@ -21,6 +25,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .authChange$
             .subscribe(
                 (authStats) => {
+                    if(authStats){
+                        this.managePeriodicTokenRefresh.initPeriodicRefresh();
+                    }
                     console.log(
                         '%c this.isAuthenticated ',
                         'background: yellow; color: #000; padding: 0 10px;'
