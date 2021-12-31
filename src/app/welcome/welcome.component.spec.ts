@@ -119,7 +119,7 @@ xdescribe('WelcomeComponent', () => {
 
                 expect(fullCalendarServiceSpy.getEvents).toHaveBeenCalled();
 
-                await fixture.whenStable().then(() => {
+                fixture.whenStable().then(() => {
                     expect(component.calendarOptions).toBeUndefined();
                     expect(uiServiceSpy.showSnackBar).toHaveBeenCalled();
                 });

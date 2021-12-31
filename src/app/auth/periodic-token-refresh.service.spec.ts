@@ -97,7 +97,7 @@ describe('ManagePeriodicTokenRefreshService White Box testing', () => {
         expect(sut).toBeTruthy();
     });
 
-    it('Stream expiration time object when call setRefreshChange with it', () => {
+    it('Stream expiration time object', () => {
         setup();
         scheduler.run(({expectObservable, cold}) => {
             // sut.exerciseChangedNotifier(exercise);
@@ -259,10 +259,10 @@ describe('ManagePeriodicTokenRefreshService White Box testing', () => {
 
     describe('Do periodic refresh', () => {
         beforeEach(() => {
+            setup();
             (sut as any)._timer = 11;
             spyOn(window, 'clearInterval');
             spyOn((sut as any), '_ifRefreshTokenAliveDoRefresh');
-            setup();
         })
         it(
             "Stop & do periodic refresh if user is authenticated",
