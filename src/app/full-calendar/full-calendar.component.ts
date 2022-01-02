@@ -82,6 +82,7 @@ export class FullCalendarComponent implements OnInit {
       let calendar = new Calendar(calendarEl, {
           plugins: [ momentPlugin, dayGridPlugin, interactionPlugin ],
           titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
+          initialView: 'dayGridWeek',
           selectable: true,
           dateClick: function(arg) {
               let m = toMoment(arg.date, calendar); // calendar is required

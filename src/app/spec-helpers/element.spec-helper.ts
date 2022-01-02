@@ -169,3 +169,11 @@ export function findComponents<T>(
 ): DebugElement[] {
     return fixture.debugElement.queryAll(By.css(selector));
 }
+
+export let spyOnObj = (mockClassName: any) => {
+    for (let prop of Object.getOwnPropertyNames(mockClassName.prototype)) {
+        if(prop !== "constructor"){
+            spyOn(mockClassName.prototype, prop).and.callThrough();
+        }
+    }
+}

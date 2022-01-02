@@ -11,15 +11,37 @@ import {PastTrainingComponent} from './past-training/past-training.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {By} from "@angular/platform-browser";
 import {NgZone, NO_ERRORS_SCHEMA} from "@angular/core";
-import {findComponent, findEl} from "../spec-helpers/element.spec-helper";
+import {findComponent, findEl, spyOnObj} from "../spec-helpers/element.spec-helper";
+import {AuthService} from "../auth/auth.service";
 
-xdescribe('TrainingComponent', () => {
+describe('TrainingComponent', () => {
     let component: TrainingComponent;
     let fixture: ComponentFixture<TrainingComponent>;
+    let trainingServiceSpy: Pick<TrainingService, 'exerciseChangedNotifier' | 'exerciseChangedGetter'>;
 
-    let trainingServiceSpy = jasmine.createSpyObj("TrainingService", ["getAvailableExercises"]);
-    trainingServiceSpy.exerciseChanged$ = new Subject<FinishedExercise>();
+    // let trainingServiceSpy = jasmine.createSpyObj(
+    //     "TrainingService",
+    //     ["getAvailableExercises"]
+    // );
+    // trainingServiceSpy.exerciseChanged$ = new Subject<FinishedExercise>();
+
+    class TrainingServiceMock {
+        constructor(private exerciseChanged$: Subject<FinishedExercise>) {
+        }
+
+        exerciseChangedGetter(): Subject<FinishedExercise> {
+            return this.exerciseChanged$;
+        }
+
+        exerciseChangedNotifier(finishedExercise: FinishedExercise): void {
+            this.exerciseChanged$.next(finishedExercise)
+        }
+    }
+
     beforeEach(async () => {
+        let exerciseChanged$ = new Subject<FinishedExercise>();
+        trainingServiceSpy = new TrainingServiceMock(exerciseChanged$)
+        spyOnObj(TrainingServiceMock)
         await TestBed.configureTestingModule({
             imports: [
                 BrowserAnimationsModule,
@@ -93,7 +115,7 @@ xdescribe('TrainingComponent', () => {
 
     // TODO problem with async
     it('find past training component',
-        fakeAsync( async () => {
+        async () => {
             // let compiled = fixture.nativeElement;
             fixture.debugElement
                 .queryAll(By.css('.mat-tab-label'))[1]
@@ -101,7 +123,8 @@ xdescribe('TrainingComponent', () => {
                 .click();
 
             fixture.detectChanges();
-            flush()
+            // flush()
+            // tick()
             // await fixture.whenStable().then(() => {
             //
             //     // expect(compiled.querySelector('app-past-training')).toBeTruthy();
@@ -111,7 +134,7 @@ xdescribe('TrainingComponent', () => {
             await fixture.whenStable();
             const pastTraining = findComponent(fixture, 'app-past-training');
             expect(pastTraining).toBeTruthy();
-        })
+        }
     );
 
     // it('should display registration form after clicking second tab',
