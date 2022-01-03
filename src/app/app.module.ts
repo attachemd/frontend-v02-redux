@@ -22,6 +22,7 @@ import {SharedModule} from "./shared/shared.module";
 import {JwtModule} from "@auth0/angular-jwt";
 import {ManagePeriodicTokenRefresh} from "./auth/periodic-token-refresh.service";
 import { FullCalendarComponent } from './full-calendar/full-calendar.component';
+import { EventComponent } from './full-calendar/event/event.component';
 
 // import { FullCalendarModule } from '@fullcalendar/angular';
 // import interactionPlugin from '@fullcalendar/interaction';
@@ -54,6 +55,7 @@ export function tokenGetter(): string | null {
         HeaderComponent,
         SidenavListComponent,
         FullCalendarComponent,
+        EventComponent,
 
     ],
     imports: [
