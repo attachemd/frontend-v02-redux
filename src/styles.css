@@ -5,8 +5,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .fc-event {
     padding:10px;
+    display: flex;
+    background-color: green;
 }
 
 .new-class {
-    background-color: #E1342A;
+    /*background-color: #E1342A;*/
 }

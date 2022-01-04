@@ -1,1 +1,6 @@
 <div id="full-calendar"></div>
+<ng-template #fcEventContent let-arg='arg'>
+    <div>{{ arg.event.title }}</div>
+    <div>{{ arg.timeText }}</div>
+
+</ng-template>

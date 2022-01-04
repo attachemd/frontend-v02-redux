@@ -1,1 +1,9 @@
-<p>event works!</p>
+<!--<div class="event-component" [style.backgroundColor]="data?.backgroundColor">-->
+<div class="event-component">
+    <p>event works! {{data?.event._def.publicId}}</p>
+    <p>{{data?.event._def.title}}</p>
+    <p>{{data?.backgroundColor}}</p>
+    <p>{{data?.borderColor}}</p>
+    <p>{{data?.id}}</p>
+    <button mat-button *ngIf="isAvailable">BUY</button>
+</div>

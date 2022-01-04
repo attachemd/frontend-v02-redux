@@ -97,6 +97,7 @@ export function tokenGetter(): string | null {
         TrainingService,
         UIService
     ],
+    entryComponents: [EventComponent],
     bootstrap: [AppComponent],
 
 })
