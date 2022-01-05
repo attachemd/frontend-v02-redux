@@ -66,3 +66,23 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .fc-timegrid-axis {
     color: #6A7998;
 }
+
+.fc-title {
+    display:flex;
+}
+
+.fc-title > div {
+
+}
+
+.fc-title > div.letr {
+      text-transform: uppercase;
+    font-weight: bold;
+    color: #232B48;
+}
+
+.fc-title > div.num {
+      margin-left: 6px;
+    color: #B8BAC8;
+    font-weight: 400;
+}

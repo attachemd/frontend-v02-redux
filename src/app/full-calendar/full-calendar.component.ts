@@ -148,7 +148,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             views: {
                 dayGridMonth: { // name of view
                     // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
-                    titleFormat: { year: 'numeric', month: 'long' },
+                    titleFormat: {year: 'numeric', month: 'long'},
                     // titleFormat: function(date) {
                     //     // return '<p>' + date.toString() + '!!!</p>';
                     //     return '<p></p>';
@@ -156,23 +156,26 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     // other view-specific options here
                 }
             },
-            viewDidMount : function (args) {
-            //The title isn't rendered until after this callback, so we need to use a timeout.
-            window.setTimeout(function(){
-                let num = args.view.title.match(/\d+/g);
+            viewDidMount: function (args) {
+                //The title isn't rendered until after this callback, so we need to use a timeout.
+                window.setTimeout(function () {
+                    let num = args.view.title.match(/\d+/g);
                     // num[0] will be 21
 
-                let letr =  args.view.title.match(/[a-zA-Z]+/g);
-                /* letr[0] will be foofo.
-                   Now both are separated, and you can make any string as you like. */
-                $("#full-calendar").find('.fc-toolbar-title').empty().append(
-                    // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
-                    // "<div>"+view.end.format('MMM Do')+"</div>"
-                    "<div>"+letr+"</div>"+
-                    "<div>"+num+"</div>"
-                );
-            },0);
-        },
+                    let letr = args.view.title.match(/[a-zA-Z]+/g);
+                    /* letr[0] will be foofo.
+                       Now both are separated, and you can make any string as you like. */
+                    $("#full-calendar").find('.fc-toolbar-title').empty().append(
+                        // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
+                        // "<div>"+view.end.format('MMM Do')+"</div>"
+                        `
+                 <div class="fc-title">
+                    <div class="letr">${letr}</div>
+                    <div class="num">${num}</div>
+                 </div>`
+                    );
+                }, 0);
+            },
             buttonText: {
                 today: "Aujourd'hui",
                 month: "Mois",
