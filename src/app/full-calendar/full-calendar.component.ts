@@ -18,7 +18,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import {EventComponent} from "./event/event.component";
 
-// import * as $ from 'jquery';
+import * as $ from 'jquery';
 // (window as any).$ = (window as any).jQuery = jQuery;
 // (window as any).$ = (window as any).jQuery;
 // import * as moment from 'moment';
@@ -107,6 +107,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
             initialView: 'timeGridWeek',
             locale: 'fr',
+            eventClassNames: 'myclassname',
+            allDayText: 'toute la journée',
+            themeSystem: 'bootstrap',
 
             // eventContent: function (arg) {
             //     let italicEl = document.createElement('i')
@@ -142,6 +145,34 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,list'
             },
+            views: {
+                dayGridMonth: { // name of view
+                    // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
+                    titleFormat: { year: 'numeric', month: 'long' },
+                    // titleFormat: function(date) {
+                    //     // return '<p>' + date.toString() + '!!!</p>';
+                    //     return '<p></p>';
+                    // }
+                    // other view-specific options here
+                }
+            },
+            viewDidMount : function (args) {
+            //The title isn't rendered until after this callback, so we need to use a timeout.
+            window.setTimeout(function(){
+                let num = args.view.title.match(/\d+/g);
+                    // num[0] will be 21
+
+                let letr =  args.view.title.match(/[a-zA-Z]+/g);
+                /* letr[0] will be foofo.
+                   Now both are separated, and you can make any string as you like. */
+                $("#full-calendar").find('.fc-toolbar-title').empty().append(
+                    // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
+                    // "<div>"+view.end.format('MMM Do')+"</div>"
+                    "<div>"+letr+"</div>"+
+                    "<div>"+num+"</div>"
+                );
+            },0);
+        },
             buttonText: {
                 today: "Aujourd'hui",
                 month: "Mois",
@@ -164,25 +195,27 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     id: "14",
                     title: 'All Day Event',
                     start: '2022-01-04',
-                    backgroundColor: '#99CF5F',
-                    borderColor: '#99CF5F',
-                    textColor: '#2f520a',
+                    backgroundColor: '#F5FCF5',
+                    borderColor: '#2ACC39',
+                    textColor: '#000',
                 },
                 {
                     id: "15",
                     title: 'Start FullCalendar project',
-                    start: '2022-01-05 09:00:00',
-                    end: '2022-01-05 11:00:00',
-                    // backgroundColor: '#341917',
-                    // borderColor: '#341917'
+                    start: '2022-01-05 04:00:00',
+                    end: '2022-01-05 08:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
                 },
                 {
                     id: "16",
                     title: 'Long Event',
                     start: '2022-01-07 09:00:00',
                     end: '2022-01-08 13:00:00',
-                    backgroundColor: '#422C78',
-                    borderColor: '#422C78'
+                    backgroundColor: '#F5FEFD',
+                    borderColor: '#2EE5C9',
+                    textColor: '#000',
                 },
             ],
 
@@ -261,7 +294,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         );
         console.log(element);
 
-        return {domNodes: [element]};
+        return {domNodes: [domElem]};
         // return renderer.rootNodes[0];
     }
 

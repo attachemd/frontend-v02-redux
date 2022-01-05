@@ -3,12 +3,66 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+:root {
+    --fc-small-font-size: .85em;
+    --fc-page-bg-color: #000;
+    --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+    --fc-neutral-text-color: #808080;
+    /*--fc-border-color: #e4e6e9;*/
+    --fc-border-color: #dfdfdf;
+
+    --fc-today-bg-color: #efefef;
+
+    /*--fc-border-color: transparent;*/
+    /*--fc-bg-event-color: rgb(143, 223, 130);*/
+    /*--fc-bg-event-opacity: 0.3;*/
+    /*--fc-highlight-color: rgba(188, 232, 241, 0.3);*/
+    /*--fc-today-bg-color: rgba(255, 220, 40, 0.15);*/
+    /*--fc-today-bg-color: black;*/
+    --fc-event-bg-color: transparent;
+    --fc-event-border-color: transparent;
+    /*--fc-daygrid-event-dot-width: 100px;*/
+    /*--fc-small-font-size: 1em;*/
+}
+
+
 .fc-event {
-    padding:10px;
-    display: flex;
-    background-color: green;
+    /*padding:10px;*/
+    /*display: flex;*/
+    /*background-color: green;*/
+    /*border-radius: 10px;*/
 }
 
 .new-class {
     /*background-color: #E1342A;*/
+}
+
+.myclassname {
+    /*border: 1px solid red;*/
+    /*border: none;*/
+    border-width: 1px;
+    outline: none;
+    box-shadow: none !important;
+    border-radius: 10px;
+    margin: 3px;
+}
+
+/*a {*/
+/*    outline: 1px dashed red;*/
+/*}*/
+
+/** {*/
+/*    outline:none !important;*/
+/*    outline-width: 0 !important;*/
+/*    box-shadow: none;*/
+/*    -moz-box-shadow: none;*/
+/*    -webkit-box-shadow: none;*/
+/*}*/
+
+.fc-timegrid-slot {
+    color: #6A7998;
+}
+
+.fc-timegrid-axis {
+    color: #6A7998;
 }

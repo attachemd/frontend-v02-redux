@@ -1,5 +1,19 @@
 .event-component {
-    background-color: red;
+    /*background-color: red;*/
+    /*padding: 10px;*/
+    /*height:100%;*/
+    height: -webkit-fill-available;
+    /*height: inherit;*/
     padding: 10px;
-    height:100%;
+
+}
+
+.event-title {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.event-time {
+    /*color: #835F5F;*/
 }
