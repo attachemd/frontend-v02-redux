@@ -49,6 +49,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
     // To prevent memory leaks, we need to manually destroy any views we create when the
     // events are removed from the view.
     private readonly contentRenderers = new Map<string, EmbeddedViewRef<any>>();
+    count = 0;
+    calendar: any;
+    toolbarTitle!: JQuery;
 
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
@@ -102,14 +105,22 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         // );
 
         let calendarEl: HTMLElement = document.getElementById('full-calendar')!;
-        let calendar = new Calendar(calendarEl, {
+        this.calendar = new Calendar(calendarEl, {
             plugins: [momentPlugin, dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
             titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
             initialView: 'timeGridWeek',
             locale: 'fr',
-            eventClassNames: 'myclassname',
+            // eventClassNames: 'myclassname',
+            eventClassNames: (arg) => {
+
+                if (arg.event.extendedProps.isUrgent) {
+                    return ['urgent']
+                } else {
+                    return ['myclassname']
+                }
+            },
             allDayText: 'toute la journée',
-            themeSystem: 'bootstrap',
+            // themeSystem: 'bootstrap',
 
             // eventContent: function (arg) {
             //     let italicEl = document.createElement('i')
@@ -139,11 +150,24 @@ export class FullCalendarComponent implements OnInit, DoCheck {
 
             eventContent: (arg) => this.renderEventContent(arg),
             eventWillUnmount: (arg) => this.unrenderEvent(arg),
-
+            customButtons: {
+                myCustomButton: {
+                    text: '>',
+                    click: () => {
+                        this.navigateBackAndForward("next")
+                    }
+                },
+                // next: {
+                //     text: 'custom!2',
+                //     click: () => {
+                //
+                //     }
+                // }
+            },
             headerToolbar: {
-                left: 'prev,next today',
+                left: 'prev today myCustomButton',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,list'
+                right: 'dayGridMonth,timeGridWeek,list next'
             },
             views: {
                 dayGridMonth: { // name of view
@@ -156,26 +180,36 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     // other view-specific options here
                 }
             },
-            viewDidMount: function (args) {
-                //The title isn't rendered until after this callback, so we need to use a timeout.
-                window.setTimeout(function () {
-                    let num = args.view.title.match(/\d+/g);
-                    // num[0] will be 21
+            viewDidMount: (args) => {
+                console.log("----------viewDidMount----------");
 
-                    let letr = args.view.title.match(/[a-zA-Z]+/g);
-                    /* letr[0] will be foofo.
-                       Now both are separated, and you can make any string as you like. */
-                    $("#full-calendar").find('.fc-toolbar-title').empty().append(
-                        // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
-                        // "<div>"+view.end.format('MMM Do')+"</div>"
-                        `
-                 <div class="fc-title">
-                    <div class="letr">${letr}</div>
-                    <div class="num">${num}</div>
-                 </div>`
-                    );
-                }, 0);
+                this.toolbarTitle = $("#full-calendar").find('.fc-toolbar-title');
+                // this.formatTitleDate();
+
+                // //The title isn't rendered until after this callback, so we need to use a timeout.
+                // window.setTimeout(function () {
+                //     let num = args.view.title.match(/\d+/g);
+                //     let letr = args.view.title.match(/[a-zA-Z]+/g);
+                //     $("#full-calendar").find('.fc-toolbar-title').empty().append(
+                //         // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
+                //         // "<div>"+view.end.format('MMM Do')+"</div>"
+                //         `
+                //  <div class="fc-title">
+                //     <div class="letr">${letr}</div>
+                //     <div class="num">${num}</div>
+                //  </div>`
+                //     );
+                // }, 0);
             },
+
+            viewWillUnmount: () => {
+                console.log(
+                    '%c viewWillUnmount ',
+                    'background: green; color: #fff; padding: 0 100px;'
+                );
+                // this.toolbarTitle.empty();
+            },
+
             buttonText: {
                 today: "Aujourd'hui",
                 month: "Mois",
@@ -185,8 +219,8 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             nowIndicator: true,
             selectable: true,
             editable: true,
-            dateClick: function (arg) {
-                let m = toMoment(arg.date, calendar); // calendar is required
+            dateClick: (arg) => {
+                let m = toMoment(arg.date, this.calendar); // calendar is required
                 console.log('clicked on ' + m.format());
             },
             // dateClick: (dateClickEvent) =>  {         // <-- add the callback here as one of the properties of `options`
@@ -250,8 +284,146 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
         });
 
-        calendar.render()
+        this.calendar.render()
+        this.elemWatcher()
+    }
 
+    elemWatcher() {
+        console.log('A child node is on watch.');
+        // Select the node that will be observed for mutations
+        const targetNode = document.querySelector('.fc-toolbar-title');
+
+        // Options for the observer (which mutations to observe)
+        // const config = {attributes: true, childList: true, subtree: true};
+        const config = { characterData: true, attributes: true, childList: true, subtree: true };
+
+        // Callback function to execute when mutations are observed
+        const callback =  (mutationsList:any, observer:any) => {
+            // Use traditional 'for loops' for IE 11
+            for (const mutation of mutationsList) {
+                console.log("mutation.type: ");
+                console.log(mutation.type);
+                if (mutation.type === 'childList') {
+                    console.log('A child node has been added or removed.');
+                    if(mutation["removedNodes"][0]){
+                        if(mutation["removedNodes"][0]["nodeValue"].replace(/\r|\n|\s/g,"") != ""){
+                            console.log(
+                                '%c '+mutation["removedNodes"][0]["nodeValue"]+' ',
+                                'background: #3D7385; color: #fff; padding: 0 100px; border: 1px solid #003D52;'
+                            );
+                        }
+                        console.log("MutationObserverWay: previous value is ", mutation["removedNodes"][0]["nodeValue"]);
+                        console.log("MutationObserverWay: previous value is ", mutation["removedNodes"]);
+                    }
+                    if(mutation["addedNodes"][0]){
+                        if(mutation["addedNodes"][0]["nodeValue"].replace(/\r|\n|\s/g,"") != ""){
+                            console.log(
+                                '%c '+mutation["addedNodes"][0]["nodeValue"]+' ',
+                                'background: #835F5F; color: #FFE4E4; padding: 0 100px; border: 1px solid black;'
+                            );
+                            this.formatTitleDate(mutation["addedNodes"][0]["nodeValue"]);
+                        }
+
+                        console.log("MutationObserverWay: new value is ", mutation["addedNodes"][0]["nodeValue"]);
+                        console.log("MutationObserverWay: new value is ", mutation["addedNodes"]);
+                        if(mutation["addedNodes"][0]["nodeValue"].replace(/\r|\n|\s/g,"") == ""){
+                            console.log(
+                                '%c addedNodes is empty ',
+                                'background: #848BE6; color: #fff; padding: 0 100px; border: 1px solid #0F348E;'
+                            );
+                        }
+                        if(mutation["addedNodes"][0]["nodeValue"].replace(/\r|\n|\s/g,"") != ""){
+                            console.log(
+                                '%c '+mutation["addedNodes"][0]["nodeValue"]+' ',
+                                'background: #00E0AD; color: #0F348E; padding: 0 100px; border: 1px solid #0F348E;'
+                            );
+                        }
+                    }
+
+                } else if (mutation.type === 'attributes') {
+                    console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                } else if (mutation.type === 'characterData'){
+                    console.log(
+                        '%c characterData ',
+                        'background: yellow; color: #000; padding: 0 100px; border: 1px solid black;'
+                    );
+                    console.log("characterData value is ", mutation);
+                    console.log("textContent value is ", mutation.target.textContent);
+                    this.formatTitleDate(mutation.target.textContent);
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(targetNode!, config);
+
+        // Later, you can stop observing
+        // observer.disconnect();
+    }
+
+    formatTitleDate(toolbarTitle:string) {
+        // let toolbarTitleCurrentDate = this.toolbarTitle.text();
+        let toolbarTitleCurrentDate = toolbarTitle;
+        let num = toolbarTitleCurrentDate.match(/\d+/g);
+        let letr = toolbarTitleCurrentDate.toLowerCase().match(/[a-zàâçéèêëîïôûùüÿñæœ]+/g);
+        this.toolbarTitle.empty().append(
+            // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
+            // "<div>"+view.end.format('MMM Do')+"</div>"
+            `
+                         <div class="fc-title">
+                            <div class="letr">${letr}</div>
+                            <div class="num">${num}</div>
+                         </div>`
+        );
+    }
+
+    navigateBackAndForward(navigate: string) {
+        // alert('clicked the custom button!');
+
+        this.toolbarTitle.empty();
+        this.calendar[navigate]();
+        // let toolbarTitle = $("#full-calendar").find('.fc-toolbar-title')
+        // let toolbarTitleCurrentDate = toolbarTitle.text();
+        // console.log("toolbarTitleCurrentDate: ");
+        // console.log(toolbarTitleCurrentDate);
+        // let date = calendar.getDate();
+        // console.log("The current date of the calendar is " + date.toISOString());
+        this.count++;
+        console.log(
+            '%c eventClassNames ',
+            'background: red; color: #fff; padding: 0 100px;'
+        );
+        // window.setTimeout(() => {
+        // let toolbarTitle = $("#full-calendar").find('.fc-toolbar-title')
+
+        // // let toolbarTitleCurrentDate = "attache!";
+        //     console.log("toolbarTitleCurrentDate - setTimeout: ");
+        //     console.log(toolbarTitleCurrentDate);
+        // toolbarTitle.empty().append(
+        //         // "attache! " + this.count
+        //     toolbarTitleCurrentDate + " - modif!"
+        // // toolbarTitle.text()
+        //     );
+
+        // let toolbarTitleCurrentDate = toolbarTitle.text();
+        // let num = toolbarTitleCurrentDate.match(/\d+/g);
+        // let letr = toolbarTitleCurrentDate.toLowerCase().match(/[a-zàâçéèêëîïôûùüÿñæœ]+/g);
+        // toolbarTitle.empty().append(
+        //     // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
+        //     // "<div>"+view.end.format('MMM Do')+"</div>"
+        //     `
+        //                  <div class="fc-title">
+        //                     <div class="letr">${letr}</div>
+        //                     <div class="num">${num}</div>
+        //                  </div>`
+        // );
+
+        // this.formatTitleDate();
+
+        // }, 3000)
     }
 
     // renderEventContent(arg: any) {
@@ -288,21 +460,21 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         const element: HTMLElement = document.createElement('div');
         element.appendChild(domElem); // Component needs to be added here
         // document.body.appendChild(element);
-        console.log(
-            '%c "************ element ************" ',
-            'background: white; ' +
-            'color: #000; ' +
-            'padding: 10px; ' +
-            'border: 3px solid red'
-        );
-        console.log(element);
+        // console.log(
+        //     '%c "************ element ************" ',
+        //     'background: white; ' +
+        //     'color: #000; ' +
+        //     'padding: 10px; ' +
+        //     'border: 3px solid red'
+        // );
+        // console.log(element);
 
         return {domNodes: [domElem]};
         // return renderer.rootNodes[0];
     }
 
     unrenderEvent(arg: any) {
-        console.log("🌶️, 🌶️, 🌶️, 🌶️, 🌶️")
+        // console.log("🌶️, 🌶️, 🌶️, 🌶️, 🌶️")
         // const renderer = this.contentRenderers.get(arg.event.id);
         // if (renderer) {
         //     renderer.destroy();

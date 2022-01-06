@@ -23,8 +23,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --fc-event-border-color: transparent;
     /*--fc-daygrid-event-dot-width: 100px;*/
     /*--fc-small-font-size: 1em;*/
+
+    --fc-button-text-color: #232B48;
+    --fc-button-bg-color: transparent;
+    --fc-button-border-color: transparent;
+    --fc-button-hover-bg-color: #eee;
+    --fc-button-hover-border-color: transparent;
+    --fc-button-active-bg-color: #eee;
+    --fc-button-active-border-color: transparent;
 }
 
+button {
+    box-shadow: none !important;
+}
 
 .fc-event {
     /*padding:10px;*/

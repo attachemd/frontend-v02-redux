@@ -35,14 +35,14 @@ import { EventComponent } from './full-calendar/event/event.component';
 
 
 export function tokenGetter(): string | null {
-    console.log(
-        '%c localStorage.getItem(access): ',
-        'background: white; ' +
-        'color: #000; ' +
-        'padding: 10px; ' +
-        'border: 1px solid red'
-    );
-    console.log(localStorage.getItem('access'))
+    // console.log(
+    //     '%c localStorage.getItem(access): ',
+    //     'background: white; ' +
+    //     'color: #000; ' +
+    //     'padding: 10px; ' +
+    //     'border: 1px solid red'
+    // );
+    // console.log(localStorage.getItem('access'))
     return localStorage.getItem('access');
 }
 

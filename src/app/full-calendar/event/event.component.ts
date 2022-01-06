@@ -14,9 +14,9 @@ export class EventComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log("///////// data /////////");
-        console.log(this.data);
-        console.log(this.data?.event._def.publicId);
+        // console.log("///////// data /////////");
+        // console.log(this.data);
+        // console.log(this.data?.event._def.publicId);
     }
 
 }
