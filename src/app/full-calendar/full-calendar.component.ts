@@ -183,8 +183,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             viewDidMount: (args) => {
                 console.log("----------viewDidMount----------");
 
-                this.toolbarTitle = $("#full-calendar").find('.fc-toolbar-title');
-                // this.formatTitleDate();
+                this.toolbarTitle = $("#full-calendar")
+                    .find('.fc-toolbar-title');
+                // this.formatTitleDate(this.toolbarTitle.text());
 
                 // //The title isn't rendered until after this callback, so we need to use a timeout.
                 // window.setTimeout(function () {
@@ -368,7 +369,12 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         // let toolbarTitleCurrentDate = this.toolbarTitle.text();
         let toolbarTitleCurrentDate = toolbarTitle;
         let num = toolbarTitleCurrentDate.match(/\d+/g);
-        let letr = toolbarTitleCurrentDate.toLowerCase().match(/[a-zàâçéèêëîïôûùüÿñæœ]+/g);
+        console.log("num");
+        console.log(num);
+        let letr = toolbarTitleCurrentDate.toLowerCase()
+            .match(/[a-zàâçéèêëîïôûùüÿñæœ]+/g);
+        console.log("letr");
+        console.log(letr);
         this.toolbarTitle.empty().append(
             // "<div>"+view.start.format('MMM Do [to]')+"</div>"+
             // "<div>"+view.end.format('MMM Do')+"</div>"

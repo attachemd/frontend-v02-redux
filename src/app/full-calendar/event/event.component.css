@@ -5,13 +5,13 @@
     height: -webkit-fill-available;
     /*height: inherit;*/
     padding: 10px;
-
+    /*width: max-content;*/
 }
 
 .event-title {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .event-time {
