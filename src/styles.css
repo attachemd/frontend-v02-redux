@@ -33,6 +33,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --fc-button-active-border-color: transparent;
 }
 
+/*.fc-header-toolbar > div > * {*/
+/*    !*display: inline-block;*!*/
+/*    float: left;*/
+/*}*/
+
 button {
     box-shadow: none !important;
 }
@@ -58,6 +63,16 @@ button {
     margin: 3px;
 }
 
+.day-grid-month {
+    /*border: 1px solid red;*/
+    /*border: none;*/
+    border-width: 10px;
+    outline: none;
+    box-shadow: none !important;
+    border-radius: 4px;
+    margin: 3px;
+}
+
 /*a {*/
 /*    outline: 1px dashed red;*/
 /*}*/
@@ -70,13 +85,13 @@ button {
 /*    -webkit-box-shadow: none;*/
 /*}*/
 
-.fc-timegrid-slot {
-    color: #6A7998;
-}
+/*.fc-timegrid-slot {*/
+/*    color: #6A7998;*/
+/*}*/
 
-.fc-timegrid-axis {
-    color: #6A7998;
-}
+/*.fc-timegrid-axis {*/
+/*    color: #6A7998;*/
+/*}*/
 
 .fc-title {
     display:flex;
@@ -90,10 +105,20 @@ button {
       text-transform: uppercase;
     font-weight: bold;
     color: #232B48;
+    margin-left: 6px;
 }
 
 .fc-title > div.num {
       margin-left: 6px;
     color: #B8BAC8;
     font-weight: 400;
+}
+
+.header-cell {
+    color: #707A88;
+    font-weight: 500;
+}
+
+.slot-cell {
+    color: #707A88;
 }

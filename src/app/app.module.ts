@@ -23,6 +23,7 @@ import {JwtModule} from "@auth0/angular-jwt";
 import {ManagePeriodicTokenRefresh} from "./auth/periodic-token-refresh.service";
 import { FullCalendarComponent } from './full-calendar/full-calendar.component';
 import { EventComponent } from './full-calendar/event/event.component';
+import { EventDayGridMonthComponent } from './full-calendar/event-day-grid-month/event-day-grid-month.component';
 
 // import { FullCalendarModule } from '@fullcalendar/angular';
 // import interactionPlugin from '@fullcalendar/interaction';
@@ -56,6 +57,7 @@ export function tokenGetter(): string | null {
         SidenavListComponent,
         FullCalendarComponent,
         EventComponent,
+        EventDayGridMonthComponent,
 
     ],
     imports: [
@@ -97,7 +99,7 @@ export function tokenGetter(): string | null {
         TrainingService,
         UIService
     ],
-    entryComponents: [EventComponent],
+    entryComponents: [EventComponent, EventDayGridMonthComponent],
     bootstrap: [AppComponent],
 
 })
