@@ -108,7 +108,15 @@ export class FullCalendarComponent implements OnInit, DoCheck {
 
         let calendarEl: HTMLElement = document.getElementById('full-calendar')!;
         this.calendar = new Calendar(calendarEl, {
-            plugins: [momentPlugin, dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+            plugins: [
+                momentPlugin,
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+                listPlugin
+            ],
+            // initialView: 'timeGridWeek',
+            initialView: 'dayGridMonth',
             views: {
                 dayGridMonth: { // name of view
                     // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
@@ -159,7 +167,6 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
 
             titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
-            initialView: 'timeGridWeek',
             locale: 'fr',
             // eventClassNames: 'myclassname',
             eventClassNames: (arg) => {
@@ -276,9 +283,45 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 },
                 {
                     id: "15",
-                    title: 'Start FullCalendar project',
+                    title: '1 Start FullCalendar project',
                     start: '2022-01-05 04:00:00',
-                    end: '2022-01-05 08:00:00',
+                    end: '2022-01-05 05:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "18",
+                    title: '2 Start FullCalendar project',
+                    start: '2022-01-05 04:30:00',
+                    end: '2022-01-05 06:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "19",
+                    title: '3 Start FullCalendar project',
+                    start: '2022-01-05 06:00:00',
+                    end: '2022-01-05 07:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "20",
+                    title: '4 Start FullCalendar project',
+                    start: '2022-01-05 08:00:00',
+                    end: '2022-01-05 09:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "21",
+                    title: '5 Start FullCalendar project',
+                    start: '2022-01-05 09:00:00',
+                    end: '2022-01-05 10:00:00',
                     backgroundColor: '#FFF7F5',
                     borderColor: '#FF6634',
                     textColor: '#000',
@@ -288,9 +331,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     title: 'Start project',
                     start: '2022-01-13 09:00:00',
                     end: '2022-01-14 14:00:00',
-                    backgroundColor: '#FFF7F5',
-                    borderColor: '#FF6634',
-                    textColor: '#000',
+                    backgroundColor: '#00E0AD',
+                    borderColor: '#0F348E',
+                    textColor: '#0F348E',
                 },
                 {
                     id: "16",
@@ -302,6 +345,8 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     textColor: '#000',
                 },
             ],
+
+            eventDisplay: 'black',
 
             eventDragStop: (arg) => {
                 // console.log("------------ eventDragStop: arg.event.id ------------");

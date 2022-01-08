@@ -60,13 +60,14 @@ button {
     outline: none;
     box-shadow: none !important;
     border-radius: 4px;
-    margin: 3px;
+    /*margin: 3px;*/
 }
 
 .day-grid-month {
     /*border: 1px solid red;*/
     /*border: none;*/
-    border-width: 10px;
+    /*border-width: 2px;*/
+    /*border-top: 6px solid red;*/
     outline: none;
     box-shadow: none !important;
     border-radius: 4px;
