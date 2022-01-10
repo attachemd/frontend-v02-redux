@@ -117,6 +117,26 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             ],
             // initialView: 'timeGridWeek',
             initialView: 'dayGridMonth',
+            dayMaxEventRows: true,
+            dayMaxEvents: true,
+            moreLinkContent: () => {
+                console.log(
+                    '%c moreLinkContent ',
+                    'background: red; color: #fff; padding: 0 200px;'
+                );
+                // let italicEl = document.createElement('i')
+                // italicEl.innerHTML = "me!";
+                // let arrayOfDomNodes = [ italicEl ]
+                // return { domNodes: arrayOfDomNodes }
+            },
+
+            moreLinkDidMount: () => {
+                console.log(
+                    '%c moreLinkDidMount ',
+                    'background: red; color: #fff; padding: 0 200px;'
+                );
+
+            },
             views: {
                 dayGridMonth: { // name of view
                     // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
@@ -132,9 +152,11 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 // dayGridWeek: { // name of view
                 //     dayMaxEventRows: 2
                 // },
-                // timeGrid: {
-                //     dayMaxEventRows: 2
-                // }
+                timeGrid: {
+                    // dayMaxEventRows: 2,
+                    eventMaxStack: 1,
+                    moreLinkClassNames: "time-grid-more-link",
+                }
             },
             viewDidMount: (args) => {
 
@@ -180,24 +202,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
             // contentHeight: 600,
             // dayMaxEvents: true,
-            dayMaxEventRows: true,
-            // aspectRatio: 2,
-            moreLinkContent: () => {
-                console.log(
-                    '%c moreLinkContent ',
-                    'background: red; color: #fff; padding: 0 200px;'
-                );
-                // let ratio = this.calendar.getOption('aspectRatio');
-                // console.log(ratio)
-                // this.updateMoreLinks();
-            },
-            moreLinkDidMount: () => {
-                console.log(
-                    '%c moreLinkDidMount ',
-                    'background: red; color: #fff; padding: 0 200px;'
-                );
 
-            },
+            // aspectRatio: 2,
+
             titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
             locale: 'fr',
             // eventClassNames: 'myclassname',
@@ -307,7 +314,40 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             events: [
                 {
                     id: "14",
-                    title: 'All Day Event',
+                    allDay: true,
+                    title: '1 All Day Event',
+                    start: '2022-01-04',
+                    backgroundColor: '#F5FCF5',
+                    borderColor: '#2ACC39',
+                    textColor: '#000',
+                },
+                {
+                    id: "141",
+                    title: '2 All Day Event',
+                    start: '2022-01-04',
+                    backgroundColor: '#F5FCF5',
+                    borderColor: '#2ACC39',
+                    textColor: '#000',
+                },
+                {
+                    id: "142",
+                    title: '3 All Day Event',
+                    start: '2022-01-04',
+                    backgroundColor: '#F5FCF5',
+                    borderColor: '#2ACC39',
+                    textColor: '#000',
+                },
+                {
+                    id: "143",
+                    title: '4 All Day Event',
+                    start: '2022-01-04',
+                    backgroundColor: '#F5FCF5',
+                    borderColor: '#2ACC39',
+                    textColor: '#000',
+                },
+                {
+                    id: "144",
+                    title: '5 All Day Event',
                     start: '2022-01-04',
                     backgroundColor: '#F5FCF5',
                     borderColor: '#2ACC39',
@@ -316,6 +356,33 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 {
                     id: "15",
                     title: '1 Start FullCalendar project',
+                    start: '2022-01-05 04:00:00',
+                    end: '2022-01-05 05:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "151",
+                    title: '1.1 Start FullCalendar project',
+                    start: '2022-01-05 04:00:00',
+                    end: '2022-01-05 05:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "152",
+                    title: '1.2 Start FullCalendar project',
+                    start: '2022-01-05 04:00:00',
+                    end: '2022-01-05 05:00:00',
+                    backgroundColor: '#FFF7F5',
+                    borderColor: '#FF6634',
+                    textColor: '#000',
+                },
+                {
+                    id: "153",
+                    title: '1.3 Start FullCalendar project',
                     start: '2022-01-05 04:00:00',
                     end: '2022-01-05 05:00:00',
                     backgroundColor: '#FFF7F5',

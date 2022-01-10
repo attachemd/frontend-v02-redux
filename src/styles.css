@@ -129,3 +129,14 @@ button {
 /*.fc-popover-header {*/
 /*    background-color: white;*/
 /*}*/
+
+.time-grid-more-link {
+    background-color: red;
+    border: 0;
+    box-shadow: none;
+    height: fit-content;
+    /* font-size: 12px; */
+    line-height: 1;
+    left: 0;
+    right: unset !important;
+}
