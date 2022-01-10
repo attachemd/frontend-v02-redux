@@ -59,7 +59,8 @@ button {
     border-width: 1px;
     outline: none;
     box-shadow: none !important;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
+    border-radius: 0;
     /*margin: 3px;*/
 }
 
@@ -70,7 +71,8 @@ button {
     /*border-top: 6px solid red;*/
     outline: none;
     box-shadow: none !important;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
+    border-radius: 0;
     margin: 3px;
 }
 
@@ -123,3 +125,7 @@ button {
 .slot-cell {
     color: #707A88;
 }
+
+/*.fc-popover-header {*/
+/*    background-color: white;*/
+/*}*/

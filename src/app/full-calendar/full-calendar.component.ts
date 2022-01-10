@@ -128,9 +128,16 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     //     return '<p></p>';
                     // }
                     // other view-specific options here
-                }
+                },
+                // dayGridWeek: { // name of view
+                //     dayMaxEventRows: 2
+                // },
+                // timeGrid: {
+                //     dayMaxEventRows: 2
+                // }
             },
             viewDidMount: (args) => {
+
                 console.log("----------viewDidMount----------");
 
                 this.toolbarTitle = $("#full-calendar")
@@ -139,7 +146,6 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 let startDate = moment().subtract(1, 'month');
                 console.log("startDate: ");
                 console.log(startDate);
-
 
 
                 // //The title isn't rendered until after this callback, so we need to use a timeout.
@@ -156,6 +162,13 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 //  </div>`
                 //     );
                 // }, 0);
+
+                // this.calendar.updateSize();
+                console.log(
+                    '%c viewDidMount ',
+                    'background: #fff; color: #000; padding: 0 100px; border: 1px solid red;'
+                );
+                this.updateMoreLinks();
             },
 
             viewWillUnmount: () => {
@@ -165,7 +178,26 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 );
                 // this.toolbarTitle.empty();
             },
+            // contentHeight: 600,
+            // dayMaxEvents: true,
+            dayMaxEventRows: true,
+            // aspectRatio: 2,
+            moreLinkContent: () => {
+                console.log(
+                    '%c moreLinkContent ',
+                    'background: red; color: #fff; padding: 0 200px;'
+                );
+                // let ratio = this.calendar.getOption('aspectRatio');
+                // console.log(ratio)
+                // this.updateMoreLinks();
+            },
+            moreLinkDidMount: () => {
+                console.log(
+                    '%c moreLinkDidMount ',
+                    'background: red; color: #fff; padding: 0 200px;'
+                );
 
+            },
             titleFormat: 'MMMM D, YYYY', // you can now use moment format strings!
             locale: 'fr',
             // eventClassNames: 'myclassname',
@@ -346,7 +378,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 },
             ],
 
-            eventDisplay: 'black',
+            eventDisplay: 'block',
 
             eventDragStop: (arg) => {
                 // console.log("------------ eventDragStop: arg.event.id ------------");
@@ -368,6 +400,11 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 // if(!confirm("Are you sure you want to move this event?")){
                 //     info.revert();
                 // }
+                console.log(
+                    '%c eventDrop ',
+                    'background: yellow; color: black; padding: 0 100px;'
+                );
+                this.updateMoreLinks();
             },
             eventResize: (info) => {
                 if (!confirm("Are you sure you want to resize this event?")) {
@@ -375,9 +412,33 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 }
             },
         });
+        console.log("this.calendar.render()");
+        this.calendar.render();
+        this.updateMoreLinks();
+        // window.addEventListener('mouseup', e => {
+        //     console.log("mouseup")
+        // });
 
-        this.calendar.render()
+        // console.log("this.calendar: ");
+        // console.log(this.calendar);
+        // aspectRatio: 1.35,
+        // this.calendar.setOption('height', "100%");
+        // this.calendar.setOption('aspectRatio', 2);
+        // let ratio = this.calendar.getOption('aspectRatio');
+        // console.log(ratio)
+        // window.resizeTo(screen.width-1,screen.height-1)
+        // window.resizeTo(200,200)
+        // window.resizeBy(200, 200);
         this.elemWatcher()
+    }
+
+    updateMoreLinks() {
+        setTimeout(() => {
+            this.calendar.select('2022-01-07 09:00:00');
+            this.calendar.unselect()
+            // this.calendar.render();
+            // this.calendar.setOption('aspectRatio', 2);
+        }, 0)
     }
 
     elemWatcher() {
@@ -391,6 +452,11 @@ export class FullCalendarComponent implements OnInit, DoCheck {
 
         // Callback function to execute when mutations are observed
         const callback = (mutationsList: any, observer: any) => {
+            console.log(
+                '%c elemWatcher ',
+                'background: #FFE5A8; color: #000; padding: 0 100px; border: 1px solid #000;'
+            );
+            this.updateMoreLinks();
             // Use traditional 'for loops' for IE 11
             for (const mutation of mutationsList) {
                 console.log("mutation.type: ");
