@@ -137,6 +137,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 );
 
             },
+
             views: {
                 dayGridMonth: { // name of view
                     // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
@@ -156,6 +157,8 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     // dayMaxEventRows: 2,
                     eventMaxStack: 1,
                     moreLinkClassNames: "time-grid-more-link",
+                    slotMinTime: "09:00:00",
+                    slotMaxTime: "17:00:00",
                 }
             },
             viewDidMount: (args) => {
