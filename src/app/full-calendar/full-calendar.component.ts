@@ -137,7 +137,39 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 );
 
             },
+            /**
+             * FullCalendar dayHeaders
+             */
+            dayHeaders: true,
+            // dayHeaderFormat: (args) => {
+            //     return moment(args.date).format('ddd Do');
+            // },
+            dayHeaderClassNames: "day-header",
+            dayHeaderFormat: {weekday: 'long'},
+            dayHeaderContent: (arg) => {
+                console.log("arg: ");
+                console.log(arg)
+                const element: HTMLElement = document.createElement('div');
+                element.className = 'header-cell'
+                element.innerHTML = arg.text
+                return {domNodes: [element]};
+            },
 
+            /**
+             * FullCalendar Day-Cell
+             */
+            dayCellClassNames: "day-cell-th",
+            dayCellContent: (arg) => {
+                const element: HTMLElement = document.createElement('div');
+                element.className = 'day-cell'
+                element.innerHTML = arg.date.getDate().toString();
+                return {domNodes: [element]};
+            },
+
+            /**
+             * FullCalendar views
+             */
+            // businessHours: true,
             views: {
                 dayGridMonth: { // name of view
                     // titleFormat: {year: 'numeric', month: "2-digit", day: '2-digit'}
@@ -159,6 +191,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     moreLinkClassNames: "time-grid-more-link",
                     slotMinTime: "09:00:00",
                     slotMaxTime: "17:00:00",
+                    // height: 'auto',
+                    expandRows: true,
+                    dayHeaderFormat: {weekday: 'long',day: 'numeric'},
                 }
             },
             viewDidMount: (args) => {
@@ -276,17 +311,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 center: 'title',
                 end: 'dayGridMonth timeGridWeek list'
             },
-            dayHeaderFormat: (args) => {
-                return moment(args.date).format('ddd Do');
-            },
-            dayHeaderContent: (arg) => {
-                console.log("arg: ");
-                console.log(arg)
-                const element: HTMLElement = document.createElement('div');
-                element.className = 'header-cell'
-                element.innerHTML = arg.text
-                return {domNodes: [element]};
-            },
+
             slotLabelContent: (arg) => {
                 console.log("arg: ");
                 console.log(arg)
@@ -303,7 +328,11 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 week: "Semaine",
                 list: "Liste"
             },
+            /**
+             * FullCalendar nowIndicator
+             */
             nowIndicator: true,
+            nowIndicatorClassNames: "now-indicator",
             selectable: true,
             editable: true,
             dateClick: (arg) => {
@@ -499,7 +528,17 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         // window.resizeTo(screen.width-1,screen.height-1)
         // window.resizeTo(200,200)
         // window.resizeBy(200, 200);
-        this.elemWatcher()
+        this.elemWatcher();
+    }
+
+    devLoopThroughAllDOMElements(): void {
+        let all = document.getElementsByTagName("*");
+
+        for (let i = 0, max = all.length; i < max; i++) {
+            // Do something with the element here
+            console.log(all[i]);
+            console.log(window.getComputedStyle(all[i]).getPropertyValue("opacity"));
+        }
     }
 
     updateMoreLinks() {

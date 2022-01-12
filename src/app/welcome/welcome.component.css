@@ -1,3 +1,18 @@
+.container {
+    padding: 20px 0 0 0;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: 300px auto;
+}
+
+.container > aside {
+    /*background-color: red;*/
+}
+
+.container > section {
+    /*background-color: green;*/
+}
+
 .welcome {
     text-align: center;
 }

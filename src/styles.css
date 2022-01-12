@@ -6,10 +6,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 :root {
     --fc-small-font-size: .85em;
     --fc-page-bg-color: #000;
-    --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+    /*--fc-neutral-bg-color: rgba(208, 208, 208, 0.3);*/
     --fc-neutral-text-color: #808080;
     /*--fc-border-color: #e4e6e9;*/
-    --fc-border-color: #dfdfdf;
+    /*--fc-border-color: #dfdfdf;*/
+    --fc-border-color: #ededed;
 
     --fc-today-bg-color: #efefef;
 
@@ -32,6 +33,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --fc-button-active-bg-color: #eee;
     --fc-button-active-border-color: transparent;
 }
+
+
 
 /*.fc-header-toolbar > div > * {*/
 /*    !*display: inline-block;*!*/
@@ -73,7 +76,8 @@ button {
     box-shadow: none !important;
     /*border-radius: 4px;*/
     border-radius: 0;
-    margin: 3px;
+    /*margin: 3px;*/
+    margin: 0 10px 5px 10px !important;
 }
 
 /*a {*/
@@ -117,9 +121,58 @@ button {
     font-weight: 400;
 }
 
+/**
+ * FullCalendar dayHeaders css
+ */
+
+.day-header {
+    background-color:white;
+    height: 50px;
+    vertical-align: middle !important;
+}
+
 .header-cell {
     color: #707A88;
     font-weight: 500;
+    text-transform: capitalize;
+}
+
+/**
+ * FullCalendar Day-Cell css
+ */
+
+/*.fc-daygrid-day {*/
+/*    opacity: 1 !important;*/
+/*    background-color:red;*/
+/*}*/
+
+/*.fc-day-other {*/
+/*    opacity: 1 !important;*/
+/*    background-color:red;*/
+/*}*/
+
+.fc-day-other .fc-daygrid-day-top{
+    opacity: 1 !important;
+    /*background-color:red;*/
+    color: #afafaf;
+}
+
+.fc-day-other .day-cell {
+    background-color: #f7f7f7;
+}
+
+.day-cell-th {
+    /*background-color: darkgreen;*/
+}
+
+.day-cell {
+    background-color: white;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    /*text-align: center;*/
+    font-weight: 600;
+    padding: 10px;
 }
 
 .slot-cell {
@@ -139,4 +192,12 @@ button {
     line-height: 1;
     left: 0;
     right: unset !important;
+}
+
+/**
+ * FullCalendar nowIndicator
+ */
+
+.now-indicator {
+    /*background-color: green;*/
 }
