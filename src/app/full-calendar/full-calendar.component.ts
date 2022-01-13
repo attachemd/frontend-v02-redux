@@ -2,7 +2,7 @@ import {
     ApplicationRef,
     Component,
     ComponentFactoryResolver,
-    DoCheck,
+    DoCheck, ElementRef,
     EmbeddedViewRef, Injector,
     Input,
     OnInit,
@@ -13,7 +13,7 @@ import {
 import {Calendar} from '@fullcalendar/core'
 import momentPlugin, {toMoment} from '@fullcalendar/moment'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, {Draggable} from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import {EventComponent} from "./event/event.component";
@@ -58,7 +58,8 @@ export class FullCalendarComponent implements OnInit, DoCheck {
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
-        private appRef: ApplicationRef
+        private appRef: ApplicationRef,
+        private elRef: ElementRef
     ) {
         // this.eventData = [
         //     {
@@ -105,6 +106,27 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         // ($('#full-calendar') as any).fullCalendar(
         //     this.defaultConfigurations
         // );
+        const externalEventsElem = this.elRef.nativeElement.closest('.container').querySelector("#external-events");
+        // const parentElement = document.getElementById('fexternal-events');
+        console.log("parentElement: ");
+        console.log(externalEventsElem);
+        console.log("this.elRef.nativeElement.parentElement: ");
+        console.log(this.elRef.nativeElement.parentElement);
+
+        // initialize the external events
+        // -----------------------------------------------------------------
+
+        new Draggable(externalEventsElem, {
+            itemSelector: '.fc-event',
+            eventData: function(eventEl) {
+                return {
+                    title: eventEl.innerText
+                };
+            }
+        });
+
+        // initialize the calendar
+        // -----------------------------------------------------------------
 
         let calendarEl: HTMLElement = document.getElementById('full-calendar')!;
         this.calendar = new Calendar(calendarEl, {
@@ -334,7 +356,6 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             nowIndicator: true,
             nowIndicatorClassNames: "now-indicator",
             selectable: true,
-            editable: true,
             dateClick: (arg) => {
                 let m = toMoment(arg.date, this.calendar); // calendar is required
                 console.log('clicked on ' + m.format());
@@ -495,6 +516,22 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
 
             // events: '/api/full_calendar/',
+            // FullCalendar Drag&Drop
+            editable: true,
+            droppable: true, // this allows things to be dropped onto the calendar
+            drop: (arg ) => {
+                console.log(
+                    '%c Drop ',
+                    'background: yellow; color: black; padding: 0 100px;'
+                );
+                this.updateMoreLinks();
+            },
+            eventReceive: (arg ) => {
+                console.log(
+                    '%c eventReceive ',
+                    'background: yellow; color: black; padding: 0 100px;'
+                );
+            },
             eventDrop: (info) => {
                 // if(!confirm("Are you sure you want to move this event?")){
                 //     info.revert();

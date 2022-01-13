@@ -6,4 +6,5 @@
 - only view business hours in a fullCalendar `timeGrid` view
 - customize `dayHeaders` in fullCalendar
 - customize `Day-Cell` in fullCalendar
+- drag and drop
 
