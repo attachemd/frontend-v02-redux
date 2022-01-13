@@ -3,6 +3,8 @@ import {CalendarOptions} from '@fullcalendar/angular';
 import {DateClickArg} from "@fullcalendar/interaction";
 // import {FullCalendarService} from "./full-calendar.service";
 import {UIService} from "../shared/ui.service";
+import {CalendarEvent} from "./event.model";
+import {predefinedEvents} from "./predefined-events";
 // import * as events from "events";
 // import {FinishedExercise} from "../training/finished-exercise.model";
 
@@ -18,7 +20,7 @@ interface Event {
 })
 export class WelcomeComponent implements OnInit {
 
-    Events: Event[] = [];
+    events: CalendarEvent[] = predefinedEvents;
     calendarOptions: CalendarOptions | undefined;
 
     constructor(
@@ -69,6 +71,10 @@ export class WelcomeComponent implements OnInit {
         //         }
         //     )
 
+    }
+
+    get JSON() {
+        return JSON;
     }
 
 }

@@ -106,7 +106,14 @@ export class FullCalendarComponent implements OnInit, DoCheck {
         // ($('#full-calendar') as any).fullCalendar(
         //     this.defaultConfigurations
         // );
-        const externalEventsElem = this.elRef.nativeElement.closest('.container').querySelector("#external-events");
+        const externalEventsElem = this.elRef
+            .nativeElement
+            .closest('.container')
+            .querySelector("#external-events");
+        let checkbox = this.elRef
+            .nativeElement
+            .closest('.container')
+            .querySelector('#drop-remove');
         // const parentElement = document.getElementById('fexternal-events');
         console.log("parentElement: ");
         console.log(externalEventsElem);
@@ -118,11 +125,12 @@ export class FullCalendarComponent implements OnInit, DoCheck {
 
         new Draggable(externalEventsElem, {
             itemSelector: '.fc-event',
-            eventData: function(eventEl) {
-                return {
-                    title: eventEl.innerText
-                };
-            }
+            // eventData: {}
+            // eventData: function(eventEl) {
+            //     return {
+            //         title: eventEl.innerText
+            //     };
+            // }
         });
 
         // initialize the calendar
@@ -159,9 +167,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 );
 
             },
-            /**
-             * FullCalendar dayHeaders
-             */
+
+             // FullCalendar dayHeaders
+
             dayHeaders: true,
             // dayHeaderFormat: (args) => {
             //     return moment(args.date).format('ddd Do');
@@ -177,9 +185,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 return {domNodes: [element]};
             },
 
-            /**
-             * FullCalendar Day-Cell
-             */
+
+             // FullCalendar Day-Cell
+
             dayCellClassNames: "day-cell-th",
             dayCellContent: (arg) => {
                 const element: HTMLElement = document.createElement('div');
@@ -188,9 +196,9 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 return {domNodes: [element]};
             },
 
-            /**
-             * FullCalendar views
-             */
+
+             // FullCalendar views
+
             // businessHours: true,
             views: {
                 dayGridMonth: { // name of view
@@ -328,10 +336,12 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 //     }
                 // }
             },
+
+            // FullCalendar headerToolbar
             headerToolbar: {
                 left: 'prev next today',
                 center: 'title',
-                end: 'dayGridMonth timeGridWeek list'
+                end: 'dayGridMonth timeGridWeek timeGridDay list'
             },
 
             slotLabelContent: (arg) => {
@@ -348,11 +358,11 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 today: "Aujourd'hui",
                 month: "Mois",
                 week: "Semaine",
+                day: "Jour",
                 list: "Liste"
             },
-            /**
-             * FullCalendar nowIndicator
-             */
+
+             // FullCalendar nowIndicator
             nowIndicator: true,
             nowIndicatorClassNames: "now-indicator",
             selectable: true,
@@ -531,6 +541,39 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     '%c eventReceive ',
                     'background: yellow; color: black; padding: 0 100px;'
                 );
+                // arg.event.backgroundColor = "red";
+                console.log("event: ", arg.event);
+                console.log("element key: ", arg.draggedEl.dataset.key);
+                console.log("title: ", arg.event.title);
+                console.log("title2: ", arg.draggedEl.dataset.event);
+                console.log("duration: ", arg.event.durationEditable);
+                console.log("start: ", arg.event.start);
+                console.log("backgroundColor: ", arg.event.backgroundColor);
+                console.log("startStr: ", arg.event.startStr);
+                console.log("view: ", arg.view);
+
+                this.calendar.addEvent(                {
+                    id: "1",
+                    title: arg.event.title,
+                    start: arg.event.startStr,
+                    // end: '2022-01-05 05:00:00',
+                    backgroundColor: arg.event.backgroundColor,
+                    borderColor: arg.event.borderColor,
+                    textColor: arg.event.textColor,
+                })
+                arg.revert();
+                // is the "remove after drop" checkbox checked?
+                if (checkbox.checked) {
+                    // if so, remove the element from the "Draggable Events" list
+                    arg.draggedEl.parentNode?.removeChild(arg.draggedEl);
+                }
+            },
+            eventAdd: (arg) => {
+                console.log(
+                    '%c eventAdd ',
+                    'background: yellow; color: black; padding: 0 100px;'
+                );
+                console.log(arg.event.backgroundColor)
             },
             eventDrop: (info) => {
                 // if(!confirm("Are you sure you want to move this event?")){
