@@ -149,6 +149,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             initialView: 'dayGridMonth',
             dayMaxEventRows: true,
             dayMaxEvents: true,
+            // FullCalendar More-Link moreLinkContent
             moreLinkContent: () => {
                 console.log(
                     '%c moreLinkContent ',
@@ -218,6 +219,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 timeGrid: {
                     // dayMaxEventRows: 2,
                     eventMaxStack: 1,
+                    // FullCalendar More-Link timeGrid
                     moreLinkClassNames: "time-grid-more-link",
                     slotMinTime: "09:00:00",
                     slotMaxTime: "17:00:00",

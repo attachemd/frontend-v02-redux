@@ -7,4 +7,5 @@
 - customize `dayHeaders` in fullCalendar
 - customize `Day-Cell` in fullCalendar
 - drag and drop
+- customize Event Popover
 

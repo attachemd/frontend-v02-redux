@@ -180,9 +180,18 @@ button {
     color: #707A88;
 }
 
-/*.fc-popover-header {*/
-/*    background-color: white;*/
-/*}*/
+.fc-popover {
+    border: 1px solid #ddd !important;
+}
+
+.fc-popover .fc-popover-header {
+    background-color: white;
+}
+
+.fc-popover .fc-popover-body {
+    padding: 0 !important;
+    position: relative;
+}
 
 .time-grid-more-link {
     background-color: red;
