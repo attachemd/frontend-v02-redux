@@ -7,6 +7,9 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {UIService} from "../shared/ui.service";
+import * as fromApp from "../app.reducer"
+import {Store} from "@ngrx/store";
+
 
 interface Data {
     response: string,
@@ -31,7 +34,8 @@ export class AuthService {
         private http: HttpClient,
         private router: Router,
         private jwtHelper: JwtHelperService,
-        private uiService: UIService
+        private uiService: UIService,
+        private store: Store<{ui: fromApp.State}>
     ) {
     }
 
@@ -45,7 +49,8 @@ export class AuthService {
 
     public registerUser(authData: AuthData): Observable<boolean>  {
 
-        this.uiService.loadingStateNotifier(true);
+        // this.uiService.loadingStateNotifier(true);
+        this.store.dispatch({type: 'START_LOADING'})
         return this.http
             .post('api/user/create/', authData)
             .pipe(
