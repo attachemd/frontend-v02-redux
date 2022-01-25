@@ -8,12 +8,16 @@ import {
 import {AuthService} from "./auth.service";
 import {Observable, of} from "rxjs";
 import {catchError, concatMap, flatMap, map} from "rxjs/operators";
+import * as fromRoot from "../app.reducer"
+import * as AUTH from "./auth.actions";
+import { Store } from "@ngrx/store";
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
     constructor(
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private store: Store<fromRoot.State>
     ) {
     }
 
@@ -55,7 +59,8 @@ export class AuthGuard implements CanActivate, CanLoad {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
 
-                            this.authService.authChangeNotifier(true);
+                            // this.authService.authChangeNotifier(true);
+                            this.store.dispatch(new AUTH.SetAuthenticated());
                             return this.redirectToOther(state.url)
                             // return true;
                         } else {
@@ -95,7 +100,8 @@ export class AuthGuard implements CanActivate, CanLoad {
                         if (isAuth) {
                             // this.authService.authStateChange.next();
                             console.log("this.authService.authChange");
-                            this.authService.authChangeNotifier(true);
+                            // this.authService.authChangeNotifier(true);
+                            this.store.dispatch(new AUTH.SetAuthenticated());
                             return this.redirectToOther(segments.join('/'))
                             // return true;
                         } else {

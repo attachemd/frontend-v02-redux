@@ -7,7 +7,9 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {UIService} from "../shared/ui.service";
-import * as fromApp from "../app.reducer"
+import * as fromRoot from "../app.reducer"
+import * as UI from "../shared/ui.actions"
+import * as AUTH from '../auth/auth.actions'
 import {Store} from "@ngrx/store";
 
 
@@ -35,7 +37,7 @@ export class AuthService {
         private router: Router,
         private jwtHelper: JwtHelperService,
         private uiService: UIService,
-        private store: Store<{ui: fromApp.State}>
+        private store: Store<fromRoot.State>
     ) {
     }
 
@@ -50,13 +52,16 @@ export class AuthService {
     public registerUser(authData: AuthData): Observable<boolean>  {
 
         // this.uiService.loadingStateNotifier(true);
-        this.store.dispatch({type: 'START_LOADING'})
+        // this.store.dispatch({type: 'START_LOADING'});
+        this.store.dispatch(new UI.StartLoading());
         return this.http
             .post('api/user/create/', authData)
             .pipe(
                 map(
                     (data: any) => {
-                        this.uiService.loadingStateNotifier(false);
+                        // this.uiService.loadingStateNotifier(false);
+                        // this.store.dispatch({type: 'STOP_LOADING'});
+                        this.store.dispatch(new UI.StopLoading());
                         if (!data) {
                             return false;
                         } else if (data.token) {
@@ -79,7 +84,9 @@ export class AuthService {
                         };
                     }),
                 catchError((error) => {
-                    this.uiService.loadingStateNotifier(false);
+                    // this.uiService.loadingStateNotifier(false);
+                    // this.store.dispatch({type: 'STOP_LOADING'});
+                    this.store.dispatch(new UI.StopLoading());
                     console.log('error');
                     console.log(error);
                     this.uiService.showSnackBar(
@@ -98,12 +105,16 @@ export class AuthService {
             return of(false);
         }
 
-        this.uiService.loadingStateNotifier(true);
+        // this.uiService.loadingStateNotifier(true);
+        // this.store.dispatch({type: 'START_LOADING'});
+        this.store.dispatch(new UI.StartLoading());
         return this.http
             .post('api/user/access/', authData)
             .pipe(
                 map((data: any) => {
-                    this.uiService.loadingStateNotifier(false);
+                    // this.uiService.loadingStateNotifier(false);
+                    // this.store.dispatch({type: 'STOP_LOADING'});
+                    this.store.dispatch(new UI.StopLoading());
                     if (!data) {
                         return false;
                     }
@@ -112,7 +123,9 @@ export class AuthService {
                     return true;
                 }),
                 catchError((error) => {
-                    this.uiService.loadingStateNotifier(false);
+                    // this.uiService.loadingStateNotifier(false);
+                    // this.store.dispatch({type: 'STOP_LOADING'});
+                    this.store.dispatch(new UI.StopLoading());
                     console.log('error');
                     console.log(error);
                     this.uiService.showSnackBar(
@@ -134,7 +147,8 @@ export class AuthService {
         };
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
-        this.authChangeNotifier(false);
+        // this.authChangeNotifier(false);
+        this.store.dispatch(new AUTH.SetUnauthenticated());
         this.router.navigate(['/login'])
     }
 
@@ -199,7 +213,8 @@ export class AuthService {
     }
 
     public authSuccessfully() {
-        this.authChangeNotifier(true);
+        // this.authChangeNotifier(true);
+        this.store.dispatch(new AUTH.SetAuthenticated());
         this.router.navigate(['/training'])
     }
 

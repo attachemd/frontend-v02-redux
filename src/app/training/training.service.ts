@@ -4,6 +4,9 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {UIService} from "../shared/ui.service";
 import {catchError, map} from "rxjs/operators";
+import {Store} from "@ngrx/store";
+import * as fromRoot from "../app.reducer";
+import * as UI from "../shared/ui.actions";
 
 @Injectable()
 export class TrainingService {
@@ -27,7 +30,8 @@ export class TrainingService {
 
     constructor(
         private http: HttpClient,
-        private uiService: UIService
+        private uiService: UIService,
+        private store: Store<fromRoot.State>
     ) {
     }
 
@@ -80,7 +84,9 @@ export class TrainingService {
             // )
             .subscribe(
                 (exercises: FinishedExercise[]) => {
-                    this.uiService.loadingStateNotifier(false);
+                    // this.uiService.loadingStateNotifier(false);
+                    // this.store.dispatch({type: 'STOP_LOADING'});
+                    this.store.dispatch(new UI.StopLoading());
                     if(exercises.length === 0){
                         // throw {
                         //     error: {
@@ -102,7 +108,9 @@ export class TrainingService {
                 },
                 (error) => {
                     console.log('error :', error)
-                    this.uiService.loadingStateNotifier(false);
+                    // this.uiService.loadingStateNotifier(false);
+                    // this.store.dispatch({type: 'STOP_LOADING'});
+                    this.store.dispatch(new UI.StopLoading());
                     this.uiService.showSnackBar(
                         "error when getting available exercises, try later.",
                         undefined,

@@ -25,7 +25,7 @@ import { FullCalendarComponent } from './full-calendar/full-calendar.component';
 import { EventComponent } from './full-calendar/event/event.component';
 import { EventDayGridMonthComponent } from './full-calendar/event-day-grid-month/event-day-grid-month.component';
 import {StoreModule} from "@ngrx/store";
-import {appReducer} from "./app.reducer";
+import {reducers} from "./app.reducer";
 
 // import { FullCalendarModule } from '@fullcalendar/angular';
 // import interactionPlugin from '@fullcalendar/interaction';
@@ -92,7 +92,7 @@ export function tokenGetter(): string | null {
         SharedModule,
         FormsModule,
         AuthModule,
-        StoreModule.forRoot({ui: appReducer})
+        StoreModule.forRoot(reducers)
         // TrainingModule
     ],
     providers: [

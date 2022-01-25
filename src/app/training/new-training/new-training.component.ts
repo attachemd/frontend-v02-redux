@@ -2,8 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TrainingService} from "../training.service";
 import {FinishedExercise} from "../finished-exercise.model"
 import {NgForm} from "@angular/forms";
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {UIService} from "../../shared/ui.service";
+import * as fromRoot from "../../app.reducer";
+import {Store} from "@ngrx/store";
 
 @Component({
     selector: 'app-new-training',
@@ -13,7 +15,8 @@ import {UIService} from "../../shared/ui.service";
 export class NewTrainingComponent implements OnInit, OnDestroy {
     // exercises: Observable<Exercise[]> =
     //     new Observable();
-    public isLoading: boolean = true;
+    // public isLoading: boolean = true;
+    public isLoading$: Observable<boolean> = new Observable();
     private loadingSubscription: Subscription = new Subscription();
     exercises: FinishedExercise[] | null = [];
 
@@ -24,22 +27,24 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     constructor(
         private trainingService: TrainingService,
-        private uiService: UIService
+        private uiService: UIService,
+        private store: Store<fromRoot.State>
     ) {
     }
 
     ngOnInit(): void {
-        this.loadingSubscription =
-            this.uiService
-                .loadingStateGetter()
-                .subscribe(
-                    (isLoadingState) => {
-                             this.isLoading = isLoadingState;
-                    },
-                    (error) => {
-                        console.log('error :', error);
-                    }
-                )
+        this.isLoading$ = this.store.select(fromRoot.getIsLoading)
+        // this.loadingSubscription =
+        //     this.uiService
+        //         .loadingStateGetter()
+        //         .subscribe(
+        //             (isLoadingState) => {
+        //                      this.isLoading = isLoadingState;
+        //             },
+        //             (error) => {
+        //                 console.log('error :', error);
+        //             }
+        //         )
         this.exerciseSubscription =
             this.trainingService
                 .exercisesChangedGetter()

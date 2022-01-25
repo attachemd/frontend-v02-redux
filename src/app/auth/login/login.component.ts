@@ -1,56 +1,53 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../auth.service';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UIService} from "../../shared/ui.service";
-import {Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
+import {map} from 'rxjs/operators'
+import {Store} from "@ngrx/store";
+import * as fromRoot from "../../app.reducer";
+import * as AUTH from "../auth.actions";
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
     public loginForm: FormGroup = new FormGroup({});
-    public isLoading: boolean = false;
-    private loadingSubscription: Subscription = new Subscription();
+    // public isLoading: boolean = false;
+    public isLoading$: Observable<boolean> = new Observable();
+
+    // private loadingSubscription: Subscription = new Subscription();
 
     constructor(
         private authService: AuthService,
-        private uiService: UIService
+        private uiService: UIService,
+        private store: Store<fromRoot.State>
     ) {
 
     }
 
 
     ngOnInit(): void {
+        console.log(
+            '%c next component',
+            'background: green; color: #fff; padding: 100px;'
+        );
+        this.isLoading$ = this.store.select(fromRoot.getIsLoading)
         // this.loadingSubscription =
         //     this.uiService
-        //         .loadingStateChange$
+        //         .loadingStateGetter()
+        //         // .loadingStateChange$
         //         .subscribe(
         //             (isLoadingState) => {
-        //                     this.isLoading = isLoadingState;
+        //                 this.isLoading = isLoadingState;
+        //                 console.log("🍄, 🍕, 🍅, 🧀, 🌶️")
         //             },
         //             (error) => {
         //                 console.log('error :', error)
         //             }
         //         )
-        console.log(
-            '%c next component',
-            'background: green; color: #fff; padding: 100px;'
-        );
-        this.loadingSubscription =
-            this.uiService
-                // .loadingStateGetter()
-                .loadingStateChange$
-                .subscribe(
-                    (isLoadingState) => {
-                        this.isLoading = isLoadingState;
-                        console.log("🍄, 🍕, 🍅, 🧀, 🌶️")
-                    },
-                    (error) => {
-                        console.log('error :', error)
-                    }
-                )
         this.loginForm = new FormGroup(
             {
                 email: new FormControl(
@@ -93,9 +90,11 @@ export class LoginComponent implements OnInit, OnDestroy {
                         'border: 1px solid red'
                     );
                     console.log(isLogin)
-                    this.authService.authChangeNotifier(isLogin);
+                    // this.authService.authChangeNotifier(isLogin);
                     if (isLogin) {
                         this.authService.authSuccessfully()
+                    } else {
+                        this.store.dispatch(new AUTH.SetUnauthenticated());
                     }
                 },
                 error => {
@@ -110,8 +109,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             )
     }
 
-    ngOnDestroy() {
-        this.loadingSubscription.unsubscribe()
-    }
+    // ngOnDestroy() {
+    //     this.loadingSubscription.unsubscribe()
+    // }
 
 }
