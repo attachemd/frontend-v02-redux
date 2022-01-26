@@ -61,31 +61,31 @@ describe('LoginComponent', () => {
         // let uiService = TestBed.get(UIService)
         // const loadingStateChange$NextSpy = spyOn(uiService.loadingStateChange$, 'next');
 
-    // class FakeUIService {
-    //     private loadingStateChange$: Subject<boolean> = new Subject<boolean>();
-    //
-    //     public showSnackBar(){}
-    //
-    //     public loadingStateNotifier(isLoadingState: boolean):void{
-    //         this.loadingStateChange$.next(isLoadingState);
-    //     }
-    //
-    //     public loadingStateGetter():Subject<boolean>{
-    //         return this.loadingStateChange$;
-    //     }
-    // }
-    //
-    // let uiService = new FakeUIService();
+        // class FakeUIService {
+        //     private loadingStateChange$: Subject<boolean> = new Subject<boolean>();
+        //
+        //     public showSnackBar(){}
+        //
+        //     public loadingStateNotifier(isLoadingState: boolean):void{
+        //         this.loadingStateChange$.next(isLoadingState);
+        //     }
+        //
+        //     public loadingStateGetter():Subject<boolean>{
+        //         return this.loadingStateChange$;
+        //     }
+        // }
+        //
+        // let uiService = new FakeUIService();
 
-    // const uiService:
-    //     Pick<UIService, keyof UIService> = {
-    //     showSnackBar() {
-    //     },
-    //     loadingStateNotifier() {},
-    //     loadingStateGetter():Subject<boolean> {
-    //         return new Subject<boolean>();
-    //     },
-    // };
+        // const uiService:
+        //     Pick<UIService, keyof UIService> = {
+        //     showSnackBar() {
+        //     },
+        //     loadingStateNotifier() {},
+        //     loadingStateGetter():Subject<boolean> {
+        //         return new Subject<boolean>();
+        //     },
+        // };
 
         const setup = async (
             signupServiceReturnValues?: jasmine.SpyObjMethodNames<AuthService>,
@@ -272,7 +272,6 @@ describe('LoginComponent', () => {
         // );
 
 
-
         // it('Subscribe on uiServiceSpy.loadingStateChange$.next ',
         //     waitForAsync(
         //         async () => {
@@ -336,7 +335,7 @@ describe('LoginComponent', () => {
         //     )
         // );
 
-    //TODO problem with async
+        //TODO problem with async
 
         it('Subscribe on subject next ',
             async () => {

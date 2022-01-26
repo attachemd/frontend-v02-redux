@@ -4,6 +4,7 @@ import {FinishedExercise} from "../finished-exercise.model"
 import {NgForm} from "@angular/forms";
 import {Observable, Subscription} from 'rxjs';
 import {UIService} from "../../shared/ui.service";
+import * as fromTraining from "../training.reducer";
 import * as fromRoot from "../../app.reducer";
 import {Store} from "@ngrx/store";
 
@@ -18,7 +19,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     // public isLoading: boolean = true;
     public isLoading$: Observable<boolean> = new Observable();
     private loadingSubscription: Subscription = new Subscription();
-    exercises: FinishedExercise[] | null = [];
+    // exercises: FinishedExercise[] | null = [];
+    exercises$: Observable<FinishedExercise[] | null> = new Observable();
 
     exerciseSubscription: Subscription =
         new Subscription();
@@ -28,12 +30,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     constructor(
         private trainingService: TrainingService,
         private uiService: UIService,
-        private store: Store<fromRoot.State>
+        private store: Store<fromTraining.State>
     ) {
     }
 
     ngOnInit(): void {
-        this.isLoading$ = this.store.select(fromRoot.getIsLoading)
+        this.isLoading$ = this.store.select(fromRoot.getIsLoading);
+        this.exercises$ = this.store.select(fromTraining.getAvailableExercises)
         // this.loadingSubscription =
         //     this.uiService
         //         .loadingStateGetter()
@@ -45,17 +48,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //                 console.log('error :', error);
         //             }
         //         )
-        this.exerciseSubscription =
-            this.trainingService
-                .exercisesChangedGetter()
-                .subscribe(
-                    exercises => {
-                        this.exercises = exercises
-                    },
-                    (error) => {
-                        console.log('error :', error)
-                    }
-                );
+
+        // this.exerciseSubscription =
+        //     this.trainingService
+        //         .exercisesChangedGetter()
+        //         .subscribe(
+        //             exercises => {
+        //                 this.exercises = exercises
+        //             },
+        //             (error) => {
+        //                 console.log('error :', error)
+        //             }
+        //         );
 
         this.fetchExercises();
 
@@ -73,32 +77,32 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //     )
     }
 
-    public fetchExercises()  {
+    public fetchExercises() {
         this.trainingService
             .getAvailableExercises()
-            // .subscribe(
-            //     (exercises: FinishedExercise[]) => {
-            //         this.uiService.loadingStateNotifier(false);
-            //         this.trainingService.availableExercises = exercises;
-            //         this.trainingService.exercisesChangedNotifier(
-            //             [
-            //                 ...this.trainingService.availableExercises
-            //             ]
-            //         )
-            //     },
-            //     (error) => {
-            //         console.log('error :', error)
-            //         this.uiService.loadingStateNotifier(false);
-            //         this.uiService.showSnackBar(
-            //             "error when getting available exercises, try later.",
-            //             undefined,
-            //             3000
-            //         );
-            //         this.trainingService.exercisesChangedNotifier(
-            //             null
-            //         )
-            //     }
-            // )
+        // .subscribe(
+        //     (exercises: FinishedExercise[]) => {
+        //         this.uiService.loadingStateNotifier(false);
+        //         this.trainingService.availableExercises = exercises;
+        //         this.trainingService.exercisesChangedNotifier(
+        //             [
+        //                 ...this.trainingService.availableExercises
+        //             ]
+        //         )
+        //     },
+        //     (error) => {
+        //         console.log('error :', error)
+        //         this.uiService.loadingStateNotifier(false);
+        //         this.uiService.showSnackBar(
+        //             "error when getting available exercises, try later.",
+        //             undefined,
+        //             3000
+        //         );
+        //         this.trainingService.exercisesChangedNotifier(
+        //             null
+        //         )
+        //     }
+        // )
     }
 
     onStartTraining(form: NgForm) {

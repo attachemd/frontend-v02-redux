@@ -169,7 +169,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
 
             },
 
-             // FullCalendar dayHeaders
+            // FullCalendar dayHeaders
 
             dayHeaders: true,
             // dayHeaderFormat: (args) => {
@@ -187,7 +187,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
 
 
-             // FullCalendar Day-Cell
+            // FullCalendar Day-Cell
 
             dayCellClassNames: "day-cell-th",
             dayCellContent: (arg) => {
@@ -198,7 +198,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             },
 
 
-             // FullCalendar views
+            // FullCalendar views
 
             // businessHours: true,
             views: {
@@ -225,7 +225,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                     slotMaxTime: "17:00:00",
                     // height: 'auto',
                     expandRows: true,
-                    dayHeaderFormat: {weekday: 'long',day: 'numeric'},
+                    dayHeaderFormat: {weekday: 'long', day: 'numeric'},
                 }
             },
             viewDidMount: (args) => {
@@ -364,7 +364,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 list: "Liste"
             },
 
-             // FullCalendar nowIndicator
+            // FullCalendar nowIndicator
             nowIndicator: true,
             nowIndicatorClassNames: "now-indicator",
             selectable: true,
@@ -531,14 +531,14 @@ export class FullCalendarComponent implements OnInit, DoCheck {
             // FullCalendar Drag&Drop
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar
-            drop: (arg ) => {
+            drop: (arg) => {
                 console.log(
                     '%c Drop ',
                     'background: yellow; color: black; padding: 0 100px;'
                 );
                 this.updateMoreLinks();
             },
-            eventReceive: (arg ) => {
+            eventReceive: (arg) => {
                 console.log(
                     '%c eventReceive ',
                     'background: yellow; color: black; padding: 0 100px;'
@@ -554,7 +554,7 @@ export class FullCalendarComponent implements OnInit, DoCheck {
                 console.log("startStr: ", arg.event.startStr);
                 console.log("view: ", arg.view);
 
-                this.calendar.addEvent(                {
+                this.calendar.addEvent({
                     id: "1",
                     title: arg.event.title,
                     start: arg.event.startStr,

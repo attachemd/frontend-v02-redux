@@ -21,9 +21,9 @@ import {UIService} from "./shared/ui.service";
 import {SharedModule} from "./shared/shared.module";
 import {JwtModule} from "@auth0/angular-jwt";
 import {ManagePeriodicTokenRefresh} from "./auth/periodic-token-refresh.service";
-import { FullCalendarComponent } from './full-calendar/full-calendar.component';
-import { EventComponent } from './full-calendar/event/event.component';
-import { EventDayGridMonthComponent } from './full-calendar/event-day-grid-month/event-day-grid-month.component';
+import {FullCalendarComponent} from './full-calendar/full-calendar.component';
+import {EventComponent} from './full-calendar/event/event.component';
+import {EventDayGridMonthComponent} from './full-calendar/event-day-grid-month/event-day-grid-month.component';
 import {StoreModule} from "@ngrx/store";
 import {reducers} from "./app.reducer";
 

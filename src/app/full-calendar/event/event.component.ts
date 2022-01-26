@@ -7,7 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class EventComponent implements OnInit {
     @Input()
-    data:any;
+    data: any;
     isAvailable: boolean = true;
 
     constructor() {

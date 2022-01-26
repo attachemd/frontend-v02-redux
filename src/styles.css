@@ -1,7 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 :root {
     --fc-small-font-size: .85em;
@@ -35,7 +41,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 
-
 /*.fc-header-toolbar > div > * {*/
 /*    !*display: inline-block;*!*/
 /*    float: left;*/
@@ -50,7 +55,7 @@ button {
     /*display: flex;*/
     /*background-color: green;*/
     /*border-radius: 10px;*/
-    background-color:green;
+    background-color: green;
 }
 
 .new-class {
@@ -102,7 +107,7 @@ button {
 /*}*/
 
 .fc-title {
-    display:flex;
+    display: flex;
 }
 
 .fc-title > div {
@@ -110,14 +115,14 @@ button {
 }
 
 .fc-title > div.letr {
-      text-transform: uppercase;
+    text-transform: uppercase;
     font-weight: bold;
     color: #232B48;
     margin-left: 6px;
 }
 
 .fc-title > div.num {
-      margin-left: 6px;
+    margin-left: 6px;
     color: #B8BAC8;
     font-weight: 400;
 }
@@ -127,7 +132,7 @@ button {
  */
 
 .day-header {
-    background-color:white;
+    background-color: white;
     height: 50px;
     vertical-align: middle !important;
 }
@@ -152,7 +157,7 @@ button {
 /*    background-color:red;*/
 /*}*/
 
-.fc-day-other .fc-daygrid-day-top{
+.fc-day-other .fc-daygrid-day-top {
     opacity: 1 !important;
     /*background-color:red;*/
     color: #afafaf;

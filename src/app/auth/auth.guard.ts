@@ -10,7 +10,7 @@ import {Observable, of} from "rxjs";
 import {catchError, concatMap, flatMap, map} from "rxjs/operators";
 import * as fromRoot from "../app.reducer"
 import * as AUTH from "./auth.actions";
-import { Store } from "@ngrx/store";
+import {Store} from "@ngrx/store";
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
@@ -121,7 +121,6 @@ export class AuthGuard implements CanActivate, CanLoad {
                 )
             )
     }
-
 
 
     redirectToEntry(url: string): boolean {

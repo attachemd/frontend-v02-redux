@@ -16,11 +16,11 @@ export class AuthServiceMock {
     constructor(private authChange$: Subject<boolean>) {
     }
 
-    getAuthChange(): Subject<boolean>{
+    getAuthChange(): Subject<boolean> {
         return this.authChange$;
     }
 
-    authChangeNotifier(isAuthenticated:boolean): void {
+    authChangeNotifier(isAuthenticated: boolean): void {
         this.authChange$.next(isAuthenticated)
     }
 

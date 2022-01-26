@@ -153,12 +153,10 @@ describe('TrainingService', () => {
             async () => {
 
 
-
                 // Now verify emitted valued.
                 expect((sut as any)._availableExercises).toBe(response);
                 expect(uiServiceSpy.loadingStateNotifier).toHaveBeenCalledWith(false);
                 expect(uiServiceSpy.showSnackBar).not.toHaveBeenCalled();
-
 
 
             }
@@ -181,8 +179,6 @@ describe('TrainingService', () => {
         it(
             'Complete exercise successfully',
             async () => {
-
-
 
 
                 const completeExerciseRequest = controller.expectOne(
@@ -221,7 +217,6 @@ describe('TrainingService', () => {
                         url: "/api/fexercises/15/"
                     }
                 );
-
 
 
                 spyOn(window.console, 'log')
@@ -396,7 +391,7 @@ describe('TrainingService', () => {
 
     it(
         'Get running exercise',
-         () => {
+        () => {
             (sut as any)._runningExercise = response[0]
             let exercise = sut.getRunningExercise();
             expect(exercise).toEqual(response[0]);

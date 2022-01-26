@@ -88,7 +88,7 @@ xdescribe('WelcomeComponent', () => {
             await fixture.whenStable().then(() => {
                 expect(fullCalendarServiceSpy.getEvents).toHaveBeenCalled();
                 expect(component.calendarOptions?.initialView).toBe('dayGridMonth');
-                if(component.calendarOptions && component.calendarOptions.dateClick){
+                if (component.calendarOptions && component.calendarOptions.dateClick) {
                     let dateClickArg: any = {
                         dateStr: "test"
                     };
@@ -152,7 +152,6 @@ xdescribe('WelcomeComponent', () => {
             }
         )
     );
-
 
 
     // it('when click ',

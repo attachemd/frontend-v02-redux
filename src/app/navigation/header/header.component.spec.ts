@@ -24,7 +24,6 @@ describe('HeaderComponent', () => {
     // }
 
 
-
     beforeEach(async () => {
         // let authChange$: Subject<boolean> = new Subject<boolean>();
         managePeriodicTokenRefresh = jasmine.createSpyObj(
@@ -33,7 +32,7 @@ describe('HeaderComponent', () => {
                 initPeriodicRefresh: undefined
             }
         );
-         let authChange$ = new Subject<boolean>();
+        let authChange$ = new Subject<boolean>();
 
         // authServiceSpy = createSpyObj(AuthServiceMock, authChange$)
         authServiceSpy = new AuthServiceMock(authChange$)

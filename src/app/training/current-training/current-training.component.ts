@@ -2,6 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {StopTrainingComponent} from './stop-training.component';
 import {TrainingService} from "../training.service";
+import {Store} from '@ngrx/store';
+import * as fromTraining from '../training.reducer'
+import {FinishedExercise} from "../finished-exercise.model";
+import {pipe} from 'rxjs';
+import {take} from "rxjs/operators";
 
 @Component({
     selector: 'app-current-training',
@@ -15,7 +20,8 @@ export class CurrentTrainingComponent implements OnInit {
 
     constructor(
         private dialog: MatDialog,
-        private trainingService: TrainingService
+        private trainingService: TrainingService,
+        private store: Store<fromTraining.State>
     ) {
     }
 
@@ -24,20 +30,37 @@ export class CurrentTrainingComponent implements OnInit {
     }
 
     startOrResume() {
-        let duration = this.trainingService
-            .getRunningExercise()
-            .duration;
-        const step = duration ? (duration * 1000 / 100) : 1;
-        // const step = (duration*1000 / 100) ;
-        this.timer = window.setInterval(() => {
-            console.log("setInterval");
-            if (this.progress >= 100) {
-                clearInterval(this.timer);
-                this.trainingService.completeExercise()
-            } else {
-                this.progress += 1;
-            }
-        }, step);
+        this.store
+            .select(fromTraining.getActiveTraining)
+            .pipe(take(1))
+            .subscribe((ex: FinishedExercise | null) => {
+                let duration = ex?.duration;
+                const step = duration ? (duration * 1000 / 100) : 1;
+                // const step = (duration*1000 / 100) ;
+                this.timer = window.setInterval(() => {
+                    console.log("setInterval");
+                    if (this.progress >= 100) {
+                        clearInterval(this.timer);
+                        this.trainingService.completeExercise()
+                    } else {
+                        this.progress += 1;
+                    }
+                }, step);
+            })
+        // let duration = this.trainingService
+        //     .getRunningExercise()
+        //     .duration;
+        // const step = duration ? (duration * 1000 / 100) : 1;
+        // // const step = (duration*1000 / 100) ;
+        // this.timer = window.setInterval(() => {
+        //     console.log("setInterval");
+        //     if (this.progress >= 100) {
+        //         clearInterval(this.timer);
+        //         this.trainingService.completeExercise()
+        //     } else {
+        //         this.progress += 1;
+        //     }
+        // }, step);
     }
 
     onStop(): void {

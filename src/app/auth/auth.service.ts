@@ -49,7 +49,7 @@ export class AuthService {
         return this.authChange$
     }
 
-    public registerUser(authData: AuthData): Observable<boolean>  {
+    public registerUser(authData: AuthData): Observable<boolean> {
 
         // this.uiService.loadingStateNotifier(true);
         // this.store.dispatch({type: 'START_LOADING'});
@@ -152,13 +152,13 @@ export class AuthService {
         this.router.navigate(['/login'])
     }
 
-    private getToken(type: string): string{
+    private getToken(type: string): string {
         return <string>localStorage.getItem(type);
     }
 
     refreshTokenOrDie(): Observable<boolean> {
 
-        if(!this.isToken("refresh")){
+        if (!this.isToken("refresh")) {
             return of(false);
         }
 
@@ -194,7 +194,7 @@ export class AuthService {
         }
     }
 
-    public isToken(type: string): boolean{
+    public isToken(type: string): boolean {
         let tokenType: string | any = localStorage.getItem(type);
         if (tokenType) {
             try {

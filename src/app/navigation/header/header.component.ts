@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
     public sidenavToggle: EventEmitter<void> = new EventEmitter<void>();
     // public isAuthenticated: boolean = false;
     public isAuthenticated$: Observable<boolean> = new Observable()
+
     // public authSubscription: Subscription = new Subscription();
 
     constructor(

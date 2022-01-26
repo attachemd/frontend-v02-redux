@@ -61,9 +61,12 @@ export function findEl<T>(fixture: ComponentFixture<T>, testId: string): DebugEl
  */
 export function makeClickEvent(target: EventTarget): Partial<MouseEvent> {
     return {
-        preventDefault(): void {},
-        stopPropagation(): void {},
-        stopImmediatePropagation(): void {},
+        preventDefault(): void {
+        },
+        stopPropagation(): void {
+        },
+        stopImmediatePropagation(): void {
+        },
         type: 'click',
         target,
         currentTarget: target,
@@ -172,7 +175,7 @@ export function findComponents<T>(
 
 export let spyOnObj = (mockClassName: any) => {
     for (let prop of Object.getOwnPropertyNames(mockClassName.prototype)) {
-        if(prop !== "constructor"){
+        if (prop !== "constructor") {
             spyOn(mockClassName.prototype, prop).and.callThrough();
         }
     }
