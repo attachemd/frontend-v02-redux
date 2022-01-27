@@ -11,7 +11,7 @@ import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import * as fromTraining from '../training.reducer';
+import * as fromTraining from '../state/training.reducer';
 
 @Component({
     selector: 'app-past-training',

@@ -3,7 +3,7 @@ import {AuthService} from 'src/app/auth/auth.service';
 import {Observable} from "rxjs";
 import {ManagePeriodicTokenRefresh} from "../../auth/periodic-token-refresh.service";
 import {Store} from "@ngrx/store";
-import * as fromRoot from '../../auth/auth.reducer'
+import * as fromRoot from '../../auth/state/auth.reducer'
 
 @Component({
     selector: 'app-header',

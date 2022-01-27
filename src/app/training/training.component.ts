@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription} from "rxjs";
 import {TrainingService} from './training.service';
 import {Store} from "@ngrx/store";
-import * as fromTraining from './training.reducer'
+import * as fromTraining from './state/training.reducer'
 
 @Component({
     selector: 'app-training',

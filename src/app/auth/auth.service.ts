@@ -8,8 +8,8 @@ import {catchError, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {UIService} from "../shared/ui.service";
 import * as fromRoot from "../app.reducer"
-import * as UI from "../shared/ui.actions"
-import * as AUTH from '../auth/auth.actions'
+import * as UI from "../shared/state/ui.actions"
+import * as AUTH from './state/auth.actions'
 import {Store} from "@ngrx/store";
 
 

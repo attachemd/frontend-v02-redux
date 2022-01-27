@@ -3,7 +3,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {StopTrainingComponent} from './stop-training.component';
 import {TrainingService} from "../training.service";
 import {Store} from '@ngrx/store';
-import * as fromTraining from '../training.reducer'
+import * as fromTraining from '../state/training.reducer'
 import {FinishedExercise} from "../finished-exercise.model";
 import {pipe} from 'rxjs';
 import {take} from "rxjs/operators";

@@ -5,9 +5,9 @@ import {Injectable} from "@angular/core";
 import {UIService} from "../shared/ui.service";
 import {catchError, map, take} from "rxjs/operators";
 import {Store} from "@ngrx/store";
-import * as fromTraining from "./training.reducer";
-import * as Training from './training.actions'
-import * as UI from "../shared/ui.actions";
+import * as fromTraining from "./state/training.reducer";
+import * as Training from './state/training.actions'
+import * as UI from "../shared/state/ui.actions";
 
 @Injectable()
 export class TrainingService {

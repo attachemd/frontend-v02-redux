@@ -1,5 +1,5 @@
-import {FinishedExercise} from "./finished-exercise.model";
-import * as fromRoot from '../app.reducer'
+import {FinishedExercise} from "../finished-exercise.model";
+import * as fromRoot from '../../app.reducer'
 import {
     TrainingActions,
     SET_AVAILABLE_TRAININGS,
