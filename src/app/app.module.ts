@@ -25,7 +25,7 @@ import {FullCalendarComponent} from './full-calendar/full-calendar.component';
 import {EventComponent} from './full-calendar/event/event.component';
 import {EventDayGridMonthComponent} from './full-calendar/event-day-grid-month/event-day-grid-month.component';
 import {StoreModule} from "@ngrx/store";
-import {reducers} from "./app.reducer";
+import {reducers} from "./state/app.reducer";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {environment} from "../environments/environment";
 

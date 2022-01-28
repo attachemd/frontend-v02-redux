@@ -8,7 +8,7 @@ import {
 import {AuthService} from "./auth.service";
 import {Observable, of} from "rxjs";
 import {catchError, concatMap, flatMap, map} from "rxjs/operators";
-import * as fromRoot from "../app.reducer"
+import * as fromRoot from "../state/app.reducer"
 import * as AUTH from "./state/auth.actions";
 import {Store} from "@ngrx/store";
 

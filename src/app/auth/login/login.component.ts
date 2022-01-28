@@ -5,7 +5,7 @@ import {UIService} from "../../shared/ui.service";
 import {Observable, Subscription} from "rxjs";
 import {map} from 'rxjs/operators'
 import {Store} from "@ngrx/store";
-import * as fromRoot from "../../app.reducer";
+import * as fromRoot from "../../state/app.reducer";
 import * as AUTH from "../state/auth.actions";
 
 @Component({

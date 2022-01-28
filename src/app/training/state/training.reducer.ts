@@ -1,5 +1,5 @@
 import {FinishedExercise} from "../finished-exercise.model";
-import * as fromRoot from '../../app.reducer'
+import * as fromRoot from '../../state/app.reducer'
 import {
     TrainingActions,
     SET_AVAILABLE_TRAININGS,
@@ -25,17 +25,17 @@ const initialState: TrainingState = {
     activeTraining: null
 }
 
-export function trainingReducer(state: TrainingState = initialState, action: TrainingActions) {
+export function trainingReducer(state = initialState, action: TrainingActions): TrainingState {
     switch (action.type) {
         case SET_AVAILABLE_TRAININGS:
             return {
                 ...state,
-                availableExercises: action.payload
+                availableExercises: action.payload as FinishedExercise[]
             };
         case SET_FINISHED_TRAININGS:
             return {
                 ...state,
-                finishedExercises: action.payload
+                finishedExercises: action.payload as FinishedExercise[]
             };
         case START_ACTIVE_TRAINING:
             return {
@@ -44,7 +44,7 @@ export function trainingReducer(state: TrainingState = initialState, action: Tra
                     ...state.availableExercises.find(
                         ex => ex.id === action.payload
                     )
-                }
+                } as FinishedExercise | null
             };
         case STOP_ACTIVE_TRAINING:
             return {
