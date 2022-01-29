@@ -21,6 +21,8 @@ import {EventComponent} from "./event/event.component";
 import * as $ from 'jquery';
 import moment from "moment";
 import {EventDayGridMonthComponent} from "./event-day-grid-month/event-day-grid-month.component";
+import {interval, of} from "rxjs";
+import {map, mergeMap, take} from "rxjs/operators";
 // (window as any).$ = (window as any).jQuery = jQuery;
 // (window as any).$ = (window as any).jQuery;
 // import * as moment from 'moment';
@@ -103,6 +105,19 @@ export class FullCalendarComponent implements OnInit, DoCheck {
     }
 
     ngOnInit(): void {
+        // const numbers = interval(1000);
+        //
+        // const takeFourNumbers = numbers.pipe(take(4));
+        //
+        // takeFourNumbers.subscribe(x => console.log('Next: ', x));
+
+        const letters = of('a', 'b', 'c');
+        const result = letters.pipe(
+            mergeMap(x => interval(1000).pipe(map(i => x+i))),
+        );
+        result.subscribe(x => console.log(x));
+
+
         // ($('#full-calendar') as any).fullCalendar(
         //     this.defaultConfigurations
         // );
