@@ -1,6 +1,6 @@
-import {Subject} from "rxjs";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {Injectable} from "@angular/core";
+import { Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class UIService {
@@ -8,22 +8,21 @@ export class UIService {
 
     // public readonly loadingStateChangeData$ = this.loadingStateChange$.asObservable();
 
-    constructor(private snackBar: MatSnackBar) {
-    }
+    constructor(private snackBar: MatSnackBar) {}
 
     showSnackBar(
         message: string,
         action: string | undefined,
         duration: number
     ) {
-        console.log("🤕 🤑 🤠");
+        console.log('🤕 🤑 🤠');
         this.snackBar.open(message, action, {
-            duration: duration
-        })
+            duration: duration,
+        });
     }
 
     public loadingStateNotifier(isLoadingState: boolean) {
-        console.log("🍕, 🍅, 🧀, 🌶️, 🍄")
+        console.log('🍕, 🍅, 🧀, 🌶️, 🍄');
         this.loadingStateChange$.next(isLoadingState);
     }
 

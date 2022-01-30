@@ -1,20 +1,21 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {AuthService} from 'src/app/auth/auth.service';
-import {Observable} from "rxjs";
-import {ManagePeriodicTokenRefresh} from "../../auth/periodic-token-refresh.service";
-import {Store} from "@ngrx/store";
-import * as fromRoot from '../../auth/state/auth.reducer'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import { Observable } from 'rxjs';
+import { ManagePeriodicTokenRefresh } from '../../auth/periodic-token-refresh.service';
+import { Store } from '@ngrx/store';
+import * as fromRoot from '../../auth/state/auth.reducer';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    styleUrls: ['./header.component.css']
+    styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
     @Output()
     public sidenavToggle: EventEmitter<void> = new EventEmitter<void>();
+
     // public isAuthenticated: boolean = false;
-    public isAuthenticated$: Observable<boolean> = new Observable()
+    public isAuthenticated$: Observable<boolean> = new Observable();
 
     // public authSubscription: Subscription = new Subscription();
 
@@ -22,8 +23,7 @@ export class HeaderComponent implements OnInit {
         private authService: AuthService,
         private managePeriodicTokenRefresh: ManagePeriodicTokenRefresh,
         private store: Store<fromRoot.State>
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.isAuthenticated$ = this.store.select(fromRoot.getIsAuthenticated);
@@ -52,11 +52,10 @@ export class HeaderComponent implements OnInit {
     }
 
     onLogout(): void {
-        this.authService.logout()
+        this.authService.logout();
     }
 
     // ngOnDestroy() {
     //     this.authSubscription.unsubscribe();
     // }
-
 }

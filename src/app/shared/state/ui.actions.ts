@@ -1,5 +1,4 @@
-import {Action} from "@ngrx/store";
-
+import { Action } from '@ngrx/store';
 
 export const START_LOADING: string = '[UI] Start Loading';
 export const STOP_LOADING: string = '[UI] Stop Loading';

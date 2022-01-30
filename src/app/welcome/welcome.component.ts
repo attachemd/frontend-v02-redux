@@ -1,40 +1,37 @@
-import {Component, OnInit} from '@angular/core';
-import {CalendarOptions} from '@fullcalendar/angular';
-import {DateClickArg} from "@fullcalendar/interaction";
+import { Component, OnInit } from '@angular/core';
+import { CalendarOptions } from '@fullcalendar/angular';
+import { DateClickArg } from '@fullcalendar/interaction';
 // import {FullCalendarService} from "./full-calendar.service";
-import {UIService} from "../shared/ui.service";
-import {CalendarEvent} from "./event.model";
-import {predefinedEvents} from "./predefined-events";
+import { UIService } from '../shared/ui.service';
+import { CalendarEvent } from './event.model';
+import { predefinedEvents } from './predefined-events';
 // import * as events from "events";
 // import {FinishedExercise} from "../training/finished-exercise.model";
 
 interface Event {
-    title: string,
-    start: string
+    title: string;
+    start: string;
 }
 
 @Component({
     selector: 'app-welcome',
     templateUrl: './welcome.component.html',
-    styleUrls: ['./welcome.component.css']
+    styleUrls: ['./welcome.component.css'],
 })
 export class WelcomeComponent implements OnInit {
-
     events: CalendarEvent[] = predefinedEvents;
     calendarOptions: CalendarOptions | undefined;
 
     constructor(
         // private fullCalendarService: FullCalendarService,
         private uiService: UIService
-    ) {
-    }
+    ) {}
 
     // onDateClick(dateClickEvent: any) {
     //     alert('Clicked on date : ' + dateClickEvent.dateStr)
     // }
 
     ngOnInit(): void {
-
         // this.fullCalendarService
         //     .getEvents()
         //     .subscribe(
@@ -70,11 +67,9 @@ export class WelcomeComponent implements OnInit {
         //             console.log(error)
         //         }
         //     )
-
     }
 
     get JSON() {
         return JSON;
     }
-
 }

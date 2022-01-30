@@ -1,23 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Observable, Subscription} from "rxjs";
-import {TrainingService} from './training.service';
-import {Store} from "@ngrx/store";
-import * as fromTraining from './state/training.reducer'
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { TrainingService } from './training.service';
+import { Store } from '@ngrx/store';
+import * as fromTraining from './state/training.reducer';
+import { log } from 'console';
 
 @Component({
     selector: 'app-training',
     templateUrl: './training.component.html',
-    styleUrls: ['./training.component.css']
+    styleUrls: ['./training.component.css'],
 })
 export class TrainingComponent implements OnInit, OnDestroy {
-    onGoingTraining$: Observable<boolean> = new Observable();
-    exerciseSubscription: Subscription = new Subscription();
+    public onGoingTraining$: Observable<boolean> = new Observable();
+    private _exerciseSubscription: Subscription = new Subscription();
 
-    constructor(private store: Store<fromTraining.State>) {
-    }
+    constructor(private _store: Store<fromTraining.State>) {}
 
     ngOnInit(): void {
-        this.onGoingTraining$ = this.store.select(fromTraining.getIsTraining)
+        this.onGoingTraining$ = this._store.select(fromTraining.getIsTraining);
         // this.exerciseSubscription = this.trainingService
         //     .exerciseChangedGetter()
         //     .subscribe(
@@ -32,6 +32,6 @@ export class TrainingComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         // this.exerciseSubscription.unsubscribe();
+        console.log('ngOnDestroy TrainingComponent');
     }
-
 }

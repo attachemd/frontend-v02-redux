@@ -1,16 +1,20 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
-    CanActivate, CanLoad, Route,
+    CanActivate,
+    CanLoad,
+    Route,
     Router,
-    RouterStateSnapshot, UrlSegment, UrlTree
-} from "@angular/router";
-import {AuthService} from "./auth.service";
-import {Observable, of} from "rxjs";
-import {catchError, concatMap, flatMap, map} from "rxjs/operators";
-import * as fromRoot from "../state/app.reducer"
-import * as AUTH from "./state/auth.actions";
-import {Store} from "@ngrx/store";
+    RouterStateSnapshot,
+    UrlSegment,
+    UrlTree,
+} from '@angular/router';
+import { AuthService } from './auth.service';
+import { Observable, of } from 'rxjs';
+import { catchError, concatMap, flatMap, map } from 'rxjs/operators';
+import * as fromRoot from '../state/app.reducer';
+import * as AUTH from './state/auth.actions';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
@@ -18,8 +22,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         private authService: AuthService,
         private router: Router,
         private store: Store<fromRoot.State>
-    ) {
-    }
+    ) {}
 
     canActivate(
         route: ActivatedRouteSnapshot,
@@ -29,13 +32,12 @@ export class AuthGuard implements CanActivate, CanLoad {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
-
         console.log(
             '%c this.authService.isAuth(): ',
             'background: white; ' +
-            'color: #000; ' +
-            'padding: 10px; ' +
-            'border: 1px solid #47C0BE'
+                'color: #000; ' +
+                'padding: 10px; ' +
+                'border: 1px solid #47C0BE'
         );
         // console.log(this.authService.isAuth());
 
@@ -49,38 +51,31 @@ export class AuthGuard implements CanActivate, CanLoad {
         //     // return false;
         // }
 
-        return this.authService
-            .authState()
-            .pipe(
-                map(
-                    (isAuth) => {
-                        console.log("isAuth: ", isAuth);
-                        if (isAuth) {
-                            // this.authService.authStateChange.next();
-                            console.log("this.authService.authChange");
+        return this.authService.authState().pipe(
+            map((isAuth) => {
+                console.log('isAuth: ', isAuth);
+                if (isAuth) {
+                    // this.authService.authStateChange.next();
+                    console.log('this.authService.authChange');
 
-                            // this.authService.authChangeNotifier(true);
-                            this.store.dispatch(new AUTH.SetAuthenticated());
-                            return this.redirectToOther(state.url)
-                            // return true;
-                        } else {
-                            console.log("!isAuth: ", isAuth);
-                            // this.router.navigate(['/login']);
-                            return this.redirectToEntry(state.url)
-                            // return false;
-                        }
-                    }
-                ),
-                catchError(
-                    (error) => {
-                        console.log('from auth.guard.ts error: ', error);
-                        this.router.navigate(['/login']);
-                        return of(false);
-                    }
-                )
-            )
-
-
+                    // this.authService.authChangeNotifier(true);
+                    this.store.dispatch(new AUTH.SetAuthenticated());
+                    return this.redirectToOther(state.url);
+                    // return true;
+                }
+ else {
+                    console.log('!isAuth: ', isAuth);
+                    // this.router.navigate(['/login']);
+                    return this.redirectToEntry(state.url);
+                    // return false;
+                }
+            }),
+            catchError((error) => {
+                console.log('from auth.guard.ts error: ', error);
+                this.router.navigate(['/login']);
+                return of(false);
+            })
+        );
     }
 
     canLoad(
@@ -91,37 +86,31 @@ export class AuthGuard implements CanActivate, CanLoad {
         | Promise<boolean | UrlTree>
         | boolean
         | UrlTree {
-        return this.authService
-            .authState()
-            .pipe(
-                map(
-                    (isAuth) => {
-                        console.log("isAuth: ", isAuth);
-                        if (isAuth) {
-                            // this.authService.authStateChange.next();
-                            console.log("this.authService.authChange");
-                            // this.authService.authChangeNotifier(true);
-                            this.store.dispatch(new AUTH.SetAuthenticated());
-                            return this.redirectToOther(segments.join('/'))
-                            // return true;
-                        } else {
-                            console.log("!isAuth: ", isAuth);
-                            // this.router.navigate(['/login']);
-                            return this.redirectToEntry(segments.join('/'))
-                            // return false;
-                        }
-                    }
-                ),
-                catchError(
-                    (error) => {
-                        console.log('from auth.guard.ts error: ', error);
-                        this.router.navigate(['/login']);
-                        return of(false);
-                    }
-                )
-            )
+        return this.authService.authState().pipe(
+            map((isAuth) => {
+                console.log('isAuth: ', isAuth);
+                if (isAuth) {
+                    // this.authService.authStateChange.next();
+                    console.log('this.authService.authChange');
+                    // this.authService.authChangeNotifier(true);
+                    this.store.dispatch(new AUTH.SetAuthenticated());
+                    return this.redirectToOther(segments.join('/'));
+                    // return true;
+                }
+ else {
+                    console.log('!isAuth: ', isAuth);
+                    // this.router.navigate(['/login']);
+                    return this.redirectToEntry(segments.join('/'));
+                    // return false;
+                }
+            }),
+            catchError((error) => {
+                console.log('from auth.guard.ts error: ', error);
+                this.router.navigate(['/login']);
+                return of(false);
+            })
+        );
     }
-
 
     redirectToEntry(url: string): boolean {
         if (url.indexOf('/login') == -1 && url.indexOf('/signup') == -1) {
@@ -129,9 +118,9 @@ export class AuthGuard implements CanActivate, CanLoad {
             console.log(
                 '%c redirectToEntry: false ',
                 'background: #B8FF13; ' +
-                'color: #000; ' +
-                'padding: 10px; ' +
-                'border: 1px solid #47C0BE'
+                    'color: #000; ' +
+                    'padding: 10px; ' +
+                    'border: 1px solid #47C0BE'
             );
             this.router.navigate(['/login']);
             return false;
@@ -139,9 +128,9 @@ export class AuthGuard implements CanActivate, CanLoad {
             console.log(
                 '%c redirectToEntry: true ',
                 'background: #B8FF13; ' +
-                'color: #000; ' +
-                'padding: 10px; ' +
-                'border: 1px solid #47C0BE'
+                    'color: #000; ' +
+                    'padding: 10px; ' +
+                    'border: 1px solid #47C0BE'
             );
             return true;
         }
@@ -152,9 +141,9 @@ export class AuthGuard implements CanActivate, CanLoad {
             console.log(
                 '%c redirectToOther: false ',
                 'background: #C1FEEA; ' +
-                'color: #000; ' +
-                'padding: 10px; ' +
-                'border: 1px solid #47C0BE'
+                    'color: #000; ' +
+                    'padding: 10px; ' +
+                    'border: 1px solid #47C0BE'
             );
             this.router.navigate(['/training']);
             return false;
@@ -162,9 +151,9 @@ export class AuthGuard implements CanActivate, CanLoad {
             console.log(
                 '%c redirectToOther: true ',
                 'background: #C1FEEA; ' +
-                'color: #000; ' +
-                'padding: 10px; ' +
-                'border: 1px solid #47C0BE'
+                    'color: #000; ' +
+                    'padding: 10px; ' +
+                    'border: 1px solid #47C0BE'
             );
             return true;
         }

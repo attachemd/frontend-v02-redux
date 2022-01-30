@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {NewTrainingComponent} from './new-training.component';
+import { NewTrainingComponent } from './new-training.component';
 
 xdescribe('NewTrainingComponent', () => {
     let component: NewTrainingComponent;
@@ -8,9 +8,8 @@ xdescribe('NewTrainingComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [NewTrainingComponent]
-        })
-            .compileComponents();
+            declarations: [NewTrainingComponent],
+        }).compileComponents();
     });
 
     beforeEach(() => {

@@ -14,28 +14,25 @@
         ],
         "createDefaultProgram": true
       },
-      "extends": [
-        "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
-      ],
-      "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
+        "extends": [
+            "@ft/eslint-config-ft"
         ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ]
-      }
+        "rules": {
+            "@typescript-eslint/explicit-member-accessibility": [
+                "warn",
+                {
+                    "ignoredMethodNames": ["constructor", "ngOnInit", "ngOnDestroy", "ngAfterViewInit", "ngOnChanges"]
+                }
+            ],
+            "@angular-eslint/directive-selector": [
+                "error",
+                { "type": "attribute", "prefix": "app", "style": "camelCase" }
+            ],
+            "@angular-eslint/component-selector": [
+                "error",
+                { "type": "element", "prefix": "app", "style": "kebab-case" }
+            ]
+        }
     },
     {
       "files": [

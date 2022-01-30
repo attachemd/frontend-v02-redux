@@ -1,27 +1,26 @@
-import {AuthData} from "../auth/auth-data.model";
-import {Observable, of, Subject} from "rxjs";
-import {FinishedExercise} from "../training/finished-exercise.model";
+import { AuthData } from '../auth/auth-data.model';
+import { Observable, of, Subject } from 'rxjs';
+import { FinishedExercise } from '../training/finished-exercise.model';
 
 export const validUser: AuthData = {
     email: 'test@example.com',
-    password: '123456'
+    password: '123456',
 };
 
 export const blankUser: AuthData = {
     email: '',
-    password: ''
+    password: '',
 };
 
 export class AuthServiceMock {
-    constructor(private authChange$: Subject<boolean>) {
-    }
+    constructor(private authChange$: Subject<boolean>) {}
 
     getAuthChange(): Subject<boolean> {
         return this.authChange$;
     }
 
     authChangeNotifier(isAuthenticated: boolean): void {
-        this.authChange$.next(isAuthenticated)
+        this.authChange$.next(isAuthenticated);
     }
 
     registerUser(): Observable<boolean> {
@@ -32,8 +31,7 @@ export class AuthServiceMock {
         return of(true);
     }
 
-    logout(): void {
-    }
+    logout(): void {}
 
     refreshTokenOrDie(): Observable<boolean> {
         return of(true);
@@ -51,12 +49,9 @@ export class AuthServiceMock {
         return of(true);
     }
 
-    authSuccessfully(): void {
-    }
+    authSuccessfully(): void {}
 }
 
 export class TrainingServiceMock {
-    constructor(private authChange$: Subject<FinishedExercise>) {
-    }
-
+    constructor(private authChange$: Subject<FinishedExercise>) {}
 }

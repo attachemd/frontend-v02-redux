@@ -36,6 +36,7 @@
         "fullcalendar": "^5.10.1",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",
+        "prettier": "^2.5.1",
         "rxjs": "~6.6.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.11.4"
@@ -49,9 +50,9 @@
         "@angular-eslint/template-parser": "13.0.1",
         "@angular/cli": "~13.1.2",
         "@angular/compiler-cli": "~13.1.1",
-        "@ngrx/store-devtools": "^13.0.2",
         "@ft/eslint-config-ft": "^1.0.0",
         "@ft/tools": "^1.0.0",
+        "@ngrx/store-devtools": "^13.0.2",
         "@types/jasmine": "~3.8.0",
         "@types/jquery": "^3.5.11",
         "@types/node": "^12.11.1",

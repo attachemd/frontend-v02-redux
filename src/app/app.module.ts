@@ -1,33 +1,32 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { WelcomeComponent } from './welcome/welcome.component';
+import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from './navigation/header/header.component';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 
-import {WelcomeComponent} from './welcome/welcome.component';
-import {FormsModule} from "@angular/forms";
-import {HeaderComponent} from './navigation/header/header.component';
-import {SidenavListComponent} from './navigation/sidenav-list/sidenav-list.component';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
+import { TrainingService } from './training/training.service';
+import { HttpClientModule } from '@angular/common/http';
 
-import {AuthService} from "./auth/auth.service";
-import {AuthModule} from "./auth/auth.module";
-import {TrainingService} from "./training/training.service";
-import {HttpClientModule} from "@angular/common/http";
-
-import {AuthGuard} from "./auth/auth.guard";
-import {UIService} from "./shared/ui.service";
-import {SharedModule} from "./shared/shared.module";
-import {JwtModule} from "@auth0/angular-jwt";
-import {ManagePeriodicTokenRefresh} from "./auth/periodic-token-refresh.service";
-import {FullCalendarComponent} from './full-calendar/full-calendar.component';
-import {EventComponent} from './full-calendar/event/event.component';
-import {EventDayGridMonthComponent} from './full-calendar/event-day-grid-month/event-day-grid-month.component';
-import {StoreModule} from "@ngrx/store";
-import {reducers} from "./state/app.reducer";
-import {StoreDevtoolsModule} from "@ngrx/store-devtools";
-import {environment} from "../environments/environment";
+import { AuthGuard } from './auth/auth.guard';
+import { UIService } from './shared/ui.service';
+import { SharedModule } from './shared/shared.module';
+import { JwtModule } from '@auth0/angular-jwt';
+import { ManagePeriodicTokenRefresh } from './auth/periodic-token-refresh.service';
+import { FullCalendarComponent } from './full-calendar/full-calendar.component';
+import { EventComponent } from './full-calendar/event/event.component';
+import { EventDayGridMonthComponent } from './full-calendar/event-day-grid-month/event-day-grid-month.component';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './state/app.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 // import { FullCalendarModule } from '@fullcalendar/angular';
 // import interactionPlugin from '@fullcalendar/interaction';
@@ -37,7 +36,6 @@ import {environment} from "../environments/environment";
 //     interactionPlugin,
 //     dayGridPlugin
 // ]);
-
 
 export function tokenGetter(): string | null {
     // console.log(
@@ -55,35 +53,27 @@ export function tokenGetter(): string | null {
     declarations: [
         AppComponent,
 
-
         WelcomeComponent,
         HeaderComponent,
         SidenavListComponent,
         FullCalendarComponent,
         EventComponent,
         EventDayGridMonthComponent,
-
     ],
     imports: [
-
-        JwtModule.forRoot(
-            {
-                config:
-                    {
-                        tokenGetter,
-                        allowedDomains: [
-                            'localhost:4200',
-                            'localhost:8000',
-                            // environment.host
-                        ],
-                        disallowedRoutes: [
-                            "http://localhost:8000/api/user/create/"
-                        ],
-                        skipWhenExpired: false,
-                        // throwNoTokenError: true
-                    }
-            }
-        ),
+        JwtModule.forRoot({
+            config: {
+                tokenGetter,
+                allowedDomains: [
+                    'localhost:4200',
+                    'localhost:8000',
+                    // environment.host
+                ],
+                disallowedRoutes: ['http://localhost:8000/api/user/create/'],
+                skipWhenExpired: false,
+                // throwNoTokenError: true
+            },
+        }),
 
         // FullCalendarModule,
 
@@ -98,9 +88,8 @@ export function tokenGetter(): string | null {
         StoreDevtoolsModule.instrument({
             name: 'Frontend v02 redux',
             maxAge: 25,
-            logOnly: environment.production
-
-        })
+            logOnly: environment.production,
+        }),
         // TrainingModule
     ],
     providers: [
@@ -108,11 +97,9 @@ export function tokenGetter(): string | null {
         AuthService,
         AuthGuard,
         TrainingService,
-        UIService
+        UIService,
     ],
     entryComponents: [EventComponent, EventDayGridMonthComponent],
     bootstrap: [AppComponent],
-
 })
-export class AppModule {
-}
+export class AppModule {}

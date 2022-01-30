@@ -1,33 +1,32 @@
-import {User} from "./user.model";
-import {AuthData} from "./auth-data.model";
-import {Observable, of, Subject} from "rxjs";
-import {Router} from "@angular/router";
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {catchError, map} from "rxjs/operators";
-import {JwtHelperService} from "@auth0/angular-jwt";
-import {UIService} from "../shared/ui.service";
-import * as fromRoot from "../state/app.reducer"
-import * as UI from "../shared/state/ui.actions"
-import * as AUTH from './state/auth.actions'
-import {Store} from "@ngrx/store";
-
+import { User } from './user.model';
+import { AuthData } from './auth-data.model';
+import { Observable, of, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { UIService } from '../shared/ui.service';
+import * as fromRoot from '../state/app.reducer';
+import * as UI from '../shared/state/ui.actions';
+import * as AUTH from './state/auth.actions';
+import { Store } from '@ngrx/store';
 
 interface Data {
-    response: string,
-    id: number,
-    email: string,
-    token?: object
+    response: string;
+    id: number;
+    email: string;
+    token?: object;
 }
 
 @Injectable()
 export class AuthService {
-
     private authChange$: Subject<boolean> = new Subject<boolean>();
     private user: User = {
-        email: "",
-        userId: ""
+        email: '',
+        userId: '',
     };
+
     private isAuthenticated = false;
 
     // authStateChange$: Subject<void> = new Subject<void>();
@@ -38,118 +37,98 @@ export class AuthService {
         private jwtHelper: JwtHelperService,
         private uiService: UIService,
         private store: Store<fromRoot.State>
-    ) {
-    }
+    ) {}
 
     public authChangeNotifier(isAuthenticated: boolean) {
         this.authChange$.next(isAuthenticated);
     }
 
     public getAuthChange(): Subject<boolean> {
-        return this.authChange$
+        return this.authChange$;
     }
 
     public registerUser(authData: AuthData): Observable<boolean> {
-
         // this.uiService.loadingStateNotifier(true);
         // this.store.dispatch({type: 'START_LOADING'});
         this.store.dispatch(new UI.StartLoading());
-        return this.http
-            .post('api/user/create/', authData)
-            .pipe(
-                map(
-                    (data: any) => {
-                        // this.uiService.loadingStateNotifier(false);
-                        // this.store.dispatch({type: 'STOP_LOADING'});
-                        this.store.dispatch(new UI.StopLoading());
-                        if (!data) {
-                            return false;
-                        } else if (data.token) {
+        return this.http.post('api/user/create/', authData).pipe(
+            map((data: any) => {
+                // this.uiService.loadingStateNotifier(false);
+                // this.store.dispatch({type: 'STOP_LOADING'});
+                this.store.dispatch(new UI.StopLoading());
+                if (!data) return false;
+                else if (data.token) {
+                    localStorage.setItem('access', data.token.access);
 
-                            localStorage.setItem(
-                                'access',
-                                data.token.access
-                            );
-
-                            localStorage.setItem(
-                                'refresh',
-                                data.token.refresh
-                            );
-                            return true
-                        }
-                        throw {
-                            error: {
-                                detail: data.email[0]
-                            }
-                        };
-                    }),
-                catchError((error) => {
-                    // this.uiService.loadingStateNotifier(false);
-                    // this.store.dispatch({type: 'STOP_LOADING'});
-                    this.store.dispatch(new UI.StopLoading());
-                    console.log('error');
-                    console.log(error);
-                    this.uiService.showSnackBar(
-                        error.error.detail,
-                        undefined,
-                        3000
-                    );
-                    return of(false);
-                })
-            )
-
+                    localStorage.setItem('refresh', data.token.refresh);
+                    return true;
+                }
+                throw {
+                    error: {
+                        detail: data.email[0],
+                    },
+                };
+            }),
+            catchError((error) => {
+                // this.uiService.loadingStateNotifier(false);
+                // this.store.dispatch({type: 'STOP_LOADING'});
+                this.store.dispatch(new UI.StopLoading());
+                console.log('error');
+                console.log(error);
+                this.uiService.showSnackBar(
+                    error.error.detail,
+                    undefined,
+                    3000
+                );
+                return of(false);
+            })
+        );
     }
 
     public login(authData: AuthData): Observable<boolean> {
-        if (!(authData && authData.email && authData.password)) {
+        if (!(authData && authData.email && authData.password))
             return of(false);
-        }
 
         // this.uiService.loadingStateNotifier(true);
         // this.store.dispatch({type: 'START_LOADING'});
         this.store.dispatch(new UI.StartLoading());
-        return this.http
-            .post('api/user/access/', authData)
-            .pipe(
-                map((data: any) => {
-                    // this.uiService.loadingStateNotifier(false);
-                    // this.store.dispatch({type: 'STOP_LOADING'});
-                    this.store.dispatch(new UI.StopLoading());
-                    if (!data) {
-                        return false;
-                    }
-                    localStorage.setItem('access', data.access);
-                    localStorage.setItem('refresh', data.refresh);
-                    return true;
-                }),
-                catchError((error) => {
-                    // this.uiService.loadingStateNotifier(false);
-                    // this.store.dispatch({type: 'STOP_LOADING'});
-                    this.store.dispatch(new UI.StopLoading());
-                    console.log('error');
-                    console.log(error);
-                    this.uiService.showSnackBar(
-                        error.error.detail,
-                        undefined,
-                        3000
-                    );
-                    return of(false);
-                })
-            )
+        return this.http.post('api/user/access/', authData).pipe(
+            map((data: any) => {
+                // this.uiService.loadingStateNotifier(false);
+                // this.store.dispatch({type: 'STOP_LOADING'});
+                this.store.dispatch(new UI.StopLoading());
+                if (!data) return false;
 
-
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
+                return true;
+            }),
+            catchError((error) => {
+                // this.uiService.loadingStateNotifier(false);
+                // this.store.dispatch({type: 'STOP_LOADING'});
+                this.store.dispatch(new UI.StopLoading());
+                console.log('error');
+                console.log(error);
+                this.uiService.showSnackBar(
+                    error.error.detail,
+                    undefined,
+                    3000
+                );
+                return of(false);
+            })
+        );
     }
 
     public logout(): void {
         this.user = {
-            email: "",
-            userId: ""
+            email: '',
+            userId: '',
         };
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
         // this.authChangeNotifier(false);
         this.store.dispatch(new AUTH.SetUnauthenticated());
-        this.router.navigate(['/login'])
+        this.router.navigate(['/login']);
     }
 
     private getToken(type: string): string {
@@ -157,65 +136,51 @@ export class AuthService {
     }
 
     refreshTokenOrDie(): Observable<boolean> {
-
-        if (!this.isToken("refresh")) {
-            return of(false);
-        }
+        if (!this.isToken('refresh')) return of(false);
 
         const payload = {
             refresh: this.getToken('refresh'),
         };
 
-        return this.http
-            .post('/api/user/refresh/', payload)
-            .pipe(
-                map(
-                    (newTokens: any) => {
-                        localStorage.setItem('access', newTokens.access);
-                        return true;
-                    }
-                ),
-                catchError(
-                    (error) => {
-                        console.log('error');
-                        console.log(error);
-                        return of(false);
-                    }
-                )
-            );
-
+        return this.http.post('/api/user/refresh/', payload).pipe(
+            map((newTokens: any) => {
+                localStorage.setItem('access', newTokens.access);
+                return true;
+            }),
+            catchError((error) => {
+                console.log('error');
+                console.log(error);
+                return of(false);
+            })
+        );
     }
 
     isBothTokensAlive(): Observable<boolean> {
-        if (!this.jwtHelper.isTokenExpired()) {
-            return of(true);
-        } else {
-            return this.refreshTokenOrDie()
-        }
+        if (!this.jwtHelper.isTokenExpired()) return of(true);
+        else return this.refreshTokenOrDie();
     }
 
     public isToken(type: string): boolean {
         let tokenType: string | any = localStorage.getItem(type);
-        if (tokenType) {
+
+        if (tokenType)
             try {
                 this.jwtHelper.decodeToken(tokenType);
                 return true;
-            } catch (error) {
+            }
+ catch (error) {
                 return false;
             }
-        } else {
-            return false;
-        }
+        else return false;
     }
 
     public authState(): Observable<boolean> {
-        return this.isToken("access") ? this.isBothTokensAlive() : of(false);
+        return this.isToken('access') ? this.isBothTokensAlive() : of(false);
     }
 
     public authSuccessfully() {
         // this.authChangeNotifier(true);
         this.store.dispatch(new AUTH.SetAuthenticated());
-        this.router.navigate(['/training'])
+        this.router.navigate(['/training']);
     }
-
 }

@@ -1,7 +1,6 @@
-import {ComponentFixture} from "@angular/core/testing";
-import {DebugElement} from "@angular/core";
-import {By} from "@angular/platform-browser";
-
+import { ComponentFixture } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 /**
  * Spec helpers for working with the DOM
@@ -27,16 +26,17 @@ export function testIdSelector(testId: string): string {
  */
 export function queryByCss<T>(
     fixture: ComponentFixture<T>,
-    selector: string,
+    selector: string
 ): DebugElement {
     // The return type of DebugElement#query() is declared as DebugElement,
     // but the actual return type is DebugElement | null.
     // See https://github.com/angular/angular/issues/22449.
     const debugElement = fixture.debugElement.query(By.css(selector));
     // Fail on null so the return type is always DebugElement.
-    if (!debugElement) {
+
+    if (!debugElement)
         throw new Error(`queryByCss: Element with ${selector} not found`);
-    }
+
     return debugElement;
 }
 
@@ -48,7 +48,10 @@ export function queryByCss<T>(
  * @param testId Test id set by `data-testid`
  *
  */
-export function findEl<T>(fixture: ComponentFixture<T>, testId: string): DebugElement {
+export function findEl<T>(
+    fixture: ComponentFixture<T>,
+    testId: string
+): DebugElement {
     return queryByCss<T>(fixture, testIdSelector(testId));
 }
 
@@ -61,18 +64,15 @@ export function findEl<T>(fixture: ComponentFixture<T>, testId: string): DebugEl
  */
 export function makeClickEvent(target: EventTarget): Partial<MouseEvent> {
     return {
-        preventDefault(): void {
-        },
-        stopPropagation(): void {
-        },
-        stopImmediatePropagation(): void {
-        },
+        preventDefault(): void {},
+        stopPropagation(): void {},
+        stopImmediatePropagation(): void {},
         type: 'click',
         target,
         currentTarget: target,
         bubbles: true,
         cancelable: true,
-        button: 0
+        button: 0,
     };
 }
 
@@ -82,12 +82,10 @@ export function makeClickEvent(target: EventTarget): Partial<MouseEvent> {
  * @param fixture Component fixture
  * @param testId Test id set by `data-testid`
  */
-export function click<T>(
-    fixture: ComponentFixture<T>,
-    testId: string
-): void {
+export function click<T>(fixture: ComponentFixture<T>, testId: string): void {
     const element = findEl(fixture, testId);
     const event = makeClickEvent(element.nativeElement);
+
     element.triggerEventHandler('click', event);
 }
 
@@ -101,9 +99,10 @@ export function click<T>(
 export function dispatchFakeEvent(
     element: EventTarget,
     type: string,
-    bubbles: boolean = false,
+    bubbles: boolean = false
 ): void {
     const event = document.createEvent('Event');
+
     event.initEvent(type, bubbles, false);
     element.dispatchEvent(event);
 }
@@ -119,12 +118,13 @@ export function dispatchFakeEvent(
  */
 export function setFieldElementValue(
     element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
-    value: string,
+    value: string
 ): void {
     element.value = value;
     // Dispatch an `input` or `change` fake event
     // so Angular form bindings take notice of the change.
     const isSelect = element instanceof HTMLSelectElement;
+
     dispatchFakeEvent(
         element,
         isSelect ? 'change' : 'input',
@@ -142,7 +142,7 @@ export function setFieldElementValue(
 export function setFieldValue<T>(
     fixture: ComponentFixture<T>,
     testId: string,
-    value: string,
+    value: string
 ): void {
     setFieldElementValue(findEl(fixture, testId).nativeElement, value);
 }
@@ -158,7 +158,7 @@ export function setFieldValue<T>(
  */
 export function findComponent<T>(
     fixture: ComponentFixture<T>,
-    selector: string,
+    selector: string
 ): DebugElement {
     return queryByCss(fixture, selector);
 }
@@ -168,15 +168,13 @@ export function findComponent<T>(
  */
 export function findComponents<T>(
     fixture: ComponentFixture<T>,
-    selector: string,
+    selector: string
 ): DebugElement[] {
     return fixture.debugElement.queryAll(By.css(selector));
 }
 
 export let spyOnObj = (mockClassName: any) => {
-    for (let prop of Object.getOwnPropertyNames(mockClassName.prototype)) {
-        if (prop !== "constructor") {
+    for (let prop of Object.getOwnPropertyNames(mockClassName.prototype))
+        if (prop !== 'constructor')
             spyOn(mockClassName.prototype, prop).and.callThrough();
-        }
-    }
-}
+};

@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {EventDayGridMonthComponent} from './event-day-grid-month.component';
+import { EventDayGridMonthComponent } from './event-day-grid-month.component';
 
 describe('EventDayGridMonthComponent', () => {
     let component: EventDayGridMonthComponent;
@@ -8,9 +8,8 @@ describe('EventDayGridMonthComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [EventDayGridMonthComponent]
-        })
-            .compileComponents();
+            declarations: [EventDayGridMonthComponent],
+        }).compileComponents();
     });
 
     beforeEach(() => {

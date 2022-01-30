@@ -1,13 +1,13 @@
-import {of, Subject} from "rxjs";
-import {FinishedExercise} from "./finished-exercise.model";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {UIService} from "../shared/ui.service";
-import {catchError, map, take} from "rxjs/operators";
-import {Store} from "@ngrx/store";
-import * as fromTraining from "./state/training.reducer";
-import * as Training from './state/training.actions'
-import * as UI from "../shared/state/ui.actions";
+import { of, Subject } from 'rxjs';
+import { FinishedExercise } from './finished-exercise.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { UIService } from '../shared/ui.service';
+import { catchError, map, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import * as fromTraining from './state/training.reducer';
+import * as Training from './state/training.actions';
+import * as UI from '../shared/state/ui.actions';
 
 @Injectable()
 export class TrainingService {
@@ -33,10 +33,11 @@ export class TrainingService {
         private http: HttpClient,
         private uiService: UIService,
         private store: Store<fromTraining.State>
-    ) {
-    }
+    ) {}
 
-    public exerciseChangedNotifier(finishedExercise: FinishedExercise | undefined): void {
+    public exerciseChangedNotifier(
+        finishedExercise: FinishedExercise | undefined
+    ): void {
         this._exerciseChanged$.next(finishedExercise);
     }
 
@@ -44,7 +45,9 @@ export class TrainingService {
         return this._exerciseChanged$;
     }
 
-    public exercisesChangedNotifier(finishedExercises: FinishedExercise[] | null): void {
+    public exercisesChangedNotifier(
+        finishedExercises: FinishedExercise[] | null
+    ): void {
         this._exercisesChanged$.next(finishedExercises);
     }
 
@@ -52,7 +55,9 @@ export class TrainingService {
         return this._exercisesChanged$;
     }
 
-    public finishedExercisesChangedNotifier(finishedExercises: FinishedExercise[]): void {
+    public finishedExercisesChangedNotifier(
+        finishedExercises: FinishedExercise[]
+    ): void {
         this._finishedExercisesChanged$.next(finishedExercises);
     }
 
@@ -61,69 +66,73 @@ export class TrainingService {
     }
 
     public getAvailableExercises() {
-        console.log("getAvailableExercises");
-        return this.http
-            .get<FinishedExercise[]>(
-                '/api/exercises/'
-            )
-            // .pipe(
-            //     map(
-            //         (exercises: FinishedExercise[]) => {
-            //             return exercises;
-            //         }),
-            //     catchError((error) => {
-            //         // this.uiService.loadingStateNotifier(false);
-            //         console.log('error');
-            //         console.log(error);
-            //         // this.uiService.showSnackBar(
-            //         //     error.error.detail,
-            //         //     undefined,
-            //         //     3000
-            //         // );
-            //         return of(error);
-            //     })
-            // )
-            .subscribe(
-                (exercises: FinishedExercise[]) => {
-                    // this.uiService.loadingStateNotifier(false);
-                    // this.store.dispatch({type: 'STOP_LOADING'});
-                    this.store.dispatch(new UI.StopLoading());
-                    if (exercises.length === 0) {
-                        // throw {
-                        //     error: {
-                        //         detail: "no exercise is available"
-                        //     }
-                        // };
+        console.log('getAvailableExercises');
+        return (
+            this.http
+                .get<FinishedExercise[]>('/api/exercises/')
+                // .pipe(
+                //     map(
+                //         (exercises: FinishedExercise[]) => {
+                //             return exercises;
+                //         }),
+                //     catchError((error) => {
+                //         // this.uiService.loadingStateNotifier(false);
+                //         console.log('error');
+                //         console.log(error);
+                //         // this.uiService.showSnackBar(
+                //         //     error.error.detail,
+                //         //     undefined,
+                //         //     3000
+                //         // );
+                //         return of(error);
+                //     })
+                // )
+                .subscribe(
+                    (exercises: FinishedExercise[]) => {
+                        // this.uiService.loadingStateNotifier(false);
+                        // this.store.dispatch({type: 'STOP_LOADING'});
+                        this.store.dispatch(new UI.StopLoading());
+                        if (exercises.length === 0)
+                            // throw {
+                            //     error: {
+                            //         detail: "no exercise is available"
+                            //     }
+                            // };
+                            this.uiService.showSnackBar(
+                                'no exercise is available',
+                                undefined,
+                                3000
+                            );
+
+                        // this._availableExercises = exercises;
+                        // this.exercisesChangedNotifier(
+                        //         [
+                        //             ...this._availableExercises
+                        //         ]
+                        //     )
+                        this.store.dispatch(
+                            new Training.SetAvailableTrainings(exercises)
+                        );
+                    },
+                    (error) => {
+                        console.log('error :', error);
+                        // this.uiService.loadingStateNotifier(false);
+                        // this.store.dispatch({type: 'STOP_LOADING'});
+                        this.store.dispatch(new UI.StopLoading());
                         this.uiService.showSnackBar(
-                            "no exercise is available",
+                            'error when getting available exercises, try later.',
                             undefined,
                             3000
                         );
+                        // this.exercisesChangedNotifier(
+                        //         null
+                        //     )
+                        this.store.dispatch(
+                            new Training.StopActiveTraining(null)
+                        );
                     }
-                    // this._availableExercises = exercises;
-                    // this.exercisesChangedNotifier(
-                    //         [
-                    //             ...this._availableExercises
-                    //         ]
-                    //     )
-                    this.store.dispatch(new Training.SetAvailableTrainings(exercises))
-                },
-                (error) => {
-                    console.log('error :', error)
-                    // this.uiService.loadingStateNotifier(false);
-                    // this.store.dispatch({type: 'STOP_LOADING'});
-                    this.store.dispatch(new UI.StopLoading());
-                    this.uiService.showSnackBar(
-                        "error when getting available exercises, try later.",
-                        undefined,
-                        3000
-                    );
-                    // this.exercisesChangedNotifier(
-                    //         null
-                    //     )
-                    this.store.dispatch(new Training.StopActiveTraining(null))
-                }
-            )
+                )
+        );
     }
 
     public startExercise(selectedExerciseId: string) {
@@ -141,7 +150,9 @@ export class TrainingService {
         //         ...this._runningExercise
         //     }
         // )
-        this.store.dispatch(new Training.StartActiveTraining(selectedExerciseId));
+        this.store.dispatch(
+            new Training.StartActiveTraining(selectedExerciseId)
+        );
     }
 
     public completeExercise() {
@@ -154,19 +165,19 @@ export class TrainingService {
         //         }
         //     );
         // }
-        this.store.select(fromTraining.getActiveTraining).subscribe((ex: FinishedExercise | null) => {
-            this._addDataToDatabase(
-                {
+        this.store
+            .select(fromTraining.getActiveTraining)
+            .subscribe((ex: FinishedExercise | null) => {
+                this._addDataToDatabase({
                     calories: 0,
                     duration: 0,
-                    id: "",
-                    name: "",
+                    id: '',
+                    name: '',
                     ...ex,
-                    state: "completed"
-                }
-            );
-            this.store.dispatch(new Training.StopActiveTraining(null));
-        })
+                    state: 'completed',
+                });
+                this.store.dispatch(new Training.StopActiveTraining(null));
+            });
         // this._addDataToDatabase(
         //     {
         //         calories: 0,
@@ -179,7 +190,6 @@ export class TrainingService {
         // );
         // this._runningExercise = undefined;
         // this.exerciseChangedNotifier(undefined)
-
     }
 
     public cancelExercise(progress: number) {
@@ -189,21 +199,15 @@ export class TrainingService {
             // TODO redux subscribe one time
             .pipe(take(1))
             .subscribe((ex: FinishedExercise | null) => {
-                if (ex) {
-                    this._addDataToDatabase(
-                        {
-                            ...ex,
-                            calories: Math.round((
-                                ex.duration * progress
-                            ) / 100),
-                            duration: Math.round((
-                                ex.calories * progress
-                            ) / 100),
-                            date: new Date(),
-                            state: "cancelled"
-                        }
-                    );
-                }
+                if (ex)
+                    this._addDataToDatabase({
+                        ...ex,
+                        calories: Math.round((ex.duration * progress) / 100),
+                        duration: Math.round((ex.calories * progress) / 100),
+                        date: new Date(),
+                        state: 'cancelled',
+                    });
+
                 this.store.dispatch(new Training.StopActiveTraining(null));
             });
         // if (this._runningExercise) {
@@ -223,7 +227,6 @@ export class TrainingService {
         // }
         // this._runningExercise = undefined;
         // this.exerciseChangedNotifier(undefined)
-
     }
 
     // public getRunningExercise() {
@@ -231,39 +234,36 @@ export class TrainingService {
     // }
 
     public getCompletedOrCanceledExercises() {
-        return this.http
-            .get<FinishedExercise[]>(
-                '/api/fexercises/'
-            )
-            .subscribe(
-                (exercises: FinishedExercise[]) => {
-                    this.store.dispatch(new Training.SetFinishedTrainings(exercises))
-                    // this.finishedExercisesChangedNotifier([
-                    //         ...exercises
-                    //     ])
-                },
-                (error) => {
-                    console.log('error :', error)
-                }
-            )
+        return this.http.get<FinishedExercise[]>('/api/fexercises/').subscribe(
+            (exercises: FinishedExercise[]) => {
+                this.store.dispatch(
+                    new Training.SetFinishedTrainings(exercises)
+                );
+                // this.finishedExercisesChangedNotifier([
+                //         ...exercises
+                //     ])
+            },
+            (error) => {
+                console.log('error :', error);
+            }
+        );
     }
 
     private _addDataToDatabase(exercise: FinishedExercise) {
         // let id = exercise.id;
-        let {id, date, ...payload} = exercise;
+        let { id, date, ...payload } = exercise;
 
-        console.log("payload: ");
+        console.log('payload: ');
         console.log(payload);
         this.http
             .post('/api/fexercises/' + exercise.id + '/', payload)
             .subscribe(
-                response => {
-                    console.log(response)
+                (response) => {
+                    console.log(response);
                     // this.getAvailableExercises();
-                    this.getCompletedOrCanceledExercises()
+                    this.getCompletedOrCanceledExercises();
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
     }
-
 }
