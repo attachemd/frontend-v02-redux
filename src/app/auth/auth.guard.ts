@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         private store: Store<fromRoot.State>
     ) {}
 
-    canActivate(
+    public canActivate(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ):
@@ -62,8 +62,7 @@ export class AuthGuard implements CanActivate, CanLoad {
                     this.store.dispatch(new AUTH.SetAuthenticated());
                     return this.redirectToOther(state.url);
                     // return true;
-                }
- else {
+                } else {
                     console.log('!isAuth: ', isAuth);
                     // this.router.navigate(['/login']);
                     return this.redirectToEntry(state.url);
@@ -78,7 +77,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         );
     }
 
-    canLoad(
+    public canLoad(
         route: Route,
         segments: UrlSegment[]
     ):
@@ -96,8 +95,7 @@ export class AuthGuard implements CanActivate, CanLoad {
                     this.store.dispatch(new AUTH.SetAuthenticated());
                     return this.redirectToOther(segments.join('/'));
                     // return true;
-                }
- else {
+                } else {
                     console.log('!isAuth: ', isAuth);
                     // this.router.navigate(['/login']);
                     return this.redirectToEntry(segments.join('/'));
@@ -112,7 +110,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         );
     }
 
-    redirectToEntry(url: string): boolean {
+    public redirectToEntry(url: string): boolean {
         if (url.indexOf('/login') == -1 && url.indexOf('/signup') == -1) {
             // DOC: not logged in users only navigate to login page
             console.log(
@@ -124,7 +122,8 @@ export class AuthGuard implements CanActivate, CanLoad {
             );
             this.router.navigate(['/login']);
             return false;
-        } else {
+        }
+ else {
             console.log(
                 '%c redirectToEntry: true ',
                 'background: #B8FF13; ' +
@@ -136,7 +135,7 @@ export class AuthGuard implements CanActivate, CanLoad {
         }
     }
 
-    redirectToOther(url: string): boolean {
+    public redirectToOther(url: string): boolean {
         if (url.indexOf('/login') != -1 || url.indexOf('/signup') != -1) {
             console.log(
                 '%c redirectToOther: false ',
@@ -147,7 +146,8 @@ export class AuthGuard implements CanActivate, CanLoad {
             );
             this.router.navigate(['/training']);
             return false;
-        } else {
+        }
+ else {
             console.log(
                 '%c redirectToOther: true ',
                 'background: #C1FEEA; ' +
